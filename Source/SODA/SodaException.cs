@@ -22,5 +22,10 @@ namespace SODA
 
             return new SodaException(message, webException);
         }
+
+        public static SodaException Wrap(Exception ex, string message = "")
+        {
+            return new SodaException(message, ex);
+        }
     }
 }

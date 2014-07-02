@@ -2,22 +2,23 @@
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Web.Script.Serialization;
+
+using Newtonsoft.Json;
 
 using SODA.Models;
 
 namespace SODA
 {
-    public class SodaClient : ISodaClient
+    public class SodaClient
     {
         public string AppToken { get; private set; }
         public string Username { get; private set; }
         private string Password { get; set; }
-
+        
         public SodaClient(string appToken, string username = null, string password = null)
         {
             if (String.IsNullOrEmpty(appToken))
-                throw new ArgumentNullException("appToken");
+                throw new ArgumentNullException("appToken", "An AppToken is required");
 
             AppToken = appToken;
             Username = username;
@@ -26,29 +27,66 @@ namespace SODA
 
         public Dataset GetDataset(string domain, string datasetId)
         {
-            var uri = UriHelper.MetadataUri(domain, datasetId);
+            var uri = SodaUri.ForMetadata(domain, datasetId);
+
             var metadata = Get<DatasetMetadata>(uri);
+
             return new Dataset(domain, metadata, this);
         }
 
+        public dynamic Upsert(string domain, string datasetId, dynamic payload)
+        {
+            string json = JsonConvert.SerializeObject(payload);
+
+            return Upsert(domain, datasetId, json);
+        }
+
+        public dynamic Upsert(string domain, string datasetId, string payload)
+        {
+            throw new NotImplementedException();
+        }
+        
         public TResult Get<TResult>(Uri uri)
         {
             return sendRequest<TResult>(uri);
         }
-
-        public void Post(Uri uri, string body)
+        
+        public dynamic Post(Uri uri, string body)
         {
-            sendRequest(uri, "POST", body);
+            return sendRequest(uri, "POST", body);
         }
 
-        public void Put(Uri uri, string body)
+        public dynamic Put(Uri uri, string body)
         {
-            sendRequest(uri, "PUT", body);
+            return sendRequest(uri, "PUT", body);
+        }
+       
+        protected dynamic sendRequest(Uri uri, string method = "GET", string body = null)
+        {
+            return sendRequest<dynamic>(uri, method, body);
         }
 
-        public void Delete(Uri uri)
+        protected TResult sendRequest<TResult>(Uri uri, string method = "GET", string body = null)
         {
-            sendRequest(uri, "DELETE");
+            var request = createRequest(uri, method, body);
+
+            try
+            {
+                using (var responseStream = request.GetResponse().GetResponseStream())
+                {
+                    var json = new StreamReader(responseStream).ReadToEnd();
+                    TResult entity = JsonConvert.DeserializeObject<TResult>(json);
+                    return entity;
+                }
+            }
+            catch (WebException webException)
+            {
+                throw SodaException.Wrap(webException);
+            }
+            catch (Exception ex)
+            {
+                throw SodaException.Wrap(ex);
+            }
         }
 
         protected virtual WebRequest createRequest(Uri uri, string method = "GET", string body = null)
@@ -75,36 +113,6 @@ namespace SODA
             }
 
             return request;
-        }
-
-        protected void sendRequest(Uri uri, string method = "GET", string body = null)
-        {
-            sendRequest<object>(uri, method, body);
-        }
-
-        protected TResult sendRequest<TResult>(Uri uri, string method = "GET", string body = null)
-        {
-            var request = createRequest(uri, method, body);
-
-            try
-            {
-                using (var response = request.GetResponse().GetResponseStream())
-                {
-                    var result = deserialize<TResult>(response);
-                    return result;
-                }
-            }
-            catch (WebException webException)
-            {
-                throw SodaException.Wrap(webException);
-            }
-        }
-        
-        private static TResult deserialize<TResult>(Stream stream)
-        {
- 	        var body = new StreamReader(stream).ReadToEnd();
-            var result = new JavaScriptSerializer().Deserialize<TResult>(body);
-            return result;
         }
     }
 }

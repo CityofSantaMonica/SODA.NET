@@ -6,11 +6,11 @@ using SODA.Models;
 
 namespace SODA
 {
-    public class Dataset : IDataset
+    public class Dataset
     {
         public string Domain { get; private set; }
         public DatasetMetadata Metadata { get; private set; }
-        public ISodaClient Client { get; private set; }
+        public SodaClient Client { get; private set; }
         public IEnumerable<Column> Columns
         {
             get
@@ -22,7 +22,7 @@ namespace SODA
             }
         }
 
-        public Dataset(string domain, DatasetMetadata metadata, ISodaClient client)
+        internal Dataset(string domain, DatasetMetadata metadata, SodaClient client)
         {
             Domain = domain;
             Metadata = metadata;
@@ -43,7 +43,7 @@ namespace SODA
         
         public IEnumerable<Row> Query(string query)
         {
-            var queryUri = UriHelper.QueryUri(Domain, Metadata.Id, query);
+            var queryUri = SodaUri.ForQuery(Domain, Metadata.Id, query);
 
             if (Client != null)
                 return Client.Get<IEnumerable<Row>>(queryUri);
@@ -53,7 +53,7 @@ namespace SODA
 
         public Row GetRow(string rowId)
         {
-            var resourceUri = UriHelper.ResourceUri(Domain, Metadata.Id, rowId);
+            var resourceUri = SodaUri.ForResource(Domain, Metadata.Id, rowId);
 
             if (Client != null)
                 return Client.Get<Row>(resourceUri);
