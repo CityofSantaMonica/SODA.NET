@@ -41,7 +41,7 @@ namespace SODA
         
         public IEnumerable<Row> Query(string query)
         {
-            var queryUri = SodaUri.ForQuery(Domain, Metadata.Id, query);
+            var queryUri = SodaUri.ForQuery(Domain, Metadata.Identifier, query);
 
             if (Client != null)
                 return Client.Get<IEnumerable<Row>>(queryUri);
@@ -51,7 +51,7 @@ namespace SODA
 
         public Row GetRow(string rowId)
         {
-            var resourceUri = SodaUri.ForResource(Domain, Metadata.Id, SodaResponseFormat.JSON, rowId);
+            var resourceUri = SodaUri.ForResource(Domain, Metadata.Identifier, SodaResponseFormat.JSON, rowId);
 
             if (Client != null)
                 return Client.Get<Row>(resourceUri);
