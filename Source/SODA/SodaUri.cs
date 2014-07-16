@@ -6,7 +6,7 @@ namespace SODA
     {
         private static string metadataUrl(string domain, string resourceId)
         {
-            return String.Format("https://{0}/api/views/{1}", domain, resourceId);
+            return String.Format("https://{0}/views/{1}", domain, resourceId);
         }
 
         public static Uri ForMetadata(string domain, string datasetId)
@@ -18,7 +18,7 @@ namespace SODA
 
         public static Uri ForResource(string domain, string resourceId, string rowId = null)
         {
-            string url = metadataUrl(domain, resourceId).Replace("api/views", "resource");
+            string url = metadataUrl(domain, resourceId).Replace("views", "resource");
 
             if(String.IsNullOrEmpty(rowId))
                 url = String.Format("{0}.json", url);
