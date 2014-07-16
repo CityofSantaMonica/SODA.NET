@@ -49,9 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataSet.cs" />
+    <Compile Include="Resource.cs" />
     <Compile Include="Column.cs" />
-    <Compile Include="DatasetMetadata.cs" />
+    <Compile Include="ResourceMetadata.cs" />
     <Compile Include="SodaResponseFormat.cs" />
     <Compile Include="SoqlQuery.cs" />
     <Compile Include="Row.cs" />

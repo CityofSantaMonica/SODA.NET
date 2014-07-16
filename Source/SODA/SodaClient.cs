@@ -23,18 +23,18 @@ namespace SODA
             Password = password;
         }
 
-        public Dataset GetDataset(string domain, string datasetId)
+        public Resource GetResource(string domain, string datasetId)
         {
             var uri = SodaUri.ForMetadata(domain, datasetId);
 
-            var metadata = Get<DatasetMetadata>(uri);
+            var metadata = Get<ResourceMetadata>(uri);
 
-            return new Dataset(domain, metadata, this);
+            return new Resource(domain, metadata, this);
         }
 
-        public DatasetMetadata GetMetadata(string domain, string datasetId)
+        public ResourceMetadata GetMetadata(string domain, string datasetId)
         {
-            var dataset = GetDataset(domain, datasetId);
+            var dataset = GetResource(domain, datasetId);
 
             return dataset.Metadata;
         }

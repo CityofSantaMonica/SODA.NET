@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace SODA
 {
-    public class Dataset
+    public class Resource
     {
         public string Domain { get; private set; }
-        public DatasetMetadata Metadata { get; private set; }
+        public ResourceMetadata Metadata { get; private set; }
         public SodaClient Client { get; private set; }
         public IEnumerable<Column> Columns
         {
@@ -20,7 +20,7 @@ namespace SODA
             }
         }
 
-        internal Dataset(string domain, DatasetMetadata metadata, SodaClient client)
+        internal Resource(string domain, ResourceMetadata metadata, SodaClient client)
         {
             Domain = domain;
             Metadata = metadata;

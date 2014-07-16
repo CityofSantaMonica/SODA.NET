@@ -2,7 +2,7 @@
 
 namespace SODA
 {
-    public class DatasetMetadata
+    public class ResourceMetadata
     {
         public string Attribution { get; set; }
 
