@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using SODA.Models;
-
 namespace SODA
 {
     public class Dataset
@@ -53,7 +51,7 @@ namespace SODA
 
         public Row GetRow(string rowId)
         {
-            var resourceUri = SodaUri.ForResource(Domain, Metadata.Id, rowId);
+            var resourceUri = SodaUri.ForResource(Domain, Metadata.Id, SodaResponseFormat.JSON, rowId);
 
             if (Client != null)
                 return Client.Get<Row>(resourceUri);
