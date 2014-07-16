@@ -59,6 +59,7 @@
     <Compile Include="SodaClient.cs" />
     <Compile Include="SodaException.cs" />
     <Compile Include="SodaUri.cs" />
+    <Compile Include="DateTimeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

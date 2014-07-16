@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+
+using SODA.Utilities;
 
 namespace SODA
 {
@@ -25,7 +28,20 @@ namespace SODA
         public string Category { get; set; }
 
         [DataMember(Name = "createdAt")]
-        public DateTime CreationDate { get; set; }
+        public double? CreationDateUnix { get; set; }
+
+        public DateTime? CreationDate
+        {
+            get
+            {
+                if (CreationDateUnix.HasValue)
+                {
+                    return DateTimeConverter.FromUnix(CreationDateUnix.Value);
+                }
+
+                return default(DateTime?);
+            }
+        }
                 
         [DataMember(Name = "description")]
         public string Description { get; set; }
@@ -40,10 +56,36 @@ namespace SODA
         public long CommentsCount { get; set; }
 
         [DataMember(Name = "publicationDate")]
-        public DateTime PublishedDate { get; set; }
+        public double? PublishedDateUnix { get; set; }
+
+        public DateTime? PublishedDate
+        {
+            get
+            {
+                if (PublishedDateUnix.HasValue)
+                {
+                    return DateTimeConverter.FromUnix(PublishedDateUnix.Value);
+                }
+
+                return default(DateTime?);
+            }
+        }
 
         [DataMember(Name = "rowsUpdatedAt")]
-        public DateTime RowsLastUpdated { get; set; }
+        public double? RowsLastUpdatedUnix { get; set; }
+
+        public DateTime? RowsLastUpdated
+        {
+            get
+            {
+                if (RowsLastUpdatedUnix.HasValue)
+                {
+                    return DateTimeConverter.FromUnix(RowsLastUpdatedUnix.Value);
+                }
+
+                return default(DateTime?);
+            }
+        }
 
         [DataMember(Name = "tableId")]
         public long TableId { get; set; }
@@ -55,12 +97,28 @@ namespace SODA
         public long ViewsCount { get; set; }
 
         [DataMember(Name = "viewLastModified")]
-        public DateTime SchemaLastUpdated { get; set; }
+        public double? SchemaLastUpdatedUnix { get; set; }
+
+        public DateTime? SchemaLastUpdated
+        {
+            get
+            {
+                if (SchemaLastUpdatedUnix.HasValue)
+                {
+                    return DateTimeConverter.FromUnix(SchemaLastUpdatedUnix.Value);
+                }
+
+                return default(DateTime?);
+            }
+        }
 
         [DataMember(Name = "viewType")]
         public string ViewType { get; set; }
 
         [DataMember(Name = "columns")]
-        public Column[] Columns { get; set; }
+        public IEnumerable<Column> Columns { get; set; }
+
+        [DataMember(Name = "tags")]
+        public IEnumerable<string> Tags { get; set; }
     }
 }
