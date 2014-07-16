@@ -30,23 +30,13 @@ namespace SODA
         public IEnumerable<Row> Search(string search)
         {
             string soql = String.Format("$q={0}", search);
-            return Query(soql);
+            return query(soql);
         }
 
-        public IEnumerable<Row> Query(SoqlQuery query)
+        public IEnumerable<Row> Query(SoqlQuery soqlQuery)
         {
-            string soql = query.ToString();
-            return Query(soql);
-        }
-        
-        public IEnumerable<Row> Query(string query)
-        {
-            var queryUri = SodaUri.ForQuery(Domain, Metadata.Identifier, query);
-
-            if (Client != null)
-                return Client.Get<IEnumerable<Row>>(queryUri);
-            else
-                return Enumerable.Empty<Row>();
+            string soql = soqlQuery.ToString();
+            return query(soql);
         }
 
         public Row GetRow(string rowId)
@@ -57,6 +47,16 @@ namespace SODA
                 return Client.Get<Row>(resourceUri);
             else
                 return default(Row);
+        }
+
+        private IEnumerable<Row> query(string query)
+        {
+            var queryUri = SodaUri.ForQuery(Domain, Metadata.Identifier, query);
+
+            if (Client != null)
+                return Client.Get<IEnumerable<Row>>(queryUri);
+            else
+                return Enumerable.Empty<Row>();
         }
     }
 }

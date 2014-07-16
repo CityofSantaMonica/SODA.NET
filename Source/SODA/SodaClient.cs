@@ -11,9 +11,11 @@ namespace SODA
     {
         public string AppToken { get; private set; }
         public string Username { get; private set; }
+
         private string Password { get; set; }
+        private JsonConverter[] Converters { get; set; }
         
-        public SodaClient(string appToken, string username = null, string password = null)
+        public SodaClient(string appToken, string username = null, string password = null, params JsonConverter[] converters)
         {
             if (String.IsNullOrEmpty(appToken))
                 throw new ArgumentNullException("appToken", "An AppToken is required");
@@ -21,6 +23,7 @@ namespace SODA
             AppToken = appToken;
             Username = username;
             Password = password;
+            Converters = converters;
         }
 
         public Resource GetResource(string domain, string datasetId)
@@ -41,7 +44,7 @@ namespace SODA
 
         public dynamic Upsert(string domain, string datasetId, dynamic payload)
         {
-            string json = JsonConvert.SerializeObject(payload);
+            string json = JsonConvert.SerializeObject(payload, Converters);
 
             return Upsert(domain, datasetId, json);
         }
@@ -80,7 +83,7 @@ namespace SODA
                 using (var responseStream = request.GetResponse().GetResponseStream())
                 {
                     var json = new StreamReader(responseStream).ReadToEnd();
-                    TResult entity = JsonConvert.DeserializeObject<TResult>(json);
+                    TResult entity = JsonConvert.DeserializeObject<TResult>(json, Converters);
                     return entity;
                 }
             }
