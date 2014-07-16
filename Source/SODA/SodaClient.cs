@@ -34,6 +34,13 @@ namespace SODA
             return new Dataset(domain, metadata, this);
         }
 
+        public DatasetMetadata GetMetadata(string domain, string datasetId)
+        {
+            var dataset = GetDataset(domain, datasetId);
+
+            return dataset.Metadata;
+        }
+
         public dynamic Upsert(string domain, string datasetId, dynamic payload)
         {
             string json = JsonConvert.SerializeObject(payload);
