@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -12,20 +13,25 @@ namespace SODA.Models
 
     public class SoqlQuery
     {
-        private static string delimiter = ",";
-
-        private string[] select { get; set; }
+        public static readonly string Delimiter = ",";
+        public static readonly string SelectKey = "$select";
+        public static readonly string WhereKey = "$where";
+        public static readonly string OrderKey = "$order";
+        public static readonly string GroupKey = "$group";
+        public static readonly string LimitKey = "$limit";
+        public static readonly string OffsetKey = "$offset";
+        
+        private IEnumerable<string> select { get; set; }
         private string where { get; set; }
-        private string[] groupBy { get; set; }
-        private string having { get; set; }
         private SortOrder sortOrder { get; set; }
-        private string[] orderBy { get; set; }
-        private uint limit { get; set; }
-        private uint offset { get; set; }        
+        private IEnumerable<string> orderBy { get; set; }
+        private IEnumerable<string> groupBy { get; set; }
+        private int limit { get; set; }
+        private int offset { get; set; }                
 
         public SoqlQuery Select(params string[] columns)
         {
-            select = columns;
+            select = getNonEmptyValues(columns);
             return this;
         }
 
@@ -35,68 +41,82 @@ namespace SODA.Models
             return this;
         }
 
-        public SoqlQuery GroupBy(params string[] columns)
+        public SoqlQuery Order(params string[] columns)
         {
-            groupBy = columns;
+            return Order(SortOrder.ASC, columns);
+        }
+
+        public SoqlQuery Order(SortOrder sortOrder, params string[] columns)
+        {
+            this.sortOrder = sortOrder;
+            orderBy = getNonEmptyValues(columns);
             return this;
         }
 
-        public SoqlQuery Having(string predicate)
+        public SoqlQuery Group(params string[] columns)
         {
-            having = predicate;
+            groupBy = getNonEmptyValues(columns);
             return this;
         }
-
-        public SoqlQuery OrderBy(SortOrder order = SortOrder.ASC, params string[] columns)
+        
+        public SoqlQuery Limit(int limit)
         {
-            sortOrder = order;
-            orderBy = columns;
-            return this;
-        }
+            //limit < 0 makes no sense, take the absolute value
+            limit = Math.Abs(limit);
 
-        public SoqlQuery Limit(uint limit)
-        {
             //limit > 1000 will return a 400 Bad Request
             //http://dev.socrata.com/docs/queries.html#the_limit_parameter
+            limit = limit > 1000 ? 1000 : limit;
 
-            this.limit = Math.Max(limit, 1000);
+            this.limit = limit;
             return this;
         }
 
-        public SoqlQuery Offset(uint offset)
+        public SoqlQuery Offset(int offset)
         {
+            //offset < 0 makes no sense, take the absolute value
+            offset = Math.Abs(offset);
+
             this.offset = offset;
+
             return this;
         }
         
         public override string ToString()
         {
-            var sb = new StringBuilder("$select=");
+            var sb = new StringBuilder(SelectKey + "=");
 
             if(select != null && select.Any())
-                sb.Append(String.Join(delimiter, select));
+                sb.Append(String.Join(Delimiter, select));
             else
                 sb.Append("*");
 
             if (!String.IsNullOrEmpty(where))
-                sb.AppendFormat("&$where={0}", where);
+                sb.AppendFormat("&{0}={1}", WhereKey, where);
 
             if (groupBy != null && groupBy.Any())
-                sb.AppendFormat("&$group={0}", String.Join(delimiter, groupBy));
-
-            if (!String.IsNullOrEmpty(having))
-                sb.AppendFormat("&$having={0}", having);
+                sb.AppendFormat("&{0}={1}", GroupKey, String.Join(Delimiter, groupBy));
 
             if (orderBy != null && orderBy.Any())
-                sb.AppendFormat("&$order={0} {1}", String.Join(delimiter, orderBy), sortOrder);
+                sb.AppendFormat("&{0}={1} {2}", OrderKey, String.Join(Delimiter, orderBy), sortOrder);
 
             if (offset > 0)
-                sb.AppendFormat("&$offset={0}", offset);
+                sb.AppendFormat("&{0}={1}", OffsetKey, offset);
 
             if (limit > 0)
-                sb.AppendFormat("&$limit={0}", limit);
+                sb.AppendFormat("&{0}={1}", LimitKey, limit);
 
             return sb.ToString();
-        } 
+        }
+
+        private static IEnumerable<string> getNonEmptyValues(IEnumerable<string> source)
+        {
+            if (source != null && source.Any())
+            {
+                return source.Where(s => !String.IsNullOrEmpty(s));
+            }
+
+            return null;
+        }
     }
 }
