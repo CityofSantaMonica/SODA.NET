@@ -5,8 +5,6 @@ using System.Text;
 
 using Newtonsoft.Json;
 
-using SODA.Models;
-
 namespace SODA
 {
     public class SodaClient

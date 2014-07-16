@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SODA.Models
+namespace SODA
 {
     public class DatasetMetadata
     {

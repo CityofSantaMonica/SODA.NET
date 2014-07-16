@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SODA.Models
+namespace SODA
 {
     public class Row : Dictionary<string, object>
     {

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace SODA.Models
+namespace SODA
 {
     [DataContract]
     public class Column
