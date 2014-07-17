@@ -55,14 +55,10 @@ namespace SODA.Utilities
                     object value = property.GetValue(entity);
                     string toAppend = String.Format(@"""{0}""{1}", value, delim);
 
-                    if (value != null && value.GetType() != typeof(string))
+                    if (!(value == null || jsonSerializeWhiteList.Contains(property.PropertyType)))
                     {
-                        var enumerable = value as System.Collections.IEnumerable;
-                        if (enumerable != null)
-                        {
-                            string json = JsonConvert.SerializeObject(enumerable);
-                            toAppend = String.Format(@"""{0}""{1}", json, delim);
-                        }
+                        string json = JsonConvert.SerializeObject(value);
+                        toAppend = String.Format(@"""{0}""{1}", json, delim);
                     }
 
                     sb.Append(toAppend);
@@ -73,5 +69,21 @@ namespace SODA.Utilities
 
             File.AppendAllLines(dataFile, records);
         }
+
+        private static Type[] jsonSerializeWhiteList = new[] { 
+            typeof(int),
+            typeof(int?),
+            typeof(long),
+            typeof(long?),
+            typeof(decimal),
+            typeof(decimal?),
+            typeof(double),
+            typeof(double?),
+            typeof(float),
+            typeof(float?),
+            typeof(DateTime),
+            typeof(DateTime?),
+            typeof(string)
+        };
     }
 }
