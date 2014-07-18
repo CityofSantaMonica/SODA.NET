@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-
 using SODA.Utilities;
 
 namespace SODA
@@ -120,5 +119,39 @@ namespace SODA
 
         [DataMember(Name = "tags")]
         public IEnumerable<string> Tags { get; set; }
+
+        [DataMember(Name = "metadata")]
+        public Dictionary<string, dynamic> Metadata { get; set; }
+
+        public Dictionary<string, Dictionary<string, string>> CustomMetadata
+        {
+            get
+            {
+                var customMetadata = new Dictionary<string, Dictionary<string, string>>();
+
+                if (Metadata != null && Metadata.ContainsKey("custom_fields"))
+                {
+                    customMetadata = (Dictionary<string, Dictionary<string, string>>)Metadata["custom_fields"];
+                }
+
+                return customMetadata;
+            }
+        }
+
+        [DataMember(Name = "privateMetadata")]
+        public Dictionary<string, dynamic> PrivateMetadata { get; set; }
+
+        public string ContactEmail
+        {
+            get
+            {
+                if (PrivateMetadata != null && PrivateMetadata.ContainsKey("contactEmail"))
+                {
+                    return (string)PrivateMetadata["contactEmail"];
+                }
+
+                return null;
+            }
+        }
     }
 }
