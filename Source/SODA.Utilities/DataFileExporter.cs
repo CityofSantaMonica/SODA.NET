@@ -41,7 +41,9 @@ namespace SODA.Utilities
 
             var allProperties = typeof(T).GetProperties();
 
-            File.WriteAllLines(dataFile, new[] { String.Join(delim, allProperties.Select(p => p.Name)) });
+            string header = String.Join(delim, allProperties.Select(p => p.Name));
+
+            File.WriteAllLines(dataFile, new[] { header });
 
             var sb = new StringBuilder();
             var records = new List<string>();
@@ -53,12 +55,22 @@ namespace SODA.Utilities
                 foreach (var property in allProperties)
                 {
                     object value = property.GetValue(entity);
-                    string toAppend = String.Format(@"""{0}""{1}", value, delim);
+                    string toAppend;
 
-                    if (!(value == null || jsonSerializeWhiteList.Contains(property.PropertyType)))
+                    if (value != null && !jsonSerializeWhiteList.Contains(property.PropertyType))
                     {
                         string json = JsonConvert.SerializeObject(value);
+                        
                         toAppend = String.Format(@"""{0}""{1}", json, delim);
+                    }
+                    else
+                    {
+                        string stringValue = value != null ? value.ToString().Replace(@"""", @"\""") : String.Empty;
+
+                        if (delim == "\t")
+                            stringValue = stringValue.Replace(delim, " ");
+
+                        toAppend = String.Format(@"""{0}""{1}", stringValue, delim);
                     }
 
                     sb.Append(toAppend);
