@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA", "SODA\SODA.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA.Tests", "Test\SODA.Tests.csproj", "{6872AC23-29E5-4EDB-A826-A3FC35AAFDA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA.Utilities", "SODA.Utilities\SODA.Utilities.csproj", "{63B7FAD7-5927-417C-AD2A-608D777AD1A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA.Utilities", "..\..\Main\Source\SODA.Utilities\SODA.Utilities.csproj", "{63B7FAD7-5927-417C-AD2A-608D777AD1A7}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -21,9 +21,9 @@ Global
 		SccProjectUniqueName2 = Test\\SODA.Tests.csproj
 		SccProjectName2 = Test
 		SccLocalPath2 = Test
-		SccProjectUniqueName3 = SODA.Utilities\\SODA.Utilities.csproj
-		SccProjectName3 = SODA.Utilities
-		SccLocalPath3 = SODA.Utilities
+		SccProjectUniqueName3 = ..\\..\\Main\\Source\\SODA.Utilities\\SODA.Utilities.csproj
+		SccProjectName3 = ../../Main/Source/SODA.Utilities
+		SccLocalPath3 = ..\\..\\Main\\Source\\SODA.Utilities
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -64,7 +64,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SODA.Utilities\SODA.Utilities.csproj">
+    <ProjectReference Include="..\..\..\Main\Source\SODA.Utilities\SODA.Utilities.csproj">
       <Project>{63b7fad7-5927-417c-ad2a-608d777ad1a7}</Project>
       <Name>SODA.Utilities</Name>
     </ProjectReference>
