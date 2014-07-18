@@ -41,7 +41,7 @@ namespace SODA
 
         public Row GetRow(string rowId)
         {
-            var resourceUri = SodaUri.ForResource(Domain, Metadata.Identifier, SodaResponseFormat.JSON, rowId);
+            var resourceUri = SodaUri.ForResource(Domain, Metadata.Identifier, rowId);
 
             if (Client != null)
                 return Client.Get<Row>(resourceUri);
