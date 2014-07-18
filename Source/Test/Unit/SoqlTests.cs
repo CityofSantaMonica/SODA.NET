@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using SODA.Models;
+using SODA;
 
 namespace SODA.Tests.Unit
 {
