@@ -1,8 +1,9 @@
 ﻿namespace SODA
 {
-    public enum SodaResponseFormat
+    public enum SodaDataFormat
     {
         JSON,
+        CSV,
         XML
     }
 }
