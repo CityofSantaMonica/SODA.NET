@@ -19,6 +19,10 @@ namespace SODA
                     message = new StreamReader(stream).ReadToEnd();
                 }
             }
+            else
+            {
+                message = webException.Message;
+            }
 
             return new SodaException(message, webException);
         }
