@@ -36,7 +36,7 @@ namespace SODA
             return default(Uri);
         }
 
-        public static Uri ForResource(string domain, string resourceId, string rowId = null)
+        public static Uri ForResourceAPI(string domain, string resourceId, string rowId = null)
         {
             string url = metadataUrl(domain, resourceId).Replace("views", "resource");
 
