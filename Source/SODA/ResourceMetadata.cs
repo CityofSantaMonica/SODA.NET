@@ -35,7 +35,7 @@ namespace SODA
             {
                 if (CreationDateUnix.HasValue)
                 {
-                    return DateTimeConverter.FromUnix(CreationDateUnix.Value);
+                    return DateTimeConverter.FromUnixTimestamp(CreationDateUnix.Value);
                 }
 
                 return default(DateTime?);
@@ -63,7 +63,7 @@ namespace SODA
             {
                 if (PublishedDateUnix.HasValue)
                 {
-                    return DateTimeConverter.FromUnix(PublishedDateUnix.Value);
+                    return DateTimeConverter.FromUnixTimestamp(PublishedDateUnix.Value);
                 }
 
                 return default(DateTime?);
@@ -79,7 +79,7 @@ namespace SODA
             {
                 if (RowsLastUpdatedUnix.HasValue)
                 {
-                    return DateTimeConverter.FromUnix(RowsLastUpdatedUnix.Value);
+                    return DateTimeConverter.FromUnixTimestamp(RowsLastUpdatedUnix.Value);
                 }
 
                 return default(DateTime?);
@@ -104,7 +104,7 @@ namespace SODA
             {
                 if (SchemaLastUpdatedUnix.HasValue)
                 {
-                    return DateTimeConverter.FromUnix(SchemaLastUpdatedUnix.Value);
+                    return DateTimeConverter.FromUnixTimestamp(SchemaLastUpdatedUnix.Value);
                 }
 
                 return default(DateTime?);
