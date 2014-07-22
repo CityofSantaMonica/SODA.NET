@@ -53,6 +53,7 @@
     <Compile Include="Column.cs" />
     <Compile Include="ResourceMetadata.cs" />
     <Compile Include="SodaDataFormat.cs" />
+    <Compile Include="SodaResult.cs" />
     <Compile Include="SoqlQuery.cs" />
     <Compile Include="Row.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
