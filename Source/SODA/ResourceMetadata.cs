@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using SODA.Utilities;
@@ -122,24 +123,45 @@ namespace SODA
 
         [DataMember(Name = "metadata")]
         public Dictionary<string, dynamic> Metadata { get; set; }
-
-        public Dictionary<string, Dictionary<string, string>> CustomMetadata
+        
+        [DataMember(Name = "privateMetadata")]
+        public Dictionary<string, dynamic> PrivateMetadata { get; set; }
+        
+        public string TimePeriod
         {
             get
             {
-                var customMetadata = new Dictionary<string, Dictionary<string, string>>();
-
                 if (Metadata != null && Metadata.ContainsKey("custom_fields"))
                 {
-                    customMetadata = (Dictionary<string, Dictionary<string, string>>)Metadata["custom_fields"];
+                    var customFields = Metadata["custom_fields"];
+
+                    if (customFields["Data Freshness"] != null && customFields["Data Freshness"]["Time Period"] != null)
+                    {
+                        return (string)customFields["Data Freshness"]["Time Period"];
+                    }
                 }
 
-                return customMetadata;
+                return null;
             }
         }
 
-        [DataMember(Name = "privateMetadata")]
-        public Dictionary<string, dynamic> PrivateMetadata { get; set; }
+        public string UpdateFrequency
+        {
+            get
+            {
+                if (Metadata != null && Metadata.ContainsKey("custom_fields"))
+                {
+                    var customFields = Metadata["custom_fields"];
+
+                    if (customFields["Data Freshness"] != null && customFields["Data Freshness"]["Update Frequency"] != null)
+                    {
+                        return (string)customFields["Data Freshness"]["Update Frequency"];
+                    }
+                }
+
+                return null;
+            }
+        }
 
         public string ContactEmail
         {
@@ -153,5 +175,48 @@ namespace SODA
                 return null;
             }
         }
+
+        public long? RowIdentifierFieldId
+        {
+            get
+            {
+                if (Metadata != null && Metadata.ContainsKey("rowIdentifier"))
+                {
+                    long id;
+                    if(long.TryParse(Metadata["rowIdentifier"].ToString(), out id))
+                    {
+                        return id;
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        public string RowIdentifierField
+        {
+            get
+            {
+                if (RowIdentifierFieldId.HasValue)
+                {
+                    if(Resource != null && Resource.Columns != null && Resource.Columns.Any())
+                    {
+                        var column = Resource.Columns.SingleOrDefault(c => c.Id.Equals(RowIdentifierFieldId.Value));
+                        if (column != null)
+                        {
+                            return column.ApiFieldName;
+                        }
+                    }
+                }
+                else if (Metadata != null && Metadata.ContainsKey("rowIdentifier"))
+                {
+                    return Metadata["rowIdentifier"];
+                }
+
+                return null;
+            }
+        }
+
+        public Resource Resource { get; internal set; }
     }
 }

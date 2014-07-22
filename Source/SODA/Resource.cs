@@ -25,6 +25,11 @@ namespace SODA
             Domain = domain;
             Metadata = metadata;
             Client = client;
+
+            if (Metadata != null)
+            {
+                Metadata.Resource = this;
+            }
         }
 
         public IEnumerable<Row> Search(string search)
@@ -41,7 +46,7 @@ namespace SODA
 
         public Row GetRow(string rowId)
         {
-            var resourceUri = SodaUri.ForResource(Domain, Metadata.Identifier, rowId);
+            var resourceUri = SodaUri.ForResourceAPI(Domain, Metadata.Identifier, rowId);
 
             if (Client != null)
                 return Client.Get<Row>(resourceUri);
