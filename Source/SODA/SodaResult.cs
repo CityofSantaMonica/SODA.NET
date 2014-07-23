@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace SODA
 {
@@ -17,5 +18,7 @@ namespace SODA
         public int Errors { get; set; }
         [DataMember(Name = "By SID")]
         public int BySID { get; set; }
+        [DataMember]
+        public string Message { get; set; }
     }
 }
