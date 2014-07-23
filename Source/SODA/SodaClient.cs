@@ -22,28 +22,28 @@ namespace SODA
         private readonly string password;
         
         /// <summary>
-        /// Initialize a new SodaClient with the given appToken, for the given Socrata domain.
+        /// Initialize a new (anonymous) SodaClient with the specified appToken, for the specified Socrata domain.
         /// </summary>
         public SodaClient(string appToken, string domain) : this(appToken, domain, null, null, null)
         {
         }
 
         /// <summary>
-        /// Initialize a new SodaClient with the given appToken, for the given Socrata domain, using the supplied login credentials.
+        /// Initialize a new SodaClient with the specified appToken, for the specified Socrata domain, using the specified login credentials.
         /// </summary>
         public SodaClient(string appToken, string domain, string username, string password) : this(appToken, domain, username, password, null)
         {
         }
 
         /// <summary>
-        /// Initialize a new SodaClient with the given appToken, for the given Socrata domain, and use the supplied resource id by default in subsequent calls.
+        /// Initialize a new (anonymous) SodaClient with the specified appToken, for the specified Socrata domain, and use the specified resource id by default in subsequent calls.
         /// </summary>
         public SodaClient(string appToken, string domain, string defaultResourceId) : this(appToken, domain, null, null, defaultResourceId)
         {
         }
 
         /// <summary>
-        /// Initialize a new SodaClient with the given appToken, for the given Socrata domain, using the supplied login credentials, and use the supplied resource id by default in subsequent calls.
+        /// Initialize a new SodaClient with the specified appToken, for the specified Socrata domain, using the specified login credentials, and use the specified resource id by default in subsequent calls.
         /// </summary>
         public SodaClient(string appToken, string domain, string username, string password, string defaultResourceId)
         {
@@ -61,7 +61,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// GET a result from a Uri. By default, the response format is application/json.
+        /// GET a result from the specified Uri. By default, the response format is application/json.
         /// </summary>
         /// <typeparam name="TResult">The target type to deserialize the response into.</typeparam>
         /// <param name="uri">A Uri to send the GET request to.</param>
@@ -72,7 +72,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// GET a result from a Uri, including an appropriate Accept header.
+        /// GET a result from the specified Uri, and include an appropriate Accept header for the specified format.
         /// </summary>
         /// <typeparam name="TResult">The target type to deserialize the response into.</typeparam>
         /// <param name="uri">A Uri to send the GET request to.</param>
@@ -92,7 +92,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Get a Resource using the provided resource id.
+        /// Get a Resource using the specified resource id.
         /// </summary>
         public Resource GetResource(string resourceId)
         {
@@ -104,7 +104,7 @@ namespace SODA
             var uri = SodaUri.ForMetadata(Domain, resourceId);
 
             var metadata = Get<ResourceMetadata>(uri);
-
+            
             return new Resource(Domain, metadata, this);
         }
 
@@ -117,7 +117,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Get a ResourceMetadata object using the provided resource id.
+        /// Get a ResourceMetadata object using the specified resource id.
         /// </summary>
         public ResourceMetadata GetMetadata(string resourceId)
         {
@@ -132,7 +132,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Get a collection of ResourceMetadata objects on the given page.
+        /// Get a collection of ResourceMetadata objects on the specified page.
         /// </summary>
         public IEnumerable<ResourceMetadata> GetMetadataPage(int page)
         {
@@ -156,24 +156,24 @@ namespace SODA
         }
 
         /// <summary>
-        /// Update/Insert the collection of entities using this client's default resource id.
+        /// Update/Insert the specified collection of entities using this client's default resource id.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
-        public dynamic Upsert<T>(IEnumerable<T> payload)
+        public SodaResult Upsert<T>(IEnumerable<T> payload)
         {
             return Upsert(payload, DefaultResourceId);
         }
 
         /// <summary>
-        /// Update/Insert the collection of entities using the provided resource id.
+        /// Update/Insert the specified collection of entities using the specified resource id.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
         /// <param name="resourceId">The id of the resource to send the Upsert requeset to.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
-        public dynamic Upsert<T>(IEnumerable<T> payload, string resourceId)
+        public SodaResult Upsert<T>(IEnumerable<T> payload, string resourceId)
         {
-            string json = JsonConvert.SerializeObject(payload);
+            string json = payload.ToJsonString();
 
             return Upsert(json, SodaDataFormat.JSON, resourceId);
         }
@@ -184,49 +184,49 @@ namespace SODA
         /// <param name="payload">A string of serialized data.</param>
         /// <param name="dataFormat">The data format used for serialization.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
-        public dynamic Upsert(string payload, SodaDataFormat dataFormat)
+        public SodaResult Upsert(string payload, SodaDataFormat dataFormat)
         {
             return Upsert(payload, dataFormat, DefaultResourceId);
         }
 
         /// <summary>
-        /// Update/Insert the payload data using the provided resource id.
+        /// Update/Insert the payload data using the specified resource id.
         /// </summary>
         /// <param name="payload">A string of serialized data.</param>
         /// <param name="dataFormat">The data format used for serialization.</param>
         /// <param name="resourceId">The id of the resource to send the Upsert request to.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
-        public dynamic Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
+        public SodaResult Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (String.IsNullOrEmpty(resourceId))
             {
                 throw new ArgumentNullException("resourceId", "A resource id is required.");
             }
 
-            var uri = SodaUri.ForResource(Domain, resourceId);
+            var uri = SodaUri.ForResourceAPI(Domain, resourceId);
 
-            return sendRequest<dynamic>(uri, "POST", dataFormat, payload);
+            return sendRequest<SodaResult>(uri, "POST", dataFormat, payload);
         }
 
         /// <summary>
-        /// Update/Insert the collection of entities in batches using this client's default resource id.
+        /// Update/Insert the specified collection of entities in batches of the specified size, using this client's default resource id.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
         /// <returns>A collection of dynamic JSON responses from Socrata, one for each batch processed.</returns>
-        public IEnumerable<dynamic> BatchUpsert<T>(IEnumerable<T> payload, int batchSize)
+        public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize)
         {
             return BatchUpsert<T>(payload, batchSize, DefaultResourceId);
         }
 
         /// <summary>
-        /// Update/Insert the collection of entities in batches using the provided resource id.
+        /// Update/Insert the specified collection of entities in batches of the specified size, using the specified resource id.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
         /// <param name="resourceId">The id of the resource to send the Upsert batches to.</param>
         /// <returns>A collection of dynamic JSON responses from Socrata, one for each batch processed.</returns>
-        public IEnumerable<dynamic> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, string resourceId)
+        public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, string resourceId)
         {
             Func<IEnumerable<T>, T, bool> neverBreak = (a, b) => false;
 
@@ -234,35 +234,34 @@ namespace SODA
         }
 
         /// <summary>
-        /// Update/Insert the collection of entities in batches using this client's default resource id.
+        /// Update/Insert the specified collection of entities in batches of the specified size, using this client's default resource id.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
-        /// <param name="breakFunction">A function to prematurely send a batch (before it reaches <paramref name="batchSize"/>) based on conditions of the entities.</param>
+        /// <param name="breakFunction">A function which, when evaluated true, causes a batch to be sent (possibly before it reaches <paramref name="batchSize"/>).</param>
         /// <returns>A collection of dynamic JSON responses from Socrata, one for each batched Upsert.</returns>
-        public IEnumerable<dynamic> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction)
+        public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction)
         {
             return BatchUpsert<T>(payload, batchSize, breakFunction, DefaultResourceId);
         }
 
         /// <summary>
-        /// Update/Insert the collection of entities in batches using the provided resource id.
+        /// Update/Insert the specified collection of entities in batches of the specified size, using the specified resource id.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
-        /// <param name="breakFunction">A function to prematurely send a batch (before it reaches <paramref name="batchSize"/>) based on conditions of the entities.</param>
+        /// <param name="breakFunction">A function which, when evaluated true, causes a batch to be sent (possibly before it reaches <paramref name="batchSize"/>).</param>
         /// <param name="resourceId">The id of the resource to send the Upsert batches to.</param>
         /// <returns>A collection of dynamic JSON responses from Socrata, one for each batched Upsert.</returns>
-        public IEnumerable<dynamic> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction, string resourceId)
+        public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction, string resourceId)
         {
             if (String.IsNullOrEmpty(resourceId))
             {
                 throw new ArgumentNullException("resourceId", "A resource id is required.");
             }
 
-            List<dynamic> results = new List<dynamic>();
-            Queue<T> queue = new Queue<T>(payload);
-            
+            Queue<T> queue = new Queue<T>(payload);            
+
             while (queue.Any())
             {
                 var batch = new List<T>();
@@ -275,7 +274,7 @@ namespace SODA
                     batch.Add(queue.Dequeue());
                 }
 
-                dynamic result;
+                SodaResult result;
 
                 try
                 {
@@ -283,68 +282,62 @@ namespace SODA
                 }
                 catch(SodaException ex)
                 {
-                    result = ex.Message;
-                    var batchJson = batch.Select(b => JsonConvert.SerializeObject(b));
-                    File.AppendAllLines("error.json", batchJson);
+                    result = new SodaResult() { Message = String.Format("{0}\n{1}", ex.Message, batch.ToJsonString()) };
                 }
 
-                results.Add(result);
-                Console.WriteLine("[{0}]: Batch finished", DateTime.Now);
-                Console.WriteLine("{0}", result);
+                yield return result;
             }
-
-            return results;
         }
 
         /// <summary>
-        /// Replace any existing records with a collection of entities using this client's default resource id.
+        /// Replace any existing records with a collection of entities, using this client's default resource id.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
-        public dynamic Replace<T>(IEnumerable<T> payload)
+        public SodaResult Replace<T>(IEnumerable<T> payload)
         {
             return Replace<T>(payload, DefaultResourceId);
         }
 
         /// <summary>
-        /// Replace any existing records with a collection of entities using the provided resource id.
+        /// Replace any existing records with a collection of entities, using the specified resource id.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
         /// <param name="resourceId">The id of the resource to send the Replace requeset to.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
-        public dynamic Replace<T>(IEnumerable<T> payload, string resourceId)
+        public SodaResult Replace<T>(IEnumerable<T> payload, string resourceId)
         {
-            string json = JsonConvert.SerializeObject(payload);
+            string json = payload.ToJsonString();
 
             return Replace(json, SodaDataFormat.JSON, resourceId);
         }
 
         /// <summary>
-        /// Replace any existing records with the payload data using this client's default resource id.
+        /// Replace any existing records with the payload data, using this client's default resource id.
         /// </summary>
         /// <param name="payload">A string of serialized data.</param>
         /// <param name="dataFormat">The data format used for serialization.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
-        public dynamic Replace(string payload, SodaDataFormat dataFormat)
+        public SodaResult Replace(string payload, SodaDataFormat dataFormat)
         {
             return Replace(payload, dataFormat, DefaultResourceId);
         }
 
         /// <summary>
-        /// Replace any existing records with the payload data using the provided resource id.
+        /// Replace any existing records with the payload data, using the specified resource id.
         /// </summary>
         /// <param name="payload">A string of serialized data.</param>
         /// <param name="dataFormat">The data format used for serialization.</param>
         /// <param name="resourceId">The id of the resource to send the Replace requeset to.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
-        public dynamic Replace(string payload, SodaDataFormat dataFormat, string resourceId)
+        public SodaResult Replace(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (String.IsNullOrEmpty(resourceId))
             {
                 throw new ArgumentNullException("resourceId", "A resource id is required.");
             }
 
-            var uri = SodaUri.ForResource(Domain, resourceId);
+            var uri = SodaUri.ForResourceAPI(Domain, resourceId);
 
             return sendRequest<dynamic>(uri, "PUT", dataFormat, payload);
         }
