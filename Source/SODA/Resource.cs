@@ -32,36 +32,36 @@ namespace SODA
             }
         }
 
-        public IEnumerable<Row> Search(string search)
+        public IEnumerable<ResourceRecord> Search(string search)
         {
             string soql = String.Format("$q={0}", search);
             return query(soql);
         }
 
-        public IEnumerable<Row> Query(SoqlQuery soqlQuery)
+        public IEnumerable<ResourceRecord> Query(SoqlQuery soqlQuery)
         {
             string soql = soqlQuery.ToString();
             return query(soql);
         }
 
-        public Row GetRow(string rowId)
+        public ResourceRecord GetRecord(string recordId)
         {
-            var resourceUri = SodaUri.ForResourceAPI(Domain, Metadata.Identifier, rowId);
+            var resourceUri = SodaUri.ForResourceAPI(Domain, Metadata.Identifier, recordId);
 
             if (Client != null)
-                return Client.Get<Row>(resourceUri);
+                return Client.Get<ResourceRecord>(resourceUri);
             else
-                return default(Row);
+                return default(ResourceRecord);
         }
 
-        private IEnumerable<Row> query(string query)
+        private IEnumerable<ResourceRecord> query(string query)
         {
             var queryUri = SodaUri.ForQuery(Domain, Metadata.Identifier, query);
 
             if (Client != null)
-                return Client.Get<IEnumerable<Row>>(queryUri);
+                return Client.Get<IEnumerable<ResourceRecord>>(queryUri);
             else
-                return Enumerable.Empty<Row>();
+                return Enumerable.Empty<ResourceRecord>();
         }
     }
 }

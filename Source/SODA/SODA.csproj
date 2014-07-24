@@ -55,7 +55,7 @@
     <Compile Include="SodaDataFormat.cs" />
     <Compile Include="SodaResult.cs" />
     <Compile Include="SoqlQuery.cs" />
-    <Compile Include="Row.cs" />
+    <Compile Include="ResourceRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SodaClient.cs" />
     <Compile Include="SodaException.cs" />
