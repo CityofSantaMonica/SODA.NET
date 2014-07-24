@@ -10,7 +10,7 @@ namespace SODA.Tests.Unit
         private static string selectStar = String.Format("{0}={1}", SoqlQuery.SelectKey, "*");
         
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void New_Soql_Selects_Star()
         {
             string soql = new SoqlQuery().ToString();
@@ -19,7 +19,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Empty_Select_Selects_Star()
         {
             string emptySelect = new SoqlQuery().Select("").ToString();
@@ -32,7 +32,7 @@ namespace SODA.Tests.Unit
 
         [TestCase("column1", "")]
         [TestCase("column1", "", "column2")]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Select_Clause_Only_Gets_Valid_Columns(params string[] columns)
         {
             string expected = String.Format("{0}={1}", SoqlQuery.SelectKey, String.Join(SoqlQuery.Delimiter, columns.Where(c => !String.IsNullOrEmpty(c))));
@@ -43,7 +43,7 @@ namespace SODA.Tests.Unit
         }
         
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Last_Select_Overwrites_All_Previous()
         {
             string[] first =  { "first" };
@@ -62,7 +62,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Empty_Where_Ignores_Where_Clause()
         {
             string emptyWhere = new SoqlQuery().Where("").ToString();
@@ -73,7 +73,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Where_Clause_Gets_Valid_Predicate()
         {
             string predicate = "something > nothing";
@@ -86,7 +86,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Last_Where_Overwrites_All_Previous()
         {
             string first = "first > 0";
@@ -105,7 +105,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Empty_Order_Ignores_Order_Clause()
         {
             string emptyGroup = new SoqlQuery().Order("").ToString();
@@ -118,7 +118,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Default_Sort_Order_Is_Ascending()
         {
             string[] columns = { "column1", "column2" };
@@ -132,7 +132,7 @@ namespace SODA.Tests.Unit
 
         [TestCase(SortOrder.DESC, "column1", "")]
         [TestCase(SortOrder.ASC, "column1", "", "column2")]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Order_Clause_Gets_Sort_Order_And_Only_Gets_Valid_Columns(SortOrder sortOrder, params string[] columns)
         {
             string expected = String.Format("{0}&{1}={2} {3}", selectStar, SoqlQuery.OrderKey, String.Join(SoqlQuery.Delimiter, columns.Where(c => !String.IsNullOrEmpty(c))), sortOrder);
@@ -143,7 +143,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Last_Order_Overwrites_All_Previous()
         {
             string[] first = { "first" };
@@ -163,7 +163,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Empty_Group_Ignores_Group_Clause()
         {
             string emptyGroup = new SoqlQuery().Group("").ToString();
@@ -177,7 +177,7 @@ namespace SODA.Tests.Unit
 
         [TestCase("column1", "")]
         [TestCase("column1", "column2", "")]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Group_Clause_Only_Gets_Valid_Columns(params string[] columns)
         {
             string expected = String.Format("{0}&{1}={2}", selectStar, SoqlQuery.GroupKey, String.Join(SoqlQuery.Delimiter, columns.Where(c => !String.IsNullOrEmpty(c))));
@@ -188,7 +188,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Last_Group_Overwrites_All_Previous()
         {
             string[] first = { "first" };
@@ -210,7 +210,7 @@ namespace SODA.Tests.Unit
         [TestCase(-999)]
         [TestCase(1)]
         [TestCase(999)]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Limit_Clause_Gets_Absolute_Limit(int limit)
         {
             string expected = String.Format("{0}&{1}={2}", selectStar, SoqlQuery.LimitKey, Math.Abs(limit));
@@ -223,7 +223,7 @@ namespace SODA.Tests.Unit
         [TestCase(1000)]
         [TestCase(1001)]
         [TestCase(9999)]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Limit_Max_Is_1000(int limit)
         {
             string expected = String.Format("{0}&{1}={2}", selectStar, SoqlQuery.LimitKey, 1000);
@@ -234,7 +234,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Last_Limit_Overwrites_All_Previous()
         {
             int first = 1;
@@ -256,7 +256,7 @@ namespace SODA.Tests.Unit
         [TestCase(-999)]
         [TestCase(1)]
         [TestCase(999)]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Offset_Clause_Gets_Absolute_Offset(int offset)
         {
             string expected = String.Format("{0}&{1}={2}", selectStar, SoqlQuery.OffsetKey, Math.Abs(offset));
@@ -267,7 +267,7 @@ namespace SODA.Tests.Unit
         }
 
         [Test]
-        [Category("SoQL")]
+        [Category("SoqlQuery")]
         public void Last_Offset_Overwrites_All_Previous()
         {
             int first = 1;
