@@ -12,16 +12,19 @@ namespace SODA
         {
             string message = String.Empty;
 
-            if (webException.Response != null)
+            if (webException != null)
             {
-                using (var stream = webException.Response.GetResponseStream())
+                if (webException.Response != null)
                 {
-                    message = new StreamReader(stream).ReadToEnd();
+                    using (var streamReader = new StreamReader(webException.Response.GetResponseStream()))
+                    {
+                        message = streamReader.ReadToEnd();
+                    }
                 }
-            }
-            else
-            {
-                message = webException.Message;
+                else
+                {
+                    message = webException.Message;
+                }
             }
 
             return new SodaException(message, webException);
