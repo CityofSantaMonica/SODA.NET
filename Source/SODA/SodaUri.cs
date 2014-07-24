@@ -59,12 +59,9 @@ namespace SODA
             if (page <= 0)
                 throw new ArgumentOutOfRangeException("page", "Resouce metadata catalogs begin on page 1.");
 
-            if (page > 0)
-            {
-                string url = String.Format("{0}?page={1}", metadataUrl(socrataDomain), page);
+            string url = String.Format("{0}?page={1}", metadataUrl(socrataDomain), page);
 
-                return new Uri(url);
-            }
+            return new Uri(url);
 
             return default(Uri);
         }
@@ -152,7 +149,7 @@ namespace SODA
             if(String.IsNullOrEmpty(soqlQuery))
                 throw new ArgumentNullException("soqlQuery", "Must provide a valid SoQL query string");
 
-            string url = metadataUrl(socrataDomain, resourceId);
+            string url = metadataUrl(socrataDomain, resourceId).Replace("views", "resource");
 
             string queryUrl = String.Format("{0}?{1}", url, soqlQuery);
 
