@@ -3,11 +3,20 @@ using SODA.Utilities;
 
 namespace SODA
 {
+    /// <summary>
+    /// Factory class for creating Socrata-specific Uris.
+    /// </summary>
     public class SodaUri
     {
-        private static string metadataUrl(string domain, string resourceId = null)
+        /// <summary>
+        /// Create a Url string suitable for interacting with resource metadata on the specified Socrata domain.
+        /// </summary>
+        /// <param name="socrataDomain">The Socrata domain to target.</param>
+        /// <param name="resourceId">The identifier for a specific resource on the Socrata domain to target.</param>
+        /// <returns>A SODA-compatible Url for the target Socrata domain.</returns>
+        private static string metadataUrl(string socrataDomain, string resourceId = null)
         {
-            string url = String.Format("https://{0}/views", domain);
+            string url = String.Format("https://{0}/views", socrataDomain);
 
             if(resourceId.HasValue())
             {
@@ -17,18 +26,42 @@ namespace SODA
             return url;
         }
 
-        public static Uri ForMetadata(string domain, string resourceId)
+        /// <summary>
+        /// Create a Uri suitable for interacting with resource metadata on the specified domain, at the endpoint specified by the resourceId. 
+        /// </summary>
+        /// <param name="socrataDomain">The Socrata domain to target.</param>
+        /// <param name="resourceId">The identifier for a specific resource on the Socrata domain to target.</param>
+        /// <returns>A Uri pointing to resource metadata for the specified Socrata domain and resource identifier.</returns>
+        public static Uri ForMetadata(string socrataDomain, string resourceId)
         {
-            string url = metadataUrl(domain, resourceId);
+            if (String.IsNullOrEmpty(socrataDomain))
+                throw new ArgumentNullException("socrataDomain", "Must provide a valid Socrata domain to target.");
+
+            if (String.IsNullOrEmpty(resourceId))
+                throw new ArgumentNullException("resourceId", "Must provide a valid resource identifier to target.");
+
+            string url = metadataUrl(socrataDomain, resourceId);
 
             return new Uri(url);
         }
 
-        public static Uri ForMetadataList(string domain, int page)
+        /// <summary>
+        /// Create a Uri suitable for interacting with a catalog of resource metadata on the specified domain and page of the catalog. 
+        /// </summary>
+        /// <param name="socrataDomain">The Socrata domain to target.</param>
+        /// <param name="page">The page of the resource metadata catalog on the Socrata domain to target.</param>
+        /// <returns>A Uri pointing to the specified page of the resource metadata catalog for the specified Socrata domain.</returns>
+        public static Uri ForMetadataList(string socrataDomain, int page)
         {
+            if (String.IsNullOrEmpty(socrataDomain))
+                throw new ArgumentNullException("socrataDomain", "Must provide a valid Socrata domain to target.");
+
+            if (page <= 0)
+                throw new ArgumentOutOfRangeException("page", "Resouce metadata catalogs begin on page 1.");
+
             if (page > 0)
             {
-                string url = String.Format("{0}?page={1}", metadataUrl(domain), page);
+                string url = String.Format("{0}?page={1}", metadataUrl(socrataDomain), page);
 
                 return new Uri(url);
             }
@@ -36,9 +69,22 @@ namespace SODA
             return default(Uri);
         }
 
-        public static Uri ForResourceAPI(string domain, string resourceId, string rowId = null)
+        /// <summary>
+        /// Create a Uri suitable for interacting with the specified resource via SODA on the specified domain. 
+        /// </summary>
+        /// <param name="socrataDomain">The Socrata domain to target.</param>
+        /// <param name="resourceId">The identifier for a specific resource on the Socrata domain to target.</param>
+        /// <param name="rowId">The identifier for a specific row in the resource to target.</param>
+        /// <returns>A Uri pointing to the SODA endpoint for the specified resource in the specified Socrata domain.</returns>
+        public static Uri ForResourceAPI(string socrataDomain, string resourceId, string rowId = null)
         {
-            string url = metadataUrl(domain, resourceId).Replace("views", "resource");
+            if (String.IsNullOrEmpty(socrataDomain))
+                throw new ArgumentNullException("socrataDomain", "Must provide a valid Socrata domain to target.");
+
+            if (String.IsNullOrEmpty(resourceId))
+                throw new ArgumentNullException("resourceId", "Must provide a valid resource identifier to target.");
+
+            string url = metadataUrl(socrataDomain, resourceId).Replace("views", "resource");
 
             if (rowId.HasValue())
             {
@@ -48,37 +94,88 @@ namespace SODA
             return new Uri(url);
         }
 
-        public static Uri ForResourcePermalink(string domain, string resourceId)
+        /// <summary>
+        /// Create a Uri to the landing page of a specified resource on the specified Socrata domain.
+        /// </summary>
+        /// <param name="socrataDomain">The Socrata domain to target.</param>
+        /// <param name="resourceId">The identifier for a specific resource on the Socrata domain to target.</param>
+        /// <returns>A Uri pointing to the landing page of the specified resource on the specified Socrata doamin.</returns>
+        public static Uri ForResourcePermalink(string socrataDomain, string resourceId)
         {
-            string url = metadataUrl(domain, resourceId).Replace("views", "-/-");
+            if (String.IsNullOrEmpty(socrataDomain))
+                throw new ArgumentNullException("socrataDomain", "Must provide a valid Socrata domain to target.");
+
+            if (String.IsNullOrEmpty(resourceId))
+                throw new ArgumentNullException("resourceId", "Must provide a valid resource identifier to target.");
+
+            string url = metadataUrl(socrataDomain, resourceId).Replace("views", "-/-");
 
             return new Uri(url);
         }
 
-        public static Uri ForQuery(string domain, string resourceId, SoqlQuery soqlQuery)
+        /// <summary>
+        /// Create a Uri suitable for querying (via SODA) the specified resource on the specified Socrata domain.
+        /// </summary>
+        /// <param name="socrataDomain">The Socrata domain to target.</param>
+        /// <param name="resourceId">The identifier for a specific resource on the Socrata domain to target.</param>
+        /// <param name="soqlQuery">A SoqlQuery object to use for querying.</param>
+        /// <returns>A query Uri for the specified resource on the specified Socrata domain.</returns>
+        public static Uri ForQuery(string socrataDomain, string resourceId, SoqlQuery soqlQuery)
         {
-            return ForQuery(domain, resourceId, soqlQuery.ToString());
+            if (String.IsNullOrEmpty(socrataDomain))
+                throw new ArgumentNullException("socrataDomain", "Must provide a valid Socrata domain to target.");
+
+            if (String.IsNullOrEmpty(resourceId))
+                throw new ArgumentNullException("resourceId", "Must provide a valid resource identifier to target.");
+
+            if (soqlQuery == null)
+                throw new ArgumentNullException("soqlQuery", "Must provide a valid SoqlQuery object");
+
+            return ForQuery(socrataDomain, resourceId, soqlQuery.ToString());
         }
 
-        public static Uri ForQuery(string domain, string resourceId, string soqlQuery)
+        /// <summary>
+        /// Create a Uri suitable for querying (via SODA) the specified resource on the specified Socrata domain.
+        /// </summary>
+        /// <param name="socrataDomain">The Socrata domain to target.</param>
+        /// <param name="resourceId">The identifier for a specific resource on the Socrata domain to target.</param>
+        /// <param name="soqlQuery">The string representation of a SoQL query to use for querying.</param>
+        /// <returns>A query Uri for the specified resource on the specified Socrata domain.</returns>
+        public static Uri ForQuery(string socrataDomain, string resourceId, string soqlQuery)
         {
-            string url = metadataUrl(domain, resourceId);
+            if (String.IsNullOrEmpty(socrataDomain))
+                throw new ArgumentNullException("socrataDomain", "Must provide a valid Socrata domain to target.");
+
+            if (String.IsNullOrEmpty(resourceId))
+                throw new ArgumentNullException("resourceId", "Must provide a valid resource identifier to target.");
+
+            if(String.IsNullOrEmpty(soqlQuery))
+                throw new ArgumentNullException("soqlQuery", "Must provide a valid SoQL query string");
+
+            string url = metadataUrl(socrataDomain, resourceId);
 
             string queryUrl = String.Format("{0}?{1}", url, soqlQuery);
 
             return new Uri(queryUrl);
         }
         
-        public static Uri ForCategoryPage(string domain, string category)
+        /// <summary>
+        /// Create a Uri to the landing page of a specified category on the specified Socrata domain.
+        /// </summary>
+        /// <param name="socrataDomain">The Socrata domain to target.</param>
+        /// <param name="category">The name of a category on the target Socrata domain.</param>
+        /// <returns>A Uri pointing to the landing page of the specified category on the specified Socrata domain.</returns>
+        public static Uri ForCategoryPage(string socrataDomain, string category)
         {
-            if (category.HasValue())
-            {
-                string url = String.Format("{0}/{1}", metadataUrl(domain).Replace("views", "categories"), Uri.EscapeDataString(category));
+            if (String.IsNullOrEmpty(socrataDomain))
+                throw new ArgumentNullException("socrataDomain", "Must provide a valid Socrata domain to target.");
 
-                return new Uri(url);
-            }
+            if (String.IsNullOrEmpty(category))
+                throw new ArgumentNullException("category", "Must provide a valid category name.");
 
-            return default(Uri);
+            string url = String.Format("{0}/{1}", metadataUrl(socrataDomain).Replace("views", "categories"), Uri.EscapeDataString(category));
+
+            return new Uri(url);
         }
     }
 }
