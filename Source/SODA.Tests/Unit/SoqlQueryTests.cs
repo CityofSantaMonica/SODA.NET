@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace SODA.Tests.Unit
 {
     [TestFixture]
-    public class SoqlTests
+    public class SoqlQueryTests
     {
         private static string selectStar = String.Format("{0}={1}", SoqlQuery.SelectKey, "*");
         
