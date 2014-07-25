@@ -6,9 +6,17 @@ using SODA.Utilities;
 
 namespace SODA
 {
+    /// <summary>
+    /// A class that represents metadata about a resource in Socrata.
+    /// </summary>
     [DataContract]
     public class ResourceMetadata
     {
+        /// <summary>
+        /// The parent resource object that this metadata describes.
+        /// </summary>
+        public Resource Resource { get; internal set; }
+
         [DataMember(Name="id")]
         public string Identifier { get; set; }
 
@@ -29,20 +37,7 @@ namespace SODA
 
         [DataMember(Name = "createdAt")]
         public double? CreationDateUnix { get; set; }
-
-        public DateTime? CreationDate
-        {
-            get
-            {
-                if (CreationDateUnix.HasValue)
-                {
-                    return DateTimeConverter.FromUnixTimestamp(CreationDateUnix.Value);
-                }
-
-                return default(DateTime?);
-            }
-        }
-                
+                        
         [DataMember(Name = "description")]
         public string Description { get; set; }
 
@@ -58,35 +53,9 @@ namespace SODA
         [DataMember(Name = "publicationDate")]
         public double? PublishedDateUnix { get; set; }
 
-        public DateTime? PublishedDate
-        {
-            get
-            {
-                if (PublishedDateUnix.HasValue)
-                {
-                    return DateTimeConverter.FromUnixTimestamp(PublishedDateUnix.Value);
-                }
-
-                return default(DateTime?);
-            }
-        }
-
         [DataMember(Name = "rowsUpdatedAt")]
         public double? RowsLastUpdatedUnix { get; set; }
-
-        public DateTime? RowsLastUpdated
-        {
-            get
-            {
-                if (RowsLastUpdatedUnix.HasValue)
-                {
-                    return DateTimeConverter.FromUnixTimestamp(RowsLastUpdatedUnix.Value);
-                }
-
-                return default(DateTime?);
-            }
-        }
-
+        
         [DataMember(Name = "tableId")]
         public long TableId { get; set; }
 
@@ -98,20 +67,7 @@ namespace SODA
 
         [DataMember(Name = "viewLastModified")]
         public double? SchemaLastUpdatedUnix { get; set; }
-
-        public DateTime? SchemaLastUpdated
-        {
-            get
-            {
-                if (SchemaLastUpdatedUnix.HasValue)
-                {
-                    return DateTimeConverter.FromUnixTimestamp(SchemaLastUpdatedUnix.Value);
-                }
-
-                return default(DateTime?);
-            }
-        }
-
+        
         [DataMember(Name = "viewType")]
         public string ViewType { get; set; }
 
@@ -127,6 +83,58 @@ namespace SODA
         [DataMember(Name = "privateMetadata")]
         public Dictionary<string, dynamic> PrivateMetadata { get; set; }
         
+        public DateTime? CreationDate
+        {
+            get
+            {
+                if (CreationDateUnix.HasValue)
+                {
+                    return DateTimeConverter.FromUnixTimestamp(CreationDateUnix.Value);
+                }
+
+                return default(DateTime?);
+            }
+        }
+
+        public DateTime? PublishedDate
+        {
+            get
+            {
+                if (PublishedDateUnix.HasValue)
+                {
+                    return DateTimeConverter.FromUnixTimestamp(PublishedDateUnix.Value);
+                }
+
+                return default(DateTime?);
+            }
+        }
+
+        public DateTime? RowsLastUpdated
+        {
+            get
+            {
+                if (RowsLastUpdatedUnix.HasValue)
+                {
+                    return DateTimeConverter.FromUnixTimestamp(RowsLastUpdatedUnix.Value);
+                }
+
+                return default(DateTime?);
+            }
+        }
+
+        public DateTime? SchemaLastUpdated
+        {
+            get
+            {
+                if (SchemaLastUpdatedUnix.HasValue)
+                {
+                    return DateTimeConverter.FromUnixTimestamp(SchemaLastUpdatedUnix.Value);
+                }
+
+                return default(DateTime?);
+            }
+        }
+
         public string TimePeriod
         {
             get
@@ -162,20 +170,7 @@ namespace SODA
                 return null;
             }
         }
-
-        public string ContactEmail
-        {
-            get
-            {
-                if (PrivateMetadata != null && PrivateMetadata.ContainsKey("contactEmail"))
-                {
-                    return (string)PrivateMetadata["contactEmail"];
-                }
-
-                return null;
-            }
-        }
-
+        
         public long? RowIdentifierFieldId
         {
             get
@@ -199,9 +194,9 @@ namespace SODA
             {
                 if (RowIdentifierFieldId.HasValue)
                 {
-                    if(Resource != null && Resource.Columns != null && Resource.Columns.Any())
+                    if(Columns != null && Columns.Any())
                     {
-                        var column = Resource.Columns.SingleOrDefault(c => c.Id.Equals(RowIdentifierFieldId.Value));
+                        var column = Columns.SingleOrDefault(c => c.Id.Equals(RowIdentifierFieldId.Value));
                         if (column != null)
                         {
                             return column.ApiFieldName;
@@ -217,6 +212,17 @@ namespace SODA
             }
         }
 
-        public Resource Resource { get; internal set; }
+        public string ContactEmail
+        {
+            get
+            {
+                if (PrivateMetadata != null && PrivateMetadata.ContainsKey("contactEmail"))
+                {
+                    return (string)PrivateMetadata["contactEmail"];
+                }
+
+                return null;
+            }
+        }
     }
 }
