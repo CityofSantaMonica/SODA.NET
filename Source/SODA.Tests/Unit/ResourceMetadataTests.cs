@@ -117,14 +117,14 @@ namespace SODA.Tests.Unit
             Assert.Null(resourceMetadata.Columns);
             Assert.Null(resourceMetadata.RowIdentifierField);
 
-            resourceMetadata.Columns = new List<Column>();
+            resourceMetadata.Columns = new List<ResourceColumn>();
 
             Assert.IsNotNull(resourceMetadata.Columns);
             Assert.Null(resourceMetadata.RowIdentifierField);
 
-            resourceMetadata.Columns = new List<Column>()
+            resourceMetadata.Columns = new List<ResourceColumn>()
             {
-                new Column() { Id = 12345, ApiFieldName = "something" }
+                new ResourceColumn() { Id = 12345, ApiFieldName = "something" }
             };
 
             Assert.IsNotEmpty(resourceMetadata.Columns);
@@ -160,7 +160,7 @@ namespace SODA.Tests.Unit
             {
                 Columns = new[]
                 {
-                    new Column() { Id = rowIdentifierFieldId, ApiFieldName = rowIdentifierField }
+                    new ResourceColumn() { Id = rowIdentifierFieldId, ApiFieldName = rowIdentifierField }
                 },
                 Metadata = new Dictionary<string, dynamic>()
                 {

@@ -9,14 +9,14 @@ namespace SODA
         public string Domain { get; private set; }
         public ResourceMetadata Metadata { get; private set; }
         public SodaClient Client { get; private set; }
-        public IEnumerable<Column> Columns
+        public IEnumerable<ResourceColumn> Columns
         {
             get
             {
                 if (Metadata != null && Metadata.Columns != null)
                     return Metadata.Columns;
                 else
-                    return Enumerable.Empty<Column>();
+                    return Enumerable.Empty<ResourceColumn>();
             }
         }
 

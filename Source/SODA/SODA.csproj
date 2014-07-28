@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resource.cs" />
-    <Compile Include="Column.cs" />
+    <Compile Include="ResourceColumn.cs" />
     <Compile Include="ResourceMetadata.cs" />
     <Compile Include="SodaDataFormat.cs" />
     <Compile Include="SodaResult.cs" />

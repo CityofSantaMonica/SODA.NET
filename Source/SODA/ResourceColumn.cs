@@ -3,7 +3,7 @@
 namespace SODA
 {
     [DataContract]
-    public class Column
+    public class ResourceColumn
     {
         [DataMember(Name = "id")]
         public long Id { get; set; }

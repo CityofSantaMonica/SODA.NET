@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using SODA.Utilities;
 
@@ -72,7 +72,7 @@ namespace SODA
         public string ViewType { get; set; }
 
         [DataMember(Name = "columns")]
-        public IEnumerable<Column> Columns { get; set; }
+        public IEnumerable<ResourceColumn> Columns { get; set; }
 
         [DataMember(Name = "tags")]
         public IEnumerable<string> Tags { get; set; }
