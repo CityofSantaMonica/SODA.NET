@@ -66,7 +66,7 @@ namespace SODA
 
             //limit > 1000 will return a 400 Bad Request
             //http://dev.socrata.com/docs/queries.html#the_limit_parameter
-            limit = limit > 1000 ? 1000 : limit;
+            limit = Math.Min(limit, 1000);
 
             this.limit = limit;
             return this;

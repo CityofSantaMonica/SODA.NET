@@ -112,7 +112,7 @@ namespace SODA.Tests.Unit
 
         [Test]
         [Category("SodaUri")]
-        public void ForMetadataList_With_Empty_Domain_Throws_ArgumentNullException()
+        public void ForMetadataList_With_Empty_Host_Throws_ArgumentNullException()
         {
             Assert.That(
                 () => SodaUri.ForMetadataList(nullInput, 1),

@@ -15,46 +15,46 @@ namespace SODA
     public class SodaClient
     {
         public string AppToken { get; private set; }
-        public string Domain { get; private set; }
+        public string Host { get; private set; }
         public string Username { get; private set; }
         public string DefaultResourceId { get; private set; }
 
         private readonly string password;
         
         /// <summary>
-        /// Initialize a new (anonymous) SodaClient with the specified appToken, for the specified Socrata domain.
+        /// Initialize a new (anonymous) SodaClient with the specified appToken, for the specified Socrata host.
         /// </summary>
-        public SodaClient(string appToken, string domain) : this(appToken, domain, null, null, null)
+        public SodaClient(string appToken, string host) : this(appToken, host, null, null, null)
         {
         }
 
         /// <summary>
-        /// Initialize a new SodaClient with the specified appToken, for the specified Socrata domain, using the specified login credentials.
+        /// Initialize a new SodaClient with the specified appToken, for the specified Socrata host, using the specified login credentials.
         /// </summary>
-        public SodaClient(string appToken, string domain, string username, string password) : this(appToken, domain, username, password, null)
+        public SodaClient(string appToken, string host, string username, string password) : this(appToken, host, username, password, null)
         {
         }
 
         /// <summary>
-        /// Initialize a new (anonymous) SodaClient with the specified appToken, for the specified Socrata domain, and use the specified resource id by default in subsequent calls.
+        /// Initialize a new (anonymous) SodaClient with the specified appToken, for the specified Socrata host, and use the specified resource id by default in subsequent calls.
         /// </summary>
-        public SodaClient(string appToken, string domain, string defaultResourceId) : this(appToken, domain, null, null, defaultResourceId)
+        public SodaClient(string appToken, string host, string defaultResourceId) : this(appToken, host, null, null, defaultResourceId)
         {
         }
 
         /// <summary>
-        /// Initialize a new SodaClient with the specified appToken, for the specified Socrata domain, using the specified login credentials, and use the specified resource id by default in subsequent calls.
+        /// Initialize a new SodaClient with the specified appToken, for the specified Socrata host, using the specified login credentials, and use the specified resource id by default in subsequent calls.
         /// </summary>
-        public SodaClient(string appToken, string domain, string username, string password, string defaultResourceId)
+        public SodaClient(string appToken, string host, string username, string password, string defaultResourceId)
         {
             if (String.IsNullOrEmpty(appToken))
                 throw new ArgumentNullException("appToken", "An app token is required");
 
-            if (String.IsNullOrEmpty(domain))
-                throw new ArgumentNullException("domain", "A domain is required");
+            if (String.IsNullOrEmpty(host))
+                throw new ArgumentNullException("host", "A host is required");
 
             AppToken = appToken;
-            Domain = domain;
+            Host = host;
             DefaultResourceId = defaultResourceId;
             Username = username;
             this.password = password;
@@ -97,15 +97,13 @@ namespace SODA
         public Resource GetResource(string resourceId)
         {
             if (String.IsNullOrEmpty(resourceId))
-            {
                 throw new ArgumentNullException("resourceId", "A resource id is required.");
-            }
 
-            var uri = SodaUri.ForMetadata(Domain, resourceId);
+            var uri = SodaUri.ForMetadata(Host, resourceId);
 
             var metadata = Get<ResourceMetadata>(uri);
             
-            return new Resource(Domain, metadata, this);
+            return new Resource(Host, metadata, this);
         }
 
         /// <summary>
@@ -122,9 +120,7 @@ namespace SODA
         public ResourceMetadata GetMetadata(string resourceId)
         {
             if (String.IsNullOrEmpty(resourceId))
-            {
                 throw new ArgumentNullException("resourceId", "A resource id is required.");
-            }
 
             var resource = GetResource(resourceId);
 
@@ -140,7 +136,7 @@ namespace SODA
 
             if (page > 0)
             {
-                var catalogUri = SodaUri.ForMetadataList(Domain, page);
+                var catalogUri = SodaUri.ForMetadataList(Host, page);
 
                 IEnumerable<dynamic> rawDataList = Get<IEnumerable<dynamic>>(catalogUri);
 
@@ -203,7 +199,7 @@ namespace SODA
                 throw new ArgumentNullException("resourceId", "A resource id is required.");
             }
 
-            var uri = SodaUri.ForResourceAPI(Domain, resourceId);
+            var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
             return sendRequest<SodaResult>(uri, "POST", dataFormat, payload);
         }
@@ -337,7 +333,7 @@ namespace SODA
                 throw new ArgumentNullException("resourceId", "A resource id is required.");
             }
 
-            var uri = SodaUri.ForResourceAPI(Domain, resourceId);
+            var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
             return sendRequest<dynamic>(uri, "PUT", dataFormat, payload);
         }
