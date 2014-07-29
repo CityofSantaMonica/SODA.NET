@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SODA")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Socrata Open Data API Library")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("City of Santa Monica")]
 [assembly: AssemblyProduct("SODA")]
@@ -18,6 +18,8 @@ using System.Runtime.InteropServices;
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+
+[assembly: InternalsVisibleTo("SODA.Tests")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("d0894220-e3ab-4093-be46-50e268a9d9bb")]
