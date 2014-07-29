@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using SODA.Tests.Mocks;
 
 namespace SODA.Tests.Unit
 {
@@ -86,21 +87,12 @@ namespace SODA.Tests.Unit
             Assert.IsNull(nonNullCollection);
         }
 
-        [Test]
+        [TestCase(StringMocks.EmptyInput)]
+        [TestCase(StringMocks.NullInput)]
         [Category("Resource")]
-        public void GetRecord_With_Empty_RecordId_Throws_ArugmentNullException()
+        public void GetRecord_With_Invalid_RecordId_Throws_ArugmentException(string input)
         {
-            var resource = new Resource(String.Empty, null, null);
-
-            Assert.That(
-                () => resource.GetRecord(String.Empty),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => resource.GetRecord(null),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+            new Resource(String.Empty, null, null).GetRecord(input);
         }
 
         [Test]
