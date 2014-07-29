@@ -58,7 +58,6 @@
     <Compile Include="ResourceRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SodaClient.cs" />
-    <Compile Include="SodaException.cs" />
     <Compile Include="SodaUri.cs" />
   </ItemGroup>
   <ItemGroup>
