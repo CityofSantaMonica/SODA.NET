@@ -23,7 +23,7 @@ namespace SODA
             }
         }
 
-        //constructor is internal because Resources should be obtained through an instance of a SodaClient.
+        //constructor is internal because Resources should be obtained through a SodaClient.
         internal Resource(string host, ResourceMetadata metadata, SodaClient client)
         {
             Host = host;

@@ -12,6 +12,7 @@ namespace SODA
     [DataContract]
     public class ResourceMetadata
     {
+        //constructor is internal because ResourceMetadata should be obtained through a SodaClient or Resource object.
         internal ResourceMetadata() { }
 
         /// <summary>
