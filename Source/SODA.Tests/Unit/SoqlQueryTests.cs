@@ -306,26 +306,23 @@ namespace SODA.Tests.Unit
         }
 
         [TestCase(-1)]
-        [TestCase(-999)]
-        [TestCase(1)]
-        [TestCase(999)]
+        [TestCase(0)]
         [Category("SoqlQuery")]
-        public void Limit_Clause_Gets_Absolute_Limit(int limit)
+        public void Limit_Clause_Ignores_Limits_Below_One(int limit)
         {
-            string expected = String.Format("{0}={1}", SoqlQuery.LimitKey, Math.Abs(limit));
-
+            string startOfLimitClause = String.Format("{0}=", SoqlQuery.LimitKey);
+            
             string soql = new SoqlQuery().Limit(limit).ToString();
 
-            StringAssert.Contains(expected, soql);
+            StringAssert.DoesNotContain(startOfLimitClause, soql);
         }
 
-        [TestCase(1000)]
         [TestCase(1001)]
         [TestCase(9999)]
         [Category("SoqlQuery")]
         public void Limit_Clause_Has_A_Ceiling_At_MaximumLimit(int limit)
         {
-            string expected = String.Format("{0}={1}", SoqlQuery.LimitKey, SoqlQuery.MaximumLimit);
+            string expected = String.Format("{0}={1}", SoqlQuery.LimitKey, Math.Min(limit, SoqlQuery.MaximumLimit));
 
             string soql = new SoqlQuery().Limit(limit).ToString();
 

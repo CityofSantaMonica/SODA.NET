@@ -192,8 +192,7 @@ namespace SODA
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Limit(int limit)
         {
-            //limit < 0 makes no sense, take the absolute value
-            limit = Math.Abs(limit);
+            limit = Math.Max(limit, 0);
             limit = Math.Min(limit, MaximumLimit);
             this.limit = limit;
             return this;
