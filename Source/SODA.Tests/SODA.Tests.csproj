@@ -60,6 +60,9 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Mocks\StringMocks.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unit\DateTimeConverterTests.cs" />
     <Compile Include="Unit\FourByFourTests.cs" />

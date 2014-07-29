@@ -1,132 +1,113 @@
 ﻿using System;
 using NUnit.Framework;
+using SODA.Tests.Mocks;
 
 namespace SODA.Tests.Unit
 {
     [TestFixture]
     public class SodaUriTests
     {
-        readonly string nullInput = null;
-        readonly string emptyInput = String.Empty;
-        readonly string nonEmptyInput = "doesn't matter";
-        readonly string socrataDomain = "data.smgov.net";
-        readonly string resourceId = "1234-wxyz";
-
         [Test]
         [Category("SodaUri")]
         public void All_Methods_Return_Uri_With_Socrata_Domain_As_Host()
         {
-            Uri uri = SodaUri.ForMetadata(socrataDomain, nonEmptyInput);
-            StringAssert.AreEqualIgnoringCase(socrataDomain, uri.Host);
+            Uri uri = SodaUri.ForMetadata(StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
             
             uri = null;
-            uri = SodaUri.ForMetadataList(socrataDomain, 1);
-            StringAssert.AreEqualIgnoringCase(socrataDomain, uri.Host);
+            uri = SodaUri.ForMetadataList(StringMocks.Host, 1);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
 
             uri = null;
-            uri = SodaUri.ForResourceAPI(socrataDomain, nonEmptyInput);
-            StringAssert.AreEqualIgnoringCase(socrataDomain, uri.Host);
+            uri = SodaUri.ForResourceAPI(StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
 
             uri = null;
-            uri = SodaUri.ForResourcePermalink(socrataDomain, nonEmptyInput);
-            StringAssert.AreEqualIgnoringCase(socrataDomain, uri.Host);
+            uri = SodaUri.ForResourcePermalink(StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
 
             uri = null;
-            uri = SodaUri.ForQuery(socrataDomain, nonEmptyInput, new SoqlQuery());
-            StringAssert.AreEqualIgnoringCase(socrataDomain, uri.Host);
+            uri = SodaUri.ForQuery(StringMocks.Host, StringMocks.ResourceId, new SoqlQuery());
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
             
             uri = null;
-            uri = SodaUri.ForCategoryPage(socrataDomain, nonEmptyInput);
-            StringAssert.AreEqualIgnoringCase(socrataDomain, uri.Host);
+            uri = SodaUri.ForCategoryPage(StringMocks.Host, StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
         }
 
         [Test]
         [Category("SodaUri")]
         public void All_Methods_Return_Uri_Using_HTTPS()
         {
-            Uri uri = SodaUri.ForMetadata(socrataDomain, nonEmptyInput);
+            Uri uri = SodaUri.ForMetadata(StringMocks.Host, StringMocks.ResourceId);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
             
             uri = null;
-            uri = SodaUri.ForMetadataList(socrataDomain, 1);
+            uri = SodaUri.ForMetadataList(StringMocks.Host, 1);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
-            uri = SodaUri.ForResourceAPI(socrataDomain, nonEmptyInput);
+            uri = SodaUri.ForResourceAPI(StringMocks.Host, StringMocks.ResourceId);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
-            uri = SodaUri.ForResourcePermalink(socrataDomain, nonEmptyInput);
+            uri = SodaUri.ForResourcePermalink(StringMocks.Host, StringMocks.ResourceId);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
-            uri = SodaUri.ForQuery(socrataDomain, nonEmptyInput, new SoqlQuery());
+            uri = SodaUri.ForQuery(StringMocks.Host, StringMocks.ResourceId, new SoqlQuery());
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
             
             uri = null;
-            uri = SodaUri.ForCategoryPage(socrataDomain, nonEmptyInput);
+            uri = SodaUri.ForCategoryPage(StringMocks.Host, StringMocks.NonEmptyInput);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
         }
 
-        [Test]
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
-        public void ForMetadata_With_Empty_Arguments_Throws_ArgumentNullException()
+        public void ForMetadata_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            Assert.That(
-                () => SodaUri.ForMetadata(nullInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+            SodaUri.ForMetadata(input, StringMocks.NonEmptyInput);
+        }
 
-            Assert.That(
-                () => SodaUri.ForMetadata(emptyInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForMetadata(nonEmptyInput, nullInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForMetadata(nonEmptyInput, emptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [TestCase(StringMocks.NonEmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
+        [Category("SodaUri")]
+        public void ForMetadata_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        {
+            SodaUri.ForMetadata(StringMocks.Host, input);
         }
 
         [Test]
         [Category("SodaUri")]
         public void ForMetadata_With_Valid_Arguments_Creates_Metadata_Uri()
         {
-            var uri = SodaUri.ForMetadata(socrataDomain, resourceId);
+            var uri = SodaUri.ForMetadata(StringMocks.Host, StringMocks.ResourceId);
 
-            StringAssert.AreEqualIgnoringCase(String.Format("/views/{0}", resourceId), uri.LocalPath);
+            StringAssert.AreEqualIgnoringCase(String.Format("/views/{0}", StringMocks.ResourceId), uri.LocalPath);
         }
 
-        [Test]
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
-        public void ForMetadataList_With_Empty_Host_Throws_ArgumentNullException()
+        public void ForMetadataList_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            Assert.That(
-                () => SodaUri.ForMetadataList(nullInput, 1),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForMetadataList(emptyInput, 1),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+            SodaUri.ForMetadataList(input, 1);
         }
 
-        [TestCase(0)]
-        [TestCase(-1)]
         [TestCase(-100)]
+        [TestCase(-1)]
+        [TestCase(0)]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
         public void ForMetadataList_With_Page_Less_Than_1_Throws_ArugmentOutOfRangeException(int page)
         {
-            Assert.That(
-                () => SodaUri.ForMetadataList(nonEmptyInput, page),
-                Throws.InstanceOf<ArgumentOutOfRangeException>()
-            );
+            SodaUri.ForMetadataList(StringMocks.Host, page);
         }
 
         [TestCase(1)]
@@ -135,116 +116,98 @@ namespace SODA.Tests.Unit
         [Category("SodaUri")]
         public void ForMetadataList_With_Valid_Arguments_Creates_MetadataList_Uri(int page)
         {
-            var uri = SodaUri.ForMetadataList(socrataDomain, page);
+            var uri = SodaUri.ForMetadataList(StringMocks.Host, page);
             
             StringAssert.AreEqualIgnoringCase("/views", uri.LocalPath);
             StringAssert.AreEqualIgnoringCase(String.Format("?page={0}", page), uri.Query);
         }
 
-        [Test]
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
-        public void ForResourceAPI_With_Empty_Arguments_Throws_ArgumentNullException()
+        public void ForResourceAPI_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            Assert.That(
-                () => SodaUri.ForResourceAPI(nullInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+            SodaUri.ForResourceAPI(input, StringMocks.ResourceId);
+        }
 
-            Assert.That(
-                () => SodaUri.ForResourceAPI(emptyInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForResourceAPI(nonEmptyInput, nullInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForResourceAPI(nonEmptyInput, emptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [TestCase(StringMocks.NonEmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
+        [Category("SodaUri")]
+        public void ForResourceAPI_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        {
+            SodaUri.ForResourceAPI(StringMocks.Host, input);
         }
 
         [Test]
         [Category("SodaUri")]
         public void ForResourceAPI_With_Valid_Arguments_Creates_ResourceAPI_Uri()
         {
-            var uri = SodaUri.ForResourceAPI(socrataDomain, resourceId);
-            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}", resourceId), uri.LocalPath);
+            var uri = SodaUri.ForResourceAPI(StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}", StringMocks.ResourceId), uri.LocalPath);
 
             uri = null;
             string rowId =  "rowId";
 
-            uri = SodaUri.ForResourceAPI(socrataDomain, resourceId, rowId);
-            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}/{1}", resourceId, rowId), uri.LocalPath);
+            uri = SodaUri.ForResourceAPI(StringMocks.Host, StringMocks.ResourceId, rowId);
+            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}/{1}", StringMocks.ResourceId, rowId), uri.LocalPath);
         }
 
-        [Test]
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
-        public void ForResourcePermalink_With_Empty_Arguments_Throws_ArgumentNullException()
+        public void ForResourcePermalink_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            Assert.That(
-                () => SodaUri.ForResourcePermalink(nullInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+            SodaUri.ForResourcePermalink(input, StringMocks.ResourceId);
+        }
 
-            Assert.That(
-                () => SodaUri.ForResourcePermalink(emptyInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForResourcePermalink(nonEmptyInput, nullInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForResourcePermalink(nonEmptyInput, emptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [TestCase(StringMocks.NonEmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
+        [Category("SodaUri")]
+        public void ForResourcePermalink_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        {
+            SodaUri.ForResourcePermalink(StringMocks.Host, input);
         }
 
         [Test]
         [Category("SodaUri")]
         public void ForResourcePermalink_With_Valid_Arguments_Creates_ResourcePermalink_Uri()
         {
-            var uri = SodaUri.ForResourcePermalink(socrataDomain, resourceId);
+            var uri = SodaUri.ForResourcePermalink(StringMocks.Host, StringMocks.ResourceId);
 
-            StringAssert.AreEqualIgnoringCase(String.Format("/-/-/{0}", resourceId), uri.LocalPath);
+            StringAssert.AreEqualIgnoringCase(String.Format("/-/-/{0}", StringMocks.ResourceId), uri.LocalPath);
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
+        [Category("SodaUri")]
+        public void ForQuery_With_Empty_Host_Throws_ArgumentException(string input)
+        {
+            SodaUri.ForQuery(input, StringMocks.ResourceId, new SoqlQuery());
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [TestCase(StringMocks.NonEmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
+        [Category("SodaUri")]
+        public void ForQuery_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        {
+            SodaUri.ForQuery(StringMocks.Host, input, new SoqlQuery());
         }
 
         [Test]
         [Category("SodaUri")]
-        public void ForQuery_With_Empty_Arguments_Throws_ArgumentNullException()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ForQuery_With_Null_SoqlQuery_Throws_ArgumentNullException()
         {
-            SoqlQuery nullQuery = null;
-            SoqlQuery nonNullQuery = new SoqlQuery();
-
-            Assert.That(
-               () => SodaUri.ForQuery(nullInput, nonEmptyInput, nonNullQuery),
-               Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-               () => SodaUri.ForQuery(emptyInput, nonEmptyInput, nonNullQuery),
-               Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForQuery(nonEmptyInput, nullInput, nonNullQuery),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForQuery(nonEmptyInput, emptyInput, nonNullQuery),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForQuery(nonEmptyInput, nonEmptyInput, nullQuery),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+            SodaUri.ForQuery(StringMocks.Host, StringMocks.ResourceId, null);
         }
 
         [Test]
@@ -253,35 +216,28 @@ namespace SODA.Tests.Unit
         {
             SoqlQuery soqlQuery = new SoqlQuery();
 
-            var uri = SodaUri.ForQuery(socrataDomain, resourceId, soqlQuery);
+            var uri = SodaUri.ForQuery(StringMocks.Host, StringMocks.ResourceId, soqlQuery);
 
-            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}", resourceId), uri.LocalPath);
+            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}", StringMocks.ResourceId), uri.LocalPath);
             StringAssert.AreEqualIgnoringCase(String.Format("?{0}", Uri.EscapeUriString(soqlQuery.ToString())), uri.Query);
         }
 
-        [Test]
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
-        public void ForCategoryPage_With_Empty_Arguments_Throws_ArgumentNullException()
+        public void ForCategoryPage_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            Assert.That(
-                () => SodaUri.ForCategoryPage(nullInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+            SodaUri.ForCategoryPage(input, StringMocks.NonEmptyInput);
+        }
 
-            Assert.That(
-                () => SodaUri.ForCategoryPage(emptyInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForCategoryPage(nonEmptyInput, nullInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForCategoryPage(nonEmptyInput, emptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
+        [Category("SodaUri")]
+        public void ForCategoryPage_With_Empty_Category_Throws_ArgumentException(string input)
+        {
+            SodaUri.ForCategoryPage(StringMocks.Host, input);
         }
 
         [Test]
@@ -290,7 +246,7 @@ namespace SODA.Tests.Unit
         {
             string category = "Category";
             
-            var uri = SodaUri.ForCategoryPage(socrataDomain, category);
+            var uri = SodaUri.ForCategoryPage(StringMocks.Host, category);
             
             StringAssert.AreEqualIgnoringCase(String.Format("/categories/{0}", category), uri.LocalPath);
         }
@@ -301,7 +257,7 @@ namespace SODA.Tests.Unit
         {
             string complexCategory = "Complex & Category";
 
-            var uri = SodaUri.ForCategoryPage(socrataDomain, complexCategory);
+            var uri = SodaUri.ForCategoryPage(StringMocks.Host, complexCategory);
 
             StringAssert.AreEqualIgnoringCase(String.Format("/categories/{0}", complexCategory), uri.LocalPath);
 

@@ -35,10 +35,10 @@ namespace SODA
         public static Uri ForMetadata(string socrataHost, string resourceId)
         {
             if (String.IsNullOrEmpty(socrataHost))
-                throw new ArgumentNullException("socrataHost", "Must provide a valid Socrata host to target.");
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
-            if (String.IsNullOrEmpty(resourceId))
-                throw new ArgumentNullException("resourceId", "Must provide a valid resource identifier to target.");
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
             string url = metadataUrl(socrataHost, resourceId);
 
@@ -54,7 +54,7 @@ namespace SODA
         public static Uri ForMetadataList(string socrataHost, int page)
         {
             if (String.IsNullOrEmpty(socrataHost))
-                throw new ArgumentNullException("socrataHost", "Must provide a valid Socrata host to target.");
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
             if (page <= 0)
                 throw new ArgumentOutOfRangeException("page", "Resouce metadata catalogs begin on page 1.");
@@ -76,10 +76,10 @@ namespace SODA
         public static Uri ForResourceAPI(string socrataHost, string resourceId, string rowId = null)
         {
             if (String.IsNullOrEmpty(socrataHost))
-                throw new ArgumentNullException("socrataHost", "Must provide a valid Socrata host to target.");
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
-            if (String.IsNullOrEmpty(resourceId))
-                throw new ArgumentNullException("resourceId", "Must provide a valid resource identifier to target.");
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
             string url = metadataUrl(socrataHost, resourceId).Replace("views", "resource");
 
@@ -100,10 +100,10 @@ namespace SODA
         public static Uri ForResourcePermalink(string socrataHost, string resourceId)
         {
             if (String.IsNullOrEmpty(socrataHost))
-                throw new ArgumentNullException("socrataHost", "Must provide a valid Socrata host to target.");
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
-            if (String.IsNullOrEmpty(resourceId))
-                throw new ArgumentNullException("resourceId", "Must provide a valid resource identifier to target.");
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
             string url = metadataUrl(socrataHost, resourceId).Replace("views", "-/-");
 
@@ -120,10 +120,10 @@ namespace SODA
         public static Uri ForQuery(string socrataHost, string resourceId, SoqlQuery soqlQuery)
         {
             if (String.IsNullOrEmpty(socrataHost))
-                throw new ArgumentNullException("socrataHost", "Must provide a valid Socrata host to target.");
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
-            if (String.IsNullOrEmpty(resourceId))
-                throw new ArgumentNullException("resourceId", "Must provide a valid resource identifier to target.");
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
             if (soqlQuery == null)
                 throw new ArgumentNullException("soqlQuery", "Must provide a valid SoqlQuery object");
@@ -144,10 +144,10 @@ namespace SODA
         public static Uri ForCategoryPage(string socrataHost, string category)
         {
             if (String.IsNullOrEmpty(socrataHost))
-                throw new ArgumentNullException("socrataHost", "Must provide a valid Socrata host to target.");
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
             if (String.IsNullOrEmpty(category))
-                throw new ArgumentNullException("category", "Must provide a valid category name.");
+                throw new ArgumentException("category", "Must provide a category name.");
 
             string url = String.Format("{0}/{1}", metadataUrl(socrataHost).Replace("views", "categories"), Uri.EscapeDataString(category));
 
