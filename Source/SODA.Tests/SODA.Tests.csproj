@@ -69,6 +69,9 @@
     <Compile Include="Unit\ResourceMetadataTests.cs" />
     <Compile Include="Unit\ResourceRecordTests.cs" />
     <Compile Include="Unit\ResourceTests.cs" />
+    <Compile Include="Unit\SodaClientTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Unit\SodaUriTests.cs" />
     <Compile Include="Unit\SoqlQueryTests.cs" />
   </ItemGroup>
