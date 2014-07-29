@@ -48,41 +48,18 @@ namespace SODA
         public SodaClient(string appToken, string host, string username, string password, string defaultResourceId)
         {
             if (String.IsNullOrEmpty(appToken))
-                throw new ArgumentNullException("appToken", "An app token is required");
+                throw new ArgumentException("appToken", "An app token is required");
 
             if (String.IsNullOrEmpty(host))
-                throw new ArgumentNullException("host", "A host is required");
-
+                throw new ArgumentException("host", "A host is required");
+            
             AppToken = appToken;
             Host = host;
             DefaultResourceId = defaultResourceId;
             Username = username;
             this.password = password;
         }
-
-        /// <summary>
-        /// GET a result from the specified Uri. By default, the response format is application/json.
-        /// </summary>
-        /// <typeparam name="TResult">The target type to deserialize the response into.</typeparam>
-        /// <param name="uri">A Uri to send the GET request to.</param>
-        /// <returns>The response, deserialized into an object of type TResult.</returns>
-        public TResult Get<TResult>(Uri uri)
-        {
-            return Get<TResult>(uri, SodaDataFormat.JSON);
-        }
-
-        /// <summary>
-        /// GET a result from the specified Uri, and include an appropriate Accept header for the specified format.
-        /// </summary>
-        /// <typeparam name="TResult">The target type to deserialize the response into.</typeparam>
-        /// <param name="uri">A Uri to send the GET request to.</param>
-        /// <param name="dataFormat">One of the supported data formats for the request's Accept header.</param>
-        /// <returns>The response, deserialized into an object of type TResult.</returns>
-        public TResult Get<TResult>(Uri uri, SodaDataFormat dataFormat)
-        {
-            return sendRequest<TResult>(uri, "GET", dataFormat);
-        }
-
+        
         /// <summary>
         /// Get a Resource object using this client's default resourse id.
         /// </summary>
@@ -96,12 +73,10 @@ namespace SODA
         /// </summary>
         public Resource GetResource(string resourceId)
         {
-            if (String.IsNullOrEmpty(resourceId))
-                throw new ArgumentNullException("resourceId", "A resource id is required.");
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
-            var uri = SodaUri.ForMetadata(Host, resourceId);
-
-            var metadata = Get<ResourceMetadata>(uri);
+            var metadata = GetMetadata(resourceId);
             
             return new Resource(Host, metadata, this);
         }
@@ -117,14 +92,14 @@ namespace SODA
         /// <summary>
         /// Get a ResourceMetadata object using the specified resource id.
         /// </summary>
-        public ResourceMetadata GetMetadata(string resourceId)
+        public ResourceMetadata GetMetadata(string resourceId) 
         {
-            if (String.IsNullOrEmpty(resourceId))
-                throw new ArgumentNullException("resourceId", "A resource id is required.");
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
-            var resource = GetResource(resourceId);
+            var uri = SodaUri.ForMetadata(Host, resourceId);
 
-            return resource.Metadata;
+            return get<ResourceMetadata>(uri, SodaDataFormat.JSON);
         }
 
         /// <summary>
@@ -132,23 +107,31 @@ namespace SODA
         /// </summary>
         public IEnumerable<ResourceMetadata> GetMetadataPage(int page)
         {
-            var metaDataPage = new List<ResourceMetadata>();
-
             if (page > 0)
             {
                 var catalogUri = SodaUri.ForMetadataList(Host, page);
 
-                IEnumerable<dynamic> rawDataList = Get<IEnumerable<dynamic>>(catalogUri);
+                IEnumerable<dynamic> rawDataList = get<IEnumerable<dynamic>>(catalogUri, SodaDataFormat.JSON);
 
                 foreach (var rawData in rawDataList)
                 {
                     var metadata = GetMetadata((string)rawData.id);
 
-                    metaDataPage.Add(metadata);
+                    yield return metadata;
                 }
             }
-
-            return metaDataPage;
+        }
+        
+        /// <summary>
+        /// GET a result from the specified Uri, and include an appropriate Accept header for the specified format.
+        /// </summary>
+        /// <typeparam name="TResult">The target type to deserialize the response into.</typeparam>
+        /// <param name="uri">A Uri to send the GET request to.</param>
+        /// <param name="dataFormat">One of the supported data formats for the request's Accept header.</param>
+        /// <returns>The response, deserialized into an object of type TResult.</returns>
+        internal TResult get<TResult>(Uri uri, SodaDataFormat dataFormat)
+        {
+            return sendRequest<TResult>(uri, "GET", dataFormat);
         }
 
         /// <summary>
@@ -194,14 +177,28 @@ namespace SODA
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
         public SodaResult Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
         {
-            if (String.IsNullOrEmpty(resourceId))
-            {
-                throw new ArgumentNullException("resourceId", "A resource id is required.");
-            }
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
-            return sendRequest<SodaResult>(uri, "POST", dataFormat, payload);
+            SodaResult result;
+
+            try
+            {
+                result = sendRequest<SodaResult>(uri, "POST", dataFormat, payload);
+            }
+            catch(WebException webEx)
+            {
+                string message = unwrapExceptionMessage(webEx);
+                result = new SodaResult() { Message = String.Format("{0}{1}{2}", message, Environment.NewLine, payload) };
+            }
+            catch(Exception ex)
+            {
+                result = new SodaResult() { Message = String.Format("{0}{1}{2}", ex.Message, Environment.NewLine, payload) };
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -251,10 +248,8 @@ namespace SODA
         /// <returns>A collection of dynamic JSON responses from Socrata, one for each batched Upsert.</returns>
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction, string resourceId)
         {
-            if (String.IsNullOrEmpty(resourceId))
-            {
-                throw new ArgumentNullException("resourceId", "A resource id is required.");
-            }
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
             Queue<T> queue = new Queue<T>(payload);            
 
@@ -276,9 +271,14 @@ namespace SODA
                 {
                     result = Upsert<T>(batch, resourceId);
                 }
-                catch(SodaException ex)
+                catch (WebException ex)
                 {
-                    result = new SodaResult() { Message = String.Format("{0}\n{1}", ex.Message, batch.ToJsonString()) };
+                    string message = unwrapExceptionMessage(ex);
+                    result = new SodaResult() { Message = String.Format("{0}{1}{2}", message, Environment.NewLine, batch.ToJsonString()) };
+                }
+                catch(Exception ex)
+                {
+                    result = new SodaResult() { Message = String.Format("{0}{1}{2}", ex.Message, Environment.NewLine, batch.ToJsonString()) };
                 }
 
                 yield return result;
@@ -328,14 +328,12 @@ namespace SODA
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
         public SodaResult Replace(string payload, SodaDataFormat dataFormat, string resourceId)
         {
-            if (String.IsNullOrEmpty(resourceId))
-            {
-                throw new ArgumentNullException("resourceId", "A resource id is required.");
-            }
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
-            return sendRequest<dynamic>(uri, "PUT", dataFormat, payload);
+            return sendRequest<SodaResult>(uri, "PUT", dataFormat, payload);
         }
 
         /// <summary>
@@ -350,34 +348,23 @@ namespace SODA
         {
             var request = createRequest(uri, method, dataFormat, body);
 
-            try
+            using (var responseStream = request.GetResponse().GetResponseStream())
             {
-                using (var responseStream = request.GetResponse().GetResponseStream())
+                TResult entity = default(TResult);
+
+                string response = new StreamReader(responseStream).ReadToEnd();
+
+                switch (dataFormat)
                 {
-                    TResult entity = default(TResult);
-
-                    string response = new StreamReader(responseStream).ReadToEnd();
-
-                    switch(dataFormat)
-                    {
-                        case SodaDataFormat.JSON:
-                            entity = JsonConvert.DeserializeObject<TResult>(response);
-                            break;
-                        case SodaDataFormat.CSV:                        
-                        case SodaDataFormat.XML:
-                            throw new NotImplementedException();
-                    }
-
-                    return entity;
+                    case SodaDataFormat.JSON:
+                        entity = JsonConvert.DeserializeObject<TResult>(response);
+                        break;
+                    case SodaDataFormat.CSV:
+                    case SodaDataFormat.XML:
+                        throw new NotImplementedException();
                 }
-            }
-            catch (WebException webException)
-            {
-                throw SodaException.Wrap(webException);
-            }
-            catch (Exception ex)
-            {
-                throw SodaException.Wrap(ex);
+
+                return entity;
             }
         }
 
@@ -428,6 +415,28 @@ namespace SODA
             }
 
             return request;
+        }
+
+        private static string unwrapExceptionMessage(WebException webException)
+        {
+            string message = String.Empty;
+
+            if (webException != null)
+            {
+                if (webException.Response != null)
+                {
+                    using (var streamReader = new StreamReader(webException.Response.GetResponseStream()))
+                    {
+                        message = streamReader.ReadToEnd();
+                    }
+                }
+                else
+                {
+                    message = webException.Message;
+                }
+            }
+
+            return message;
         }
     }
 }

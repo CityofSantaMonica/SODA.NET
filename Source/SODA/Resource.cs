@@ -47,7 +47,7 @@ namespace SODA
             if(Client != null)
             {
                 var queryUri = SodaUri.ForQuery(Host, Metadata.Identifier, soqlQuery);
-                return Client.Get<IEnumerable<TResult>>(queryUri);
+                return Client.get<IEnumerable<TResult>>(queryUri, SodaDataFormat.JSON);
             }
 
             return null;
@@ -93,12 +93,12 @@ namespace SODA
         public ResourceRecord GetRecord(string recordId)
         {
             if (String.IsNullOrEmpty(recordId))
-                throw new ArgumentNullException("recordId", "A record identifier is required.");
+                throw new ArgumentException("recordId", "A record identifier is required.");
 
             if (Client != null)
             {
                 var resourceUri = SodaUri.ForResourceAPI(Host, Metadata.Identifier, recordId);
-                return Client.Get<ResourceRecord>(resourceUri);
+                return Client.get<ResourceRecord>(resourceUri, SodaDataFormat.JSON);
             }
             
             return null;
