@@ -60,6 +60,9 @@
     <Compile Include="SodaClient.cs" />
     <Compile Include="SodaUri.cs" />
     <Compile Include="Utilities\DateTimeConverter.cs" />
+    <Compile Include="Utilities\FourByFour.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
