@@ -88,6 +88,23 @@ namespace SODA.Tests.Unit
 
         [Test]
         [Category("Resource")]
+        public void GetRecord_With_Empty_RecordId_Throws_ArugmentNullException()
+        {
+            var resource = new Resource(String.Empty, null, null);
+
+            Assert.That(
+                () => resource.GetRecord(String.Empty),
+                Throws.InstanceOf<ArgumentNullException>()
+            );
+
+            Assert.That(
+                () => resource.GetRecord(null),
+                Throws.InstanceOf<ArgumentNullException>()
+            );
+        }
+
+        [Test]
+        [Category("Resource")]
         public void GetRecord_With_Null_Client_Returns_Null()
         {
             var resource = new Resource(String.Empty, null, null);
