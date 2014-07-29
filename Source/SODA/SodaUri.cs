@@ -12,7 +12,7 @@ namespace SODA
         /// Create a Url string suitable for interacting with resource metadata on the specified Socrata host.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
-        /// <param name="resourceId">The identifier for a specific resource on the Socrata host to target.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A SODA-compatible Url for the target Socrata host.</returns>
         private static string metadataUrl(string socrataHost, string resourceId = null)
         {
@@ -30,7 +30,7 @@ namespace SODA
         /// Create a Uri suitable for interacting with resource metadata on the specified domain, at the endpoint specified by the resourceId. 
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
-        /// <param name="resourceId">The identifier for a specific resource on the Socrata host to target.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A Uri pointing to resource metadata for the specified Socrata host and resource identifier.</returns>
         public static Uri ForMetadata(string socrataHost, string resourceId)
         {
@@ -67,11 +67,11 @@ namespace SODA
         }
 
         /// <summary>
-        /// Create a Uri suitable for interacting with the specified resource via SODA on the specified domain. 
+        /// Create a Uri suitable for interacting with the specified resource on the specified domain. 
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
-        /// <param name="resourceId">The identifier for a specific resource on the Socrata host to target.</param>
-        /// <param name="rowId">The identifier for a specific row in the resource to target.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <param name="rowId">The identifier for a row in the resource to target.</param>
         /// <returns>A Uri pointing to the SODA endpoint for the specified resource in the specified Socrata host.</returns>
         public static Uri ForResourceAPI(string socrataHost, string resourceId, string rowId = null)
         {
@@ -95,7 +95,7 @@ namespace SODA
         /// Create a Uri to the landing page of a specified resource on the specified Socrata host.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
-        /// <param name="resourceId">The identifier for a specific resource on the Socrata host to target.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A Uri pointing to the landing page of the specified resource on the specified Socrata doamin.</returns>
         public static Uri ForResourcePermalink(string socrataHost, string resourceId)
         {
@@ -111,10 +111,10 @@ namespace SODA
         }
 
         /// <summary>
-        /// Create a Uri suitable for querying (via SODA) the specified resource on the specified Socrata host.
+        /// Create a Uri suitable for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
-        /// <param name="resourceId">The identifier for a specific resource on the Socrata host to target.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <param name="soqlQuery">A SoqlQuery object to use for querying.</param>
         /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
         public static Uri ForQuery(string socrataHost, string resourceId, SoqlQuery soqlQuery)
@@ -128,34 +128,13 @@ namespace SODA
             if (soqlQuery == null)
                 throw new ArgumentNullException("soqlQuery", "Must provide a valid SoqlQuery object");
 
-            return ForQuery(socrataHost, resourceId, soqlQuery.ToString());
-        }
-
-        /// <summary>
-        /// Create a Uri suitable for querying (via SODA) the specified resource on the specified Socrata host.
-        /// </summary>
-        /// <param name="socrataHost">The Socrata host to target.</param>
-        /// <param name="resourceId">The identifier for a specific resource on the Socrata host to target.</param>
-        /// <param name="soqlQuery">The string representation of a SoQL query to use for querying.</param>
-        /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
-        public static Uri ForQuery(string socrataHost, string resourceId, string soqlQuery)
-        {
-            if (String.IsNullOrEmpty(socrataHost))
-                throw new ArgumentNullException("socrataHost", "Must provide a valid Socrata host to target.");
-
-            if (String.IsNullOrEmpty(resourceId))
-                throw new ArgumentNullException("resourceId", "Must provide a valid resource identifier to target.");
-
-            if(String.IsNullOrEmpty(soqlQuery))
-                throw new ArgumentNullException("soqlQuery", "Must provide a valid SoQL query string");
-
             string url = metadataUrl(socrataHost, resourceId).Replace("views", "resource");
 
-            string queryUrl = String.Format("{0}?{1}", url, soqlQuery);
+            string queryUrl = Uri.EscapeUriString(String.Format("{0}?{1}", url, soqlQuery.ToString()));
 
             return new Uri(queryUrl);
         }
-        
+                
         /// <summary>
         /// Create a Uri to the landing page of a specified category on the specified Socrata host.
         /// </summary>

@@ -16,7 +16,7 @@ namespace SODA.Tests.Unit
         [Category("SodaUri")]
         public void All_Methods_Return_Uri_With_Socrata_Domain_As_Host()
         {
-            var uri = SodaUri.ForMetadata(socrataDomain, nonEmptyInput);
+            Uri uri = SodaUri.ForMetadata(socrataDomain, nonEmptyInput);
             StringAssert.AreEqualIgnoringCase(socrataDomain, uri.Host);
             
             uri = null;
@@ -34,11 +34,7 @@ namespace SODA.Tests.Unit
             uri = null;
             uri = SodaUri.ForQuery(socrataDomain, nonEmptyInput, new SoqlQuery());
             StringAssert.AreEqualIgnoringCase(socrataDomain, uri.Host);
-
-            uri = null;
-            uri = SodaUri.ForQuery(socrataDomain, nonEmptyInput, nonEmptyInput);
-            StringAssert.AreEqualIgnoringCase(socrataDomain, uri.Host);
-
+            
             uri = null;
             uri = SodaUri.ForCategoryPage(socrataDomain, nonEmptyInput);
             StringAssert.AreEqualIgnoringCase(socrataDomain, uri.Host);
@@ -48,32 +44,28 @@ namespace SODA.Tests.Unit
         [Category("SodaUri")]
         public void All_Methods_Return_Uri_Using_HTTPS()
         {
-            var uri = SodaUri.ForMetadata(socrataDomain, nonEmptyInput);
-            StringAssert.AreEqualIgnoringCase("https", uri.Scheme);
-
+            Uri uri = SodaUri.ForMetadata(socrataDomain, nonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+            
             uri = null;
             uri = SodaUri.ForMetadataList(socrataDomain, 1);
-            StringAssert.AreEqualIgnoringCase("https", uri.Scheme);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
             uri = SodaUri.ForResourceAPI(socrataDomain, nonEmptyInput);
-            StringAssert.AreEqualIgnoringCase("https", uri.Scheme);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
             uri = SodaUri.ForResourcePermalink(socrataDomain, nonEmptyInput);
-            StringAssert.AreEqualIgnoringCase("https", uri.Scheme);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
             uri = SodaUri.ForQuery(socrataDomain, nonEmptyInput, new SoqlQuery());
-            StringAssert.AreEqualIgnoringCase("https", uri.Scheme);
-
-            uri = null;
-            uri = SodaUri.ForQuery(socrataDomain, nonEmptyInput, nonEmptyInput);
-            StringAssert.AreEqualIgnoringCase("https", uri.Scheme);
-
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+            
             uri = null;
             uri = SodaUri.ForCategoryPage(socrataDomain, nonEmptyInput);
-            StringAssert.AreEqualIgnoringCase("https", uri.Scheme);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
         }
 
         [Test]
@@ -226,8 +218,6 @@ namespace SODA.Tests.Unit
         [Category("SodaUri")]
         public void ForQuery_With_Empty_Arguments_Throws_ArgumentNullException()
         {
-            #region SoqlQuery overload
-
             SoqlQuery nullQuery = null;
             SoqlQuery nonNullQuery = new SoqlQuery();
 
@@ -255,74 +245,18 @@ namespace SODA.Tests.Unit
                 () => SodaUri.ForQuery(nonEmptyInput, nonEmptyInput, nullQuery),
                 Throws.InstanceOf<ArgumentNullException>()
             );
-
-            #endregion
-
-            #region query string overload
-
-            Assert.That(
-                () => SodaUri.ForQuery(nullInput, nonEmptyInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForQuery(nullInput, nonEmptyInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForQuery(emptyInput, nonEmptyInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForQuery(nonEmptyInput, nullInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForQuery(nonEmptyInput, emptyInput, nonEmptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForQuery(nonEmptyInput, nonEmptyInput, nullInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            Assert.That(
-                () => SodaUri.ForQuery(nonEmptyInput, nonEmptyInput, emptyInput),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-
-            #endregion
         }
 
         [Test]
         [Category("SodaUri")]
         public void ForQuery_With_Valid_Arguments_Creates_Query_Uri()
         {
-            #region SoqlQuery overload
-
             SoqlQuery soqlQuery = new SoqlQuery();
 
             var uri = SodaUri.ForQuery(socrataDomain, resourceId, soqlQuery);
 
             StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}", resourceId), uri.LocalPath);
-            StringAssert.AreEqualIgnoringCase(String.Format("?{0}", soqlQuery.ToString()), uri.Query);
-
-            #endregion
-
-            #region query string overload
-
-            uri = null;
-            string soqlQueryString = "some soql query";
-            uri = SodaUri.ForQuery(socrataDomain, resourceId, soqlQueryString);
-
-            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}", resourceId), uri.LocalPath);
-            StringAssert.AreEqualIgnoringCase(String.Format("?{0}", Uri.EscapeDataString(soqlQueryString)), uri.Query);
-
-            #endregion
+            StringAssert.AreEqualIgnoringCase(String.Format("?{0}", Uri.EscapeUriString(soqlQuery.ToString())), uri.Query);
         }
 
         [Test]
