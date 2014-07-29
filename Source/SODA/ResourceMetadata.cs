@@ -7,13 +7,13 @@ using SODA.Utilities;
 namespace SODA
 {
     /// <summary>
-    /// A class that represents metadata about a resource in Socrata.
+    /// A class that represents metadata about a <see cref="Resource"/> in Socrata.
     /// </summary>
     [DataContract]
     public class ResourceMetadata
     {
         /// <summary>
-        /// The parent resource object that this metadata describes.
+        /// The parent <see cref="Resource"/> object that this metadata describes.
         /// </summary>
         public Resource Resource { get; internal set; }
 

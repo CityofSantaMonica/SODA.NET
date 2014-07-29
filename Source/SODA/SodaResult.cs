@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace SODA
 {
+    /// <summary>
+    /// A class representing the response from a SODA call.
+    /// </summary>
     [DataContract]
     public class SodaResult
     {
