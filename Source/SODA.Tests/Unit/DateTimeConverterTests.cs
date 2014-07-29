@@ -17,7 +17,7 @@ namespace SODA.Tests.Unit
 
             DateTime actual = DateTimeConverter.FromUnixTimestamp(unixTimeStamp);
 
-            Assert.AreEqual(expected, actual);
+            Assert.That(expected, Is.EqualTo(actual).Within(1).Milliseconds);
         }
     }
 }
