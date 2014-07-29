@@ -12,6 +12,8 @@ namespace SODA
     [DataContract]
     public class ResourceMetadata
     {
+        internal ResourceMetadata() { }
+
         /// <summary>
         /// The parent <see cref="Resource"/> object that this metadata describes.
         /// </summary>
