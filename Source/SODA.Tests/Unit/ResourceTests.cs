@@ -89,6 +89,7 @@ namespace SODA.Tests.Unit
 
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NullInput)]
+        [ExpectedException(typeof(ArgumentException))]
         [Category("Resource")]
         public void GetRecord_With_Invalid_RecordId_Throws_ArugmentException(string input)
         {
