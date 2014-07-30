@@ -384,7 +384,7 @@ namespace SODA
 
             request.Headers.Add("X-App-Token", AppToken);
 
-            if (Username.HasValue() && password.HasValue())
+            if (!String.IsNullOrEmpty(Username) && !String.IsNullOrEmpty(password))
             {
                 string authKVP = String.Format("{0}:{1}", Username, password);
                 byte[] authBytes = Encoding.UTF8.GetBytes(authKVP);
@@ -404,7 +404,7 @@ namespace SODA
                     throw new NotImplementedException();
             }
 
-            if (body.HasValue())
+            if (!String.IsNullOrEmpty(body))
             {
                 byte[] bodyBytes = Encoding.UTF8.GetBytes(body);
 

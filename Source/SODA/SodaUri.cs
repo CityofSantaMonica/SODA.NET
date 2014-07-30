@@ -18,7 +18,7 @@ namespace SODA
         {
             string url = String.Format("https://{0}/views", socrataHost);
 
-            if(resourceId.HasValue())
+            if(!String.IsNullOrEmpty(resourceId))
             {
                 url = String.Format("{0}/{1}", url, resourceId);
             }
@@ -83,7 +83,7 @@ namespace SODA
 
             string url = metadataUrl(socrataHost, resourceId).Replace("views", "resource");
 
-            if (rowId.HasValue())
+            if (!String.IsNullOrEmpty(rowId))
             {
                 url = String.Format("{0}/{1}", url, rowId);
             }
