@@ -152,7 +152,7 @@ namespace SODA
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
         public SodaResult Upsert<T>(IEnumerable<T> payload, string resourceId)
         {
-            string json = payload.ToJsonString();
+            string json = JsonConvert.SerializeObject(payload);
 
             return Upsert(json, SodaDataFormat.JSON, resourceId);
         }
@@ -274,11 +274,11 @@ namespace SODA
                 catch (WebException ex)
                 {
                     string message = unwrapExceptionMessage(ex);
-                    result = new SodaResult() { Message = String.Format("{0}{1}{2}", message, Environment.NewLine, batch.ToJsonString()) };
+                    result = new SodaResult() { Message = String.Format("{0}{1}{2}", message, Environment.NewLine, JsonConvert.SerializeObject(batch)) };
                 }
                 catch(Exception ex)
                 {
-                    result = new SodaResult() { Message = String.Format("{0}{1}{2}", ex.Message, Environment.NewLine, batch.ToJsonString()) };
+                    result = new SodaResult() { Message = String.Format("{0}{1}{2}", ex.Message, Environment.NewLine, JsonConvert.SerializeObject(batch)) };
                 }
 
                 yield return result;
@@ -303,7 +303,7 @@ namespace SODA
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
         public SodaResult Replace<T>(IEnumerable<T> payload, string resourceId)
         {
-            string json = payload.ToJsonString();
+            string json = JsonConvert.SerializeObject(payload);
 
             return Replace(json, SodaDataFormat.JSON, resourceId);
         }

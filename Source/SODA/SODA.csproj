@@ -63,7 +63,6 @@
     <Compile Include="Utilities\FourByFour.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\ObjectExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
