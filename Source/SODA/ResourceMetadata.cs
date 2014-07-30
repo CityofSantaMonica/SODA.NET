@@ -15,11 +15,6 @@ namespace SODA
         //constructor is internal because ResourceMetadata should be obtained through a SodaClient or Resource object.
         internal ResourceMetadata() { }
 
-        /// <summary>
-        /// The parent <see cref="Resource"/> object that this metadata describes.
-        /// </summary>
-        public Resource Resource { get; internal set; }
-
         [DataMember(Name="id")]
         public string Identifier { get; set; }
 

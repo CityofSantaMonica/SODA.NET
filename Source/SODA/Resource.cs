@@ -7,7 +7,8 @@ namespace SODA
     /// <summary>
     /// Class that represents the data and operations of a resource in Socrata.
     /// </summary>
-    public class Resource
+    /// <typeparam name="TRecord">The .NET class that represents the type of the underlying record in this resource.</typeparam>
+    public class Resource<TRecord> where TRecord : class
     {
         public string Host { get; private set; }
         public ResourceMetadata Metadata { get; private set; }
@@ -29,25 +30,19 @@ namespace SODA
             Host = host;
             Metadata = metadata;
             Client = client;
-
-            if (Metadata != null)
-            {
-                Metadata.Resource = this;
-            }
         }
         
         /// <summary>
         /// Query this Resource using the specified <see cref="SoqlQuery"/>.
         /// </summary>
-        /// <typeparam name="TResult">The type of each result in the returned collection.</typeparam>
         /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute on this Resource.</param>
-        /// <returns>A collection of entities of type TResult.</returns>
-        public IEnumerable<TResult> Query<TResult>(SoqlQuery soqlQuery)
+        /// <returns>A collection of entities of type TRecord.</returns>
+        public IEnumerable<TRecord> Query(SoqlQuery soqlQuery)
         {
             if(Client != null)
             {
                 var queryUri = SodaUri.ForQuery(Host, Metadata.Identifier, soqlQuery);
-                return Client.get<IEnumerable<TResult>>(queryUri, SodaDataFormat.JSON);
+                return Client.Get<IEnumerable<TRecord>>(queryUri);
             }
 
             return null;
@@ -56,21 +51,21 @@ namespace SODA
         /// <summary>
         /// Get a subset of this Resource's record collection, with maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.
         /// </summary>
-        /// <returns>A collection of <see cref="ResourceRecord"/>, of maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.</returns>
-        public IEnumerable<ResourceRecord> GetRecords()
+        /// <returns>A collection of record of type TRecord, of maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.</returns>
+        public IEnumerable<TRecord> GetRecords()
         {
-            return Query<ResourceRecord>(new SoqlQuery());
+            return Query(new SoqlQuery());
         }
 
         /// <summary>
         /// Get a subset of this Resource's record collection, with maximum size equal to the specified limit.
         /// </summary>
         /// <param name="limit">The maximum number of records to return in the resulting collection.</param>
-        /// <returns>A collection of <see cref="ResourceRecord"/>, of maximum size equal to the specified limit.</returns>
-        public IEnumerable<ResourceRecord> GetRecords(int limit)
+        /// <returns>A collection of maximum size equal to the specified limit.</returns>
+        public IEnumerable<TRecord> GetRecords(int limit)
         {
             var soqlQuery = new SoqlQuery().Limit(limit);
-            return Query<ResourceRecord>(soqlQuery);
+            return Query(soqlQuery);
         }
 
         /// <summary>
@@ -78,19 +73,19 @@ namespace SODA
         /// </summary>
         /// <param name="limit">The maximum number of records to return in the resulting collection.</param>
         /// <param name="offset">The index into this Resource's total records from which to start.</param>
-        /// <returns>A collection of <see cref="ResourceRecord"/>, of maximum size equal to the specified limit.</returns>
-        public IEnumerable<ResourceRecord> GetRecords(int limit, int offset)
+        /// <returns>A collection of records of type TRecord, of maximum size equal to the specified limit.</returns>
+        public IEnumerable<TRecord> GetRecords(int limit, int offset)
         {
             var soqlQuery = new SoqlQuery().Limit(limit).Offset(offset);
-            return Query<ResourceRecord>(soqlQuery);
+            return Query(soqlQuery);
         }
 
         /// <summary>
-        /// Get a single <see cref="ResourceRecord"/> from this Resource's record collection using the specified record id.
+        /// Get a single record of type TRecord from this Resource's record collection using the specified record id.
         /// </summary>
-        /// <param name="recordId"></param>
-        /// <returns></returns>
-        public ResourceRecord GetRecord(string recordId)
+        /// <param name="recordId">The identifier for the record to retrieve.</param>
+        /// <returns>The record with an id matching the specified id.</returns>
+        public TRecord GetRecord(string recordId)
         {
             if (String.IsNullOrEmpty(recordId))
                 throw new ArgumentException("recordId", "A record identifier is required.");
@@ -98,10 +93,10 @@ namespace SODA
             if (Client != null)
             {
                 var resourceUri = SodaUri.ForResourceAPI(Host, Metadata.Identifier, recordId);
-                return Client.get<ResourceRecord>(resourceUri, SodaDataFormat.JSON);
+                return Client.Get<TRecord>(resourceUri);
             }
             
-            return null;
+            return default(TRecord);
         }
     }
 }

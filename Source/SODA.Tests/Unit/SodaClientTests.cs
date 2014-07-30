@@ -13,7 +13,7 @@ namespace SODA.Tests.Unit
         [TestCase(StringMocks.EmptyInput)]
         [ExpectedException(typeof(ArgumentException))]
         [Category("SodaClient")]
-        public void Ctor_With_Empty_AppToken_Throws_ArgumentException(string input)
+        public void Ctor_With_Empty_Host_Throws_ArgumentException(string input)
         {
             new SodaClient(input, StringMocks.Host);
         }
@@ -22,19 +22,19 @@ namespace SODA.Tests.Unit
         [TestCase(StringMocks.EmptyInput)]
         [ExpectedException(typeof(ArgumentException))]
         [Category("SodaClient")]
-        public void Ctor_With_Empty_Host_Throws_ArgumentException(string input)
+        public void Ctor_With_Empty_AppToken_Throws_ArgumentException(string input)
         {
             new SodaClient(StringMocks.NonEmptyInput, input);
         }
 
         [Test]
         [Category("SodaClient")]
-        public void Ctor_With_AppToken_And_Host_Gets_AppToken_And_Host()
+        public void Ctor_With_Host_And_AppToken_Gets_Host_And_AppToken()
         {
             string appToken = StringMocks.NonEmptyInput;
             string host = StringMocks.Host;
 
-            var client = new SodaClient(appToken, host);
+            var client = new SodaClient(host, appToken);
 
             Assert.AreEqual(appToken, client.AppToken);
             Assert.AreEqual(host, client.Host);
@@ -46,7 +46,7 @@ namespace SODA.Tests.Unit
         {
             string username = "userName";
 
-            var client = new SodaClient(StringMocks.NonEmptyInput, StringMocks.Host, username, String.Empty);
+            var client = new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput, username, String.Empty);
 
             Assert.AreEqual(username, client.Username);
         }
@@ -57,7 +57,7 @@ namespace SODA.Tests.Unit
         {
             string defaultResourceId = StringMocks.ResourceId;
 
-            var client = new SodaClient(StringMocks.NonEmptyInput, StringMocks.Host, defaultResourceId);
+            var client = new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput, defaultResourceId);
 
             Assert.AreEqual(defaultResourceId, client.DefaultResourceId);
         }
@@ -69,7 +69,7 @@ namespace SODA.Tests.Unit
         [Category("SodaClient")]
         public void GetResource_With_Invalid_ResourceId_Throws_ArgumentException(string input)
         {
-            new SodaClient(StringMocks.NonEmptyInput, StringMocks.Host).GetResource(input);
+            new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput).GetResource(input);
         }
 
         [TestCase(StringMocks.NullInput)]
@@ -79,7 +79,7 @@ namespace SODA.Tests.Unit
         [Category("SodaClient")]
         public void GetMetadata_With_Invalid_ResourceId_Throws_ArgumentException(string input)
         {
-            new SodaClient(StringMocks.NonEmptyInput, StringMocks.Host).GetMetadata(input);
+            new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput).GetMetadata(input);
         }
 
         [TestCase(StringMocks.NullInput)]
@@ -91,7 +91,7 @@ namespace SODA.Tests.Unit
         {
             IEnumerable<object> payload = Enumerable.Empty<object>();
 
-            new SodaClient(StringMocks.NonEmptyInput, StringMocks.Host).Upsert(payload, input);
+            new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput).Upsert(payload, input);
         }
         
         [TestCase(StringMocks.NullInput)]
@@ -104,7 +104,7 @@ namespace SODA.Tests.Unit
             IEnumerable<object> payload = Enumerable.Empty<object>();
 
             //force execution of the underlying iterator with ToArray()
-            new SodaClient("appToken", "host").BatchUpsert(payload, 0, input).ToArray();
+            new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput).BatchUpsert(payload, 0, input).ToArray();
         }
 
         [TestCase(StringMocks.NullInput)]
@@ -116,7 +116,7 @@ namespace SODA.Tests.Unit
         {
             IEnumerable<object> payload = Enumerable.Empty<object>();
 
-            new SodaClient("appToken", "host").Replace(payload, input);
+            new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput).Replace(payload, input);
         }
     }
 }

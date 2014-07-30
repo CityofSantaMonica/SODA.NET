@@ -13,7 +13,7 @@ namespace SODA.Tests.Unit
         [Category("Resource")]
         public void Resource_With_Null_Metadata_Has_No_Columns()
         {
-            var resource = new Resource(String.Empty, null, null);
+            var resource = new Resource<object>(String.Empty, null, null);
 
             Assert.IsNull(resource.Metadata);
             Assert.IsEmpty(resource.Columns);
@@ -33,37 +33,23 @@ namespace SODA.Tests.Unit
                 }
             };
 
-            var resource = new Resource(String.Empty, metadata, null);
+            var resource = new Resource<object>(String.Empty, metadata, null);
 
             Assert.IsNotNull(resource.Metadata);
             Assert.AreSame(metadata.Columns, resource.Columns);
         }
-
-        [Test]
-        [Category("Resource")]
-        public void Resource_With_Metadata_Sets_Metadata_Resource_Reference()
-        {
-            var metadata = new ResourceMetadata();
-
-            Assert.IsNull(metadata.Resource);
-
-            var resource = new Resource(String.Empty, metadata, null);
-
-            Assert.IsNotNull(resource.Metadata);
-            Assert.AreSame(resource, metadata.Resource);
-        }
-
+        
         [Test]
         [Category("Resource")]
         public void Query_With_Null_Client_Returns_Null()
         {
-            var resource = new Resource(String.Empty, null, null);
+            var resource = new Resource<object>(String.Empty, null, null);
             object nonNullObject = new { value = "resultValue" };
 
             Assert.IsNull(resource.Client);
 
             Assert.That(
-                () => nonNullObject = resource.Query<object>(new SoqlQuery()),
+                () => nonNullObject = resource.Query(new SoqlQuery()),
                 Throws.Nothing
             );
 
@@ -74,8 +60,8 @@ namespace SODA.Tests.Unit
         [Category("Resource")]
         public void GetRecords_With_Null_Client_Returns_Null()
         {
-            var resource = new Resource(String.Empty, null, null);
-            IEnumerable<ResourceRecord> nonNullCollection = Enumerable.Empty<ResourceRecord>();
+            var resource = new Resource<object>(String.Empty, null, null);
+            IEnumerable<object> nonNullCollection = Enumerable.Empty<object>();
 
             Assert.IsNull(resource.Client);
 
@@ -93,15 +79,15 @@ namespace SODA.Tests.Unit
         [Category("Resource")]
         public void GetRecord_With_Invalid_RecordId_Throws_ArugmentException(string input)
         {
-            new Resource(String.Empty, null, null).GetRecord(input);
+            new Resource<object>(String.Empty, null, null).GetRecord(input);
         }
 
         [Test]
         [Category("Resource")]
         public void GetRecord_With_Null_Client_Returns_Null()
         {
-            var resource = new Resource(String.Empty, null, null);
-            ResourceRecord nonNullRecord = new ResourceRecord();
+            var resource = new Resource<object>(String.Empty, null, null);
+            object nonNullRecord = new ResourceRecord();
 
             Assert.IsNull(resource.Client);
 

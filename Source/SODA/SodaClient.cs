@@ -14,38 +14,49 @@ namespace SODA
     /// </summary>
     public class SodaClient
     {
-        public string AppToken { get; private set; }
         public string Host { get; private set; }
+        public string AppToken { get; private set; }
         public string Username { get; private set; }
         public string DefaultResourceId { get; private set; }
 
         private readonly string password;
-        
+
+        #region ctor
+
         /// <summary>
         /// Initialize a new (anonymous) SodaClient with the specified appToken, for the specified Socrata host.
         /// </summary>
-        public SodaClient(string appToken, string host) : this(appToken, host, null, null, null)
+        /// <param name="host">The Socrata host that this client will target.</param>
+        /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
+        public SodaClient(string host, string appToken) : this(host, appToken, null, null, null)
         {
         }
 
         /// <summary>
         /// Initialize a new SodaClient with the specified appToken, for the specified Socrata host, using the specified login credentials.
         /// </summary>
-        public SodaClient(string appToken, string host, string username, string password) : this(appToken, host, username, password, null)
+        /// <param name="host">The Socrata host that this client will target.</param>
+        /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
+        /// <param name="username">The Socrata user account that this client will use for all requests.</param>
+        /// <param name="password">The password for the specified <paramref name="username"/> that this client will use for all requests.</param>
+        public SodaClient(string host, string appToken, string username, string password) : this(host, appToken, username, password, null)
         {
         }
 
         /// <summary>
         /// Initialize a new (anonymous) SodaClient with the specified appToken, for the specified Socrata host, and use the specified resource id by default in subsequent calls.
         /// </summary>
-        public SodaClient(string appToken, string host, string defaultResourceId) : this(appToken, host, null, null, defaultResourceId)
+        /// <param name="host">The Socrata host that this client will target.</param>
+        /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
+        /// <param name="defaultResourceId">The identifier (4x4) for a resource on the Socrata host that this client will use by default.</param>
+        public SodaClient(string host, string appToken, string defaultResourceId) : this(host, appToken, null, null, defaultResourceId)
         {
         }
 
         /// <summary>
         /// Initialize a new SodaClient with the specified appToken, for the specified Socrata host, using the specified login credentials, and use the specified resource id by default in subsequent calls.
         /// </summary>
-        public SodaClient(string appToken, string host, string username, string password, string defaultResourceId)
+        public SodaClient(string host, string appToken, string username, string password, string defaultResourceId)
         {
             if (String.IsNullOrEmpty(appToken))
                 throw new ArgumentException("appToken", "An app token is required");
@@ -59,26 +70,69 @@ namespace SODA
             Username = username;
             this.password = password;
         }
-        
+
+        #endregion
+
+        #region GET
+
         /// <summary>
-        /// Get a Resource object using this client's default resourse id.
+        /// Send an HTTP GET request to the specified URI, and include an appropriate ACCEPT header for the specified data format.
         /// </summary>
-        public Resource GetResource()
+        /// <typeparam name="T">The type to use for response deserialization.</typeparam>
+        /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
+        /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
+        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="T"/>.</returns>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        public T Get<T>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
         {
-            return GetResource(DefaultResourceId);
+            return sendRequest<T>(uri, "GET", dataFormat);
         }
 
         /// <summary>
-        /// Get a Resource using the specified resource id.
+        /// Get a Resource object using this client's default resourse id.
         /// </summary>
-        public Resource GetResource(string resourceId)
+        /// <typeparam name="TRecord">The .NET class that represents the type of the underlying record in the Resource.</typeparam>
+        /// <returns>A Resource object with an underlying record set of type <typeparamref name="T"/>.</returns>
+        public Resource<TRecord> GetResource<TRecord>() where TRecord : class
+        {
+            return GetResource<TRecord>(DefaultResourceId);
+        }
+
+        /// <summary>
+        /// Get a Resource object using the specified resource id.
+        /// </summary>
+        /// <typeparam name="TRecord">The .NET class that represents the type of the underlying record in the Resource.</typeparam>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A Resource object with an underlying record set of type <typeparamref name="T"/>.</returns>
+        public Resource<TRecord> GetResource<TRecord>(string resourceId) where TRecord : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
             var metadata = GetMetadata(resourceId);
-            
-            return new Resource(Host, metadata, this);
+
+            return new Resource<TRecord>(Host, metadata, this);
+        }
+
+        /// <summary>
+        /// Get a Resource object that represents its records as <see cref="ResourceRecord"/>, using this client's default resource id.
+        /// </summary>
+        /// <returns>A Resource object with an underlying record set of type <see cref="ResourceRecord"/>.</returns>
+        public Resource<ResourceRecord> GetResource()
+        {
+            return GetResource<ResourceRecord>();
+        }
+
+        /// <summary>
+        /// Get a Resource object that represents its records as <see cref="ResourceRecord"/>, using the specified resource id.
+        /// </summary>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A Resource object with an underlying record set of type <see cref="ResourceRecord"/>.</returns>
+        public Resource<ResourceRecord> GetResource(string resourceId)
+        {
+            return GetResource<ResourceRecord>(resourceId);
         }
 
         /// <summary>
@@ -92,6 +146,7 @@ namespace SODA
         /// <summary>
         /// Get a ResourceMetadata object using the specified resource id.
         /// </summary>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         public ResourceMetadata GetMetadata(string resourceId) 
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -99,7 +154,7 @@ namespace SODA
 
             var uri = SodaUri.ForMetadata(Host, resourceId);
 
-            return get<ResourceMetadata>(uri, SodaDataFormat.JSON);
+            return Get<ResourceMetadata>(uri);
         }
 
         /// <summary>
@@ -111,7 +166,7 @@ namespace SODA
             {
                 var catalogUri = SodaUri.ForMetadataList(Host, page);
 
-                IEnumerable<dynamic> rawDataList = get<IEnumerable<dynamic>>(catalogUri, SodaDataFormat.JSON);
+                IEnumerable<dynamic> rawDataList = Get<IEnumerable<dynamic>>(catalogUri);
 
                 foreach (var rawData in rawDataList)
                 {
@@ -121,18 +176,10 @@ namespace SODA
                 }
             }
         }
-        
-        /// <summary>
-        /// GET a result from the specified Uri, and include an appropriate Accept header for the specified format.
-        /// </summary>
-        /// <typeparam name="TResult">The target type to deserialize the response into.</typeparam>
-        /// <param name="uri">A Uri to send the GET request to.</param>
-        /// <param name="dataFormat">One of the supported data formats for the request's Accept header.</param>
-        /// <returns>The response, deserialized into an object of type TResult.</returns>
-        internal TResult get<TResult>(Uri uri, SodaDataFormat dataFormat)
-        {
-            return sendRequest<TResult>(uri, "GET", dataFormat);
-        }
+
+        #endregion
+
+        #region POST
 
         /// <summary>
         /// Update/Insert the specified collection of entities using this client's default resource id.
@@ -173,7 +220,7 @@ namespace SODA
         /// </summary>
         /// <param name="payload">A string of serialized data.</param>
         /// <param name="dataFormat">The data format used for serialization.</param>
-        /// <param name="resourceId">The id of the resource to send the Upsert request to.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
         public SodaResult Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
         {
@@ -217,7 +264,7 @@ namespace SODA
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
-        /// <param name="resourceId">The id of the resource to send the Upsert batches to.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A collection of dynamic JSON responses from Socrata, one for each batch processed.</returns>
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, string resourceId)
         {
@@ -244,7 +291,7 @@ namespace SODA
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
         /// <param name="breakFunction">A function which, when evaluated true, causes a batch to be sent (possibly before it reaches <paramref name="batchSize"/>).</param>
-        /// <param name="resourceId">The id of the resource to send the Upsert batches to.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A collection of dynamic JSON responses from Socrata, one for each batched Upsert.</returns>
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction, string resourceId)
         {
@@ -285,6 +332,10 @@ namespace SODA
             }
         }
 
+        #endregion
+
+        #region PUT
+
         /// <summary>
         /// Replace any existing records with a collection of entities, using this client's default resource id.
         /// </summary>
@@ -299,7 +350,7 @@ namespace SODA
         /// Replace any existing records with a collection of entities, using the specified resource id.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single record in the target resource.</param>
-        /// <param name="resourceId">The id of the resource to send the Replace requeset to.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
         public SodaResult Replace<T>(IEnumerable<T> payload, string resourceId)
         {
@@ -324,7 +375,7 @@ namespace SODA
         /// </summary>
         /// <param name="payload">A string of serialized data.</param>
         /// <param name="dataFormat">The data format used for serialization.</param>
-        /// <param name="resourceId">The id of the resource to send the Replace requeset to.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A dynamic JSON response from Socrata, indicating success or failure.</returns>
         public SodaResult Replace(string payload, SodaDataFormat dataFormat, string resourceId)
         {
@@ -335,6 +386,14 @@ namespace SODA
 
             return sendRequest<SodaResult>(uri, "PUT", dataFormat, payload);
         }
+
+        #endregion
+
+        #region DELETE
+
+        #endregion
+
+        #region implementation
 
         /// <summary>
         /// Implementation method for sending requests.
@@ -438,5 +497,7 @@ namespace SODA
 
             return message;
         }
+
+        #endregion
     }
 }
