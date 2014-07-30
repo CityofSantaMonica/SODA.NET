@@ -62,8 +62,6 @@ namespace SODA
             string url = String.Format("{0}?page={1}", metadataUrl(socrataHost), page);
 
             return new Uri(url);
-
-            return default(Uri);
         }
 
         /// <summary>
