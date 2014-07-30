@@ -27,7 +27,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Create a Uri suitable for interacting with resource metadata on the specified domain, at the endpoint specified by the resourceId. 
+        /// Create a Uri for sending a request to the specified resource metadata on the specified domain.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -46,7 +46,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Create a Uri suitable for interacting with a catalog of resource metadata on the specified domain and page of the catalog. 
+        /// Create a Uri for sending a request to a catalog of resource metadata on the specified domain and page of the catalog. 
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="page">The page of the resource metadata catalog on the Socrata host to target.</param>
@@ -67,7 +67,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Create a Uri suitable for interacting with the specified resource on the specified domain. 
+        /// Create a Uri for sending a request to the specified resource on the specified domain. 
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -92,7 +92,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Create a Uri to the landing page of a specified resource on the specified Socrata host.
+        /// Create a Uri to the landing page of the specified resource on the specified Socrata host.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -111,7 +111,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Create a Uri suitable for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>

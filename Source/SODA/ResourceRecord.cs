@@ -3,7 +3,7 @@
 namespace SODA
 {
     /// <summary>
-    /// A class that represents a single record in a <see cref="Resource"/> in Socrata.
+    /// A class to represent an arbitrary record in a <see cref="Resource"/> in Socrata.
     /// </summary>
     public class ResourceRecord : Dictionary<string, object>
     {
