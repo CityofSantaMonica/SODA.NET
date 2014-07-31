@@ -60,6 +60,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Mocks\RequestMocks.cs" />
     <Compile Include="Mocks\StringMocks.cs">
       <SubType>Code</SubType>
     </Compile>
