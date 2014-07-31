@@ -9,9 +9,11 @@ namespace SODA
     public class Resource<TRecord> where TRecord : class
     {
         /// <summary>Metadata about this Resource.</summary>
+        /// 
         public ResourceMetadata Metadata { get; private set; }
         
         /// <summary>A collection describing the metadata of each column in this Resource.</summary>
+        /// 
         public IEnumerable<ResourceColumn> Columns
         {
             get
@@ -24,9 +26,11 @@ namespace SODA
         }
 
         /// <summary>The Socrata Open Data Portal that hosts this Resource.</summary>
+        /// 
         public string Host { get; private set; }
 
         /// <summary>A SodaClient object used for sending requests to this Resource's Host.</summary>
+        /// 
         internal SodaClient Client { get; private set; }
 
         /// <summary>Create a new Resource object on the specified Socrata host, with the specfieid metadata, and using the specified SodaClient.</summary>
@@ -40,7 +44,9 @@ namespace SODA
         {
             Metadata = metadata;
             Client = client;
-            Host = client.Host;
+
+            if(client != null)
+                Host = client.Host;
         }
         
         /// <summary>Query this Resource using the specified <see cref="SoqlQuery"/>.</summary>

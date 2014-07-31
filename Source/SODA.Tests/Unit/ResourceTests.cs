@@ -11,9 +11,9 @@ namespace SODA.Tests.Unit
     {
         [Test]
         [Category("Resource")]
-        public void Resource_With_Null_Metadata_Has_No_Columns()
+        public void New_With_Null_Metadata_Has_No_Columns()
         {
-            var resource = new Resource<object>(String.Empty, null, null);
+            var resource = new Resource<object>(null, null);
 
             Assert.IsNull(resource.Metadata);
             Assert.IsEmpty(resource.Columns);
@@ -21,7 +21,7 @@ namespace SODA.Tests.Unit
 
         [Test]
         [Category("Resource")]
-        public void Resource_With_Metadata_Has_Metadata_Columns()
+        public void New_With_Metadata_Has_Metadata_Columns()
         {
             var metadata = new ResourceMetadata()
             {
@@ -33,17 +33,36 @@ namespace SODA.Tests.Unit
                 }
             };
 
-            var resource = new Resource<object>(String.Empty, metadata, null);
+            var resource = new Resource<object>(metadata, null);
 
-            Assert.IsNotNull(resource.Metadata);
             Assert.AreSame(metadata.Columns, resource.Columns);
         }
         
         [Test]
         [Category("Resource")]
+        public void New_With_Null_Client_Has_No_Host()
+        {
+            var resource = new Resource<object>(null, null);
+
+            Assert.IsNull(resource.Host);
+        }
+
+        [Test]
+        [Category("Resource")]
+        public void New_With_Client_Gets_Clients_Host()
+        {
+            var client = new SodaClient("host", "app token");
+
+            var resource = new Resource<object>(null, client);
+
+            Assert.AreEqual(resource.Host, client.Host);
+        }
+
+        [Test]
+        [Category("Resource")]
         public void Query_With_Null_Client_Returns_Null()
         {
-            var resource = new Resource<object>(String.Empty, null, null);
+            var resource = new Resource<object>(null, null);
             object nonNullObject = new { value = "resultValue" };
 
             Assert.IsNull(resource.Client);
@@ -60,7 +79,7 @@ namespace SODA.Tests.Unit
         [Category("Resource")]
         public void GetRecords_With_Null_Client_Returns_Null()
         {
-            var resource = new Resource<object>(String.Empty, null, null);
+            var resource = new Resource<object>(null, null);
             IEnumerable<object> nonNullCollection = Enumerable.Empty<object>();
 
             Assert.IsNull(resource.Client);
@@ -79,14 +98,14 @@ namespace SODA.Tests.Unit
         [Category("Resource")]
         public void GetRecord_With_Invalid_RecordId_Throws_ArugmentException(string input)
         {
-            new Resource<object>(String.Empty, null, null).GetRecord(input);
+            new Resource<object>(null, null).GetRecord(input);
         }
 
         [Test]
         [Category("Resource")]
         public void GetRecord_With_Null_Client_Returns_Null()
         {
-            var resource = new Resource<object>(String.Empty, null, null);
+            var resource = new Resource<object>(null, null);
             object nonNullRecord = new ResourceRecord();
 
             Assert.IsNull(resource.Client);
