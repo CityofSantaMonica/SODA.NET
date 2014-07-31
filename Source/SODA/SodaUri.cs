@@ -95,7 +95,7 @@ namespace SODA
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A Uri pointing to the landing page of the specified resource on the specified Socrata doamin.</returns>
-        public static Uri ForResourcePermalink(string socrataHost, string resourceId)
+        public static Uri ForResourcePage(string socrataHost, string resourceId)
         {
             if (String.IsNullOrEmpty(socrataHost))
                 throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
@@ -104,6 +104,25 @@ namespace SODA
                 throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
 
             string url = metadataUrl(socrataHost, resourceId).Replace("views", "-/-");
+
+            return new Uri(url);
+        }
+
+        /// <summary>
+        /// Create a Uri to the landing page of the specified resource on the specified Socrata host.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A Uri pointing to the landing page of the specified resource on the specified Socrata doamin.</returns>
+        public static Uri ForResourceAboutPage(string socrataHost, string resourceId)
+        {
+            if (String.IsNullOrEmpty(socrataHost))
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
+
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
+
+            string url = metadataUrl(socrataHost, resourceId).Replace("views", "-/-") + "/about";
 
             return new Uri(url);
         }

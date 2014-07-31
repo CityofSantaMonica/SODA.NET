@@ -23,7 +23,11 @@ namespace SODA.Tests.Unit
             StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
 
             uri = null;
-            uri = SodaUri.ForResourcePermalink(StringMocks.Host, StringMocks.ResourceId);
+            uri = SodaUri.ForResourcePage(StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForResourceAboutPage(StringMocks.Host, StringMocks.ResourceId);
             StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
 
             uri = null;
@@ -51,7 +55,11 @@ namespace SODA.Tests.Unit
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
-            uri = SodaUri.ForResourcePermalink(StringMocks.Host, StringMocks.ResourceId);
+            uri = SodaUri.ForResourcePage(StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForResourceAboutPage(StringMocks.Host, StringMocks.ResourceId);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
@@ -159,9 +167,9 @@ namespace SODA.Tests.Unit
         [TestCase(StringMocks.EmptyInput)]
         [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
-        public void ForResourcePermalink_With_Empty_Host_Throws_ArgumentException(string input)
+        public void ForResourcePage_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            SodaUri.ForResourcePermalink(input, StringMocks.ResourceId);
+            SodaUri.ForResourcePage(input, StringMocks.ResourceId);
         }
 
         [TestCase(StringMocks.NullInput)]
@@ -169,18 +177,46 @@ namespace SODA.Tests.Unit
         [TestCase(StringMocks.NonEmptyInput)]
         [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
-        public void ForResourcePermalink_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void ForResourcePage_With_Invalid_ResourceId_Throws_ArgumentException(string input)
         {
-            SodaUri.ForResourcePermalink(StringMocks.Host, input);
+            SodaUri.ForResourcePage(StringMocks.Host, input);
         }
 
         [Test]
         [Category("SodaUri")]
-        public void ForResourcePermalink_With_Valid_Arguments_Creates_ResourcePermalink_Uri()
+        public void ForResourcePage_With_Valid_Arguments_Creates_ResourcePermalink_Uri()
         {
-            var uri = SodaUri.ForResourcePermalink(StringMocks.Host, StringMocks.ResourceId);
+            var uri = SodaUri.ForResourcePage(StringMocks.Host, StringMocks.ResourceId);
 
             StringAssert.AreEqualIgnoringCase(String.Format("/-/-/{0}", StringMocks.ResourceId), uri.LocalPath);
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
+        [Category("SodaUri")]
+        public void ForResourceAboutPage_With_Empty_Host_Throws_ArgumentException(string input)
+        {
+            SodaUri.ForResourceAboutPage(input, StringMocks.ResourceId);
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [TestCase(StringMocks.NonEmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
+        [Category("SodaUri")]
+        public void ForResourceAboutPage_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        {
+            SodaUri.ForResourceAboutPage(StringMocks.Host, input);
+        }
+
+        [Test]
+        [Category("SodaUri")]
+        public void ForResourceAboutPage_With_Valid_Arguments_Creates_ResourcePermalink_Uri()
+        {
+            var uri = SodaUri.ForResourceAboutPage(StringMocks.Host, StringMocks.ResourceId);
+
+            StringAssert.AreEqualIgnoringCase(String.Format("/-/-/{0}/about", StringMocks.ResourceId), uri.LocalPath);
         }
 
         [TestCase(StringMocks.NullInput)]
