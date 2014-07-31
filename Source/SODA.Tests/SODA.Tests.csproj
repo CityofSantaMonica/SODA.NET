@@ -65,16 +65,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unit\DateTimeConverterTests.cs" />
-    <Compile Include="Unit\FourByFourTests.cs" />
-    <Compile Include="Unit\ResourceMetadataTests.cs" />
-    <Compile Include="Unit\ResourceRecordTests.cs" />
-    <Compile Include="Unit\ResourceTests.cs" />
-    <Compile Include="Unit\SodaClientTests.cs">
+    <Compile Include="DateTimeConverterTests.cs" />
+    <Compile Include="FourByFourTests.cs" />
+    <Compile Include="ResourceMetadataTests.cs" />
+    <Compile Include="ResourceRecordTests.cs" />
+    <Compile Include="ResourceTests.cs" />
+    <Compile Include="SodaClientTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Unit\SodaUriTests.cs" />
-    <Compile Include="Unit\SoqlQueryTests.cs" />
+    <Compile Include="SodaUriTests.cs" />
+    <Compile Include="SoqlQueryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -85,7 +85,9 @@
       <Name>SODA</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Unit\" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

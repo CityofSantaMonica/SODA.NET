@@ -6,7 +6,7 @@ using System.Text;
 using NUnit.Framework;
 using SODA.Tests.Mocks;
 
-namespace SODA.Tests.Unit
+namespace SODA.Tests
 {
     [TestFixture]
     public class SodaClientTests

@@ -2,7 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 
-namespace SODA.Tests.Unit
+namespace SODA.Tests
 {
     [TestFixture]
     public class SoqlQueryTests

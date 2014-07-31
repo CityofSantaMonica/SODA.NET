@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using SODA.Utilities;
 
-namespace SODA.Tests.Unit
+namespace SODA.Tests
 {
     [TestFixture]
     public class DateTimeConverterTests

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace SODA.Tests.Unit
+namespace SODA.Tests
 {
     [TestFixture]
     public class ResourceRecordTests
