@@ -5,18 +5,14 @@ using System.Text;
 
 namespace SODA
 {
-    /// <summary>
-    /// Enumeration of possible sort orders for use with SoQL queries.
-    /// </summary>
+    /// <summary>Enumeration of possible sort orders for use with SoQL queries.</summary>
     public enum OrderDirection
     {
         ASC,
         DESC        
     }
 
-    /// <summary>
-    /// A class representing a query against a Socrata resource using a series of SoQL clauses.
-    /// </summary>
+    /// <summary>A class representing a query against a Socrata resource using a series of SoQL clauses.</summary>
     public class SoqlQuery
     {
         public static readonly string Delimiter = ",";
@@ -55,9 +51,7 @@ namespace SODA
         private int offset { get; set; }
         private string search { get; set; }
 
-        /// <summary>
-        /// Construct a new SoqlQuery using the defaults.
-        /// </summary>
+        /// <summary>Construct a new SoqlQuery using the defaults.</summary>
         public SoqlQuery()
         {
             select = DefaultSelect;
@@ -66,9 +60,7 @@ namespace SODA
             orderDirection = DefaultOrderDirection;
         }
         
-        /// <summary>
-        /// Converts this SoqlQuery into a string format suitable for use in a SODA call.
-        /// </summary>
+        /// <summary>Converts this SoqlQuery into a string format suitable for use in a SODA call.</summary>
         /// <returns>The string representation of this SoqlQuery.</returns>
         public override string ToString()
         {
@@ -115,9 +107,7 @@ namespace SODA
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Sets this SoqlQuery's select clause using the specified columns.
-        /// </summary>
+        /// <summary>Sets this SoqlQuery's select clause using the specified columns.</summary>
         /// <param name="columns">A list of column names to select during execution of this SoqlQuery.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Select(params string[] columns)
@@ -126,9 +116,7 @@ namespace SODA
             return this;
         }
 
-        /// <summary>
-        /// Uses the specified column aliases for this SoqlQuery's select clause.
-        /// </summary>
+        /// <summary>Uses the specified column aliases for this SoqlQuery's select clause.</summary>
         /// <param name="columnAliases">A list of column aliases to be applied, in the specified order. Aliases beyond the available select columns are ignored.</param>
         /// <returns>This SoqlQuery.</returns>
         /// <remarks>
@@ -140,9 +128,7 @@ namespace SODA
             return this;
         }
 
-        /// <summary>
-        /// Sets this SoqlQuery's where clause using the specified predicate.
-        /// </summary>
+        /// <summary>Sets this SoqlQuery's where clause using the specified predicate.</summary>
         /// <param name="predicate">A filter to be applied to the columns selected by this SoqlQuery.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Where(string predicate)
@@ -151,9 +137,7 @@ namespace SODA
             return this;
         }
 
-        /// <summary>
-        /// Sets this SoqlQuery's order clause using the specified columns and the DefaultOrderDirection.
-        /// </summary>
+        /// <summary>Sets this SoqlQuery's order clause using the specified columns and the DefaultOrderDirection.</summary>
         /// <param name="columns">A list of column names that define the order in which the records selected by this SoqlQuery are returned.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Order(params string[] columns)
@@ -161,9 +145,7 @@ namespace SODA
             return Order(DefaultOrderDirection, columns);
         }
 
-        /// <summary>
-        /// Sets this SoqlQuery's order clause using the specified columns and the specified OrderDirection.
-        /// </summary>
+        /// <summary>Sets this SoqlQuery's order clause using the specified columns and the specified OrderDirection.</summary>
         /// <param name="direction">The direction to sort the records selected by this SoqlQuery.</param>
         /// <param name="columns">A list of column names that define the order in which the records selected by this SoqlQuery are returned.</param>
         /// <returns>This SoqlQuery.</returns>
@@ -174,9 +156,7 @@ namespace SODA
             return this;
         }
 
-        /// <summary>
-        /// Sets this SoqlQuery's group clause using the specified columns.
-        /// </summary>
+        /// <summary>Sets this SoqlQuery's group clause using the specified columns.</summary>
         /// <param name="columns">A list of column names that define how records are grouped during execution of this SoqlQuery.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Group(params string[] columns)
@@ -185,9 +165,7 @@ namespace SODA
             return this;
         }
         
-        /// <summary>
-        /// Sets this SoqlQuery's limit clause using the specified integral limit.
-        /// </summary>
+        /// <summary>Sets this SoqlQuery's limit clause using the specified integral limit.</summary>
         /// <param name="limit">A number representing the maximum number of records this SoqlQuery should return.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Limit(int limit)
@@ -198,9 +176,7 @@ namespace SODA
             return this;
         }
 
-        /// <summary>
-        /// Sets this SoqlQuery's "offset" clause using the specified integral offset.
-        /// </summary>
+        /// <summary>Sets this SoqlQuery's "offset" clause using the specified integral offset.</summary>
         /// <param name="offset">A number representing the starting offset into the total records that this SoqlQuery returns.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Offset(int offset)
@@ -211,9 +187,7 @@ namespace SODA
             return this;
         }
 
-        /// <summary>
-        /// Sets this SoqlQuery's full text search clause to the specified input.
-        /// </summary>
+        /// <summary>Sets this SoqlQuery's full text search clause to the specified input.</summary>
         /// <param name="searchText">The input to a full text search.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery FullTextSearch(string searchText)
@@ -222,9 +196,7 @@ namespace SODA
             return this;
         }
         
-        /// <summary>
-        /// Restricts the input to only the non-empty values
-        /// </summary>
+        /// <summary>Restricts the input to only the non-empty values</summary>
         private static string[] getNonEmptyValues(IEnumerable<string> source)
         {
             if (source != null && source.Any(s => !String.IsNullOrEmpty(s)))
