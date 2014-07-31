@@ -27,7 +27,29 @@ namespace SODA
 
         /// <summary>The Socrata Open Data Portal that hosts this Resource.</summary>
         /// 
-        public string Host { get; private set; }
+        public string Host
+        {
+            get
+            {
+                if (Client != null)
+                    return Client.Host;
+                else
+                    return null;
+            }
+        }
+
+        /// <summary>The Socrata identifier (4x4) for this Resource.</summary>
+        /// 
+        public string Identifier
+        {
+            get
+            {
+                if (Metadata != null)
+                    return Metadata.Identifier;
+                else
+                    return null;
+            }
+        }
 
         /// <summary>A SodaClient object used for sending requests to this Resource's Host.</summary>
         /// 
@@ -44,20 +66,18 @@ namespace SODA
         {
             Metadata = metadata;
             Client = client;
-
-            if(client != null)
-                Host = client.Host;
         }
         
         /// <summary>Query this Resource using the specified <see cref="SoqlQuery"/>.</summary>
+        /// <typeparam name="T">The .NET class that represents the type of the underlying records in this resultset of this query.</typeparam>
         /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute against this Resource.</param>
         /// <returns>A collection of entities of type TRecord.</returns>
-        public IEnumerable<TRecord> Query(SoqlQuery soqlQuery)
+        public IEnumerable<T> Query<T>(SoqlQuery soqlQuery) where T : class
         {
             if(Client != null)
             {
                 var queryUri = SodaUri.ForQuery(Host, Metadata.Identifier, soqlQuery);
-                return Client.Get<IEnumerable<TRecord>>(queryUri);
+                return Client.Get<IEnumerable<T>>(queryUri);
             }
 
             return null;
@@ -67,7 +87,7 @@ namespace SODA
         /// <returns>A collection of record of type TRecord, of maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.</returns>
         public IEnumerable<TRecord> GetRecords()
         {
-            return Query(new SoqlQuery());
+            return Query<TRecord>(new SoqlQuery());
         }
 
         /// <summary>Get a subset of this Resource's record collection, with maximum size equal to the specified limit.</summary>
@@ -76,7 +96,7 @@ namespace SODA
         public IEnumerable<TRecord> GetRecords(int limit)
         {
             var soqlQuery = new SoqlQuery().Limit(limit);
-            return Query(soqlQuery);
+            return Query<TRecord>(soqlQuery);
         }
 
         /// <summary>Get a subset of this Resource's record collection, with maximum size equal to the specified limit, starting at the specified offset into the total record count.</summary>
@@ -86,7 +106,7 @@ namespace SODA
         public IEnumerable<TRecord> GetRecords(int limit, int offset)
         {
             var soqlQuery = new SoqlQuery().Limit(limit).Offset(offset);
-            return Query(soqlQuery);
+            return Query<TRecord>(soqlQuery);
         }
 
         /// <summary>Get a single record of type TRecord from this Resource's record collection using the specified record id.</summary>

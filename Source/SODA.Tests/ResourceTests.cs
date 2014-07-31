@@ -63,16 +63,18 @@ namespace SODA.Tests
         public void Query_With_Null_Client_Returns_Null()
         {
             var resource = new Resource<object>(null, null);
-            object nonNullObject = new { value = "resultValue" };
+            IEnumerable<object> nonNullCollection = new[] { 
+                new { value = "resultValue" }
+            };
 
             Assert.IsNull(resource.Client);
 
             Assert.That(
-                () => nonNullObject = resource.Query(new SoqlQuery()),
+                () => nonNullCollection = resource.Query<object>(new SoqlQuery()),
                 Throws.Nothing
             );
 
-            Assert.IsNull(nonNullObject);
+            Assert.IsNull(nonNullCollection);
         }
 
         [Test]

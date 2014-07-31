@@ -13,6 +13,7 @@ namespace SODA
     public class SodaClient 
     {
         /// <summary>The Socrata Open Data Portal that this client will target.</summary>
+        /// 
         public string Host { get; private set; }
 
         /// <summary>The Socrata application token that this client will use for all requests.</summary>
@@ -30,6 +31,7 @@ namespace SODA
         public string Username { get; private set; }
 
         /// <summary>The identifier (4x4) for a resource on the Socrata host to target by default in subsequent requests.</summary>
+        /// 
         public string DefaultResourceId { get; private set; }
 
         //not publicly readable, can only be set in a constructor
@@ -289,7 +291,7 @@ namespace SODA
             return new Resource<TRecord>(metadata, this);
         }
 
-        /// <summary>Get a Resource object using this client's default resourse identifier.</summary>
+        /// <summary>Get a Resource object using this client's default resource identifier.</summary>
         /// <typeparam name="TRecord">The .NET class that represents the type of the underlying record in the Resource.</typeparam>
         /// <returns>A Resource object with an underlying record set of type <typeparamref name="TRecord"/>.</returns>
         public Resource<TRecord> GetResource<TRecord>() where TRecord : class
