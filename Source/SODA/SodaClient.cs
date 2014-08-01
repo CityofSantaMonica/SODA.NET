@@ -184,8 +184,11 @@ namespace SODA
             if (String.IsNullOrEmpty(appToken))
                 throw new ArgumentException("appToken", "An app token is required");
 
+            if (!String.IsNullOrEmpty(defaultResourceId) && FourByFour.IsNotValid(defaultResourceId))
+                throw new ArgumentException("defaultResourceId", "")
+
             Host = host;
-            AppToken = appToken;            
+            AppToken = appToken;
             DefaultResourceId = defaultResourceId;
             Username = username;
             this.password = password;
@@ -242,7 +245,7 @@ namespace SODA
         public ResourceMetadata GetMetadata(string resourceId)
         {
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             var uri = SodaUri.ForMetadata(Host, resourceId);
 
@@ -255,6 +258,9 @@ namespace SODA
         /// </returns>
         public ResourceMetadata GetMetadata()
         {
+            if (String.IsNullOrEmpty(DefaultResourceId))
+                throw new InvalidOperationException("No DefaultResourceId has been defined.");
+
             return GetMetadata(DefaultResourceId);
         }
 
@@ -285,7 +291,7 @@ namespace SODA
         public Resource<TRow> GetResource<TRow>(string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             var metadata = GetMetadata(resourceId);
 
@@ -297,6 +303,9 @@ namespace SODA
         /// <returns>A Resource object with an underlying row set of type <typeparamref name="TRow"/>.</returns>
         public Resource<TRow> GetResource<TRow>() where TRow : class
         {
+            if (String.IsNullOrEmpty(DefaultResourceId))
+                throw new InvalidOperationException("No DefaultResourceId has been defined.");
+
             return GetResource<TRow>(DefaultResourceId);
         }
 
@@ -312,6 +321,9 @@ namespace SODA
         /// <returns>A Resource object with an underlying row set of type <see cref="ResourceRow"/>.</returns>
         public Resource<ResourceRow> GetResource()
         {
+            if (String.IsNullOrEmpty(DefaultResourceId))
+                throw new InvalidOperationException("No DefaultResourceId has been defined.");
+
             return GetResource<ResourceRow>();
         }
         
@@ -327,7 +339,7 @@ namespace SODA
         public SodaResult Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
@@ -388,7 +400,7 @@ namespace SODA
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             Queue<T> queue = new Queue<T>(payload);
 
@@ -467,7 +479,7 @@ namespace SODA
         public SodaResult Replace(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata \"4x4\" resource identifier.");
+                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
