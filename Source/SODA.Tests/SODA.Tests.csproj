@@ -68,7 +68,7 @@
     <Compile Include="DateTimeConverterTests.cs" />
     <Compile Include="FourByFourTests.cs" />
     <Compile Include="ResourceMetadataTests.cs" />
-    <Compile Include="ResourceRecordTests.cs" />
+    <Compile Include="ResourceRowTests.cs" />
     <Compile Include="ResourceTests.cs" />
     <Compile Include="SodaClientTests.cs">
       <SubType>Code</SubType>

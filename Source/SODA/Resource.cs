@@ -6,8 +6,8 @@ using SODA.Utilities;
 namespace SODA
 {
     /// <summary>Class that represents the data and operations of a resource in Socrata.</summary>
-    /// <typeparam name="TRecord">The .NET class that represents the type of the underlying record in this resource.</typeparam>
-    public class Resource<TRecord> where TRecord : class
+    /// <typeparam name="TRow">The .NET class that represents the type of the underlying row in this resource.</typeparam>
+    public class Resource<TRow> where TRow : class
     {
         /// <summary>Metadata about this Resource.</summary>
         /// 
@@ -70,9 +70,9 @@ namespace SODA
         }
         
         /// <summary>Query this Resource using the specified <see cref="SoqlQuery"/>.</summary>
-        /// <typeparam name="T">The .NET class that represents the type of the underlying records in this resultset of this query.</typeparam>
+        /// <typeparam name="T">The .NET class that represents the type of the underlying rows in this resultset of this query.</typeparam>
         /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute against this Resource.</param>
-        /// <returns>A collection of entities of type TRecord.</returns>
+        /// <returns>A collection of entities of type TRow.</returns>
         public IEnumerable<T> Query<T>(SoqlQuery soqlQuery) where T : class
         {
             if(Client != null)
@@ -84,47 +84,47 @@ namespace SODA
             return null;
         }
 
-        /// <summary>Get a subset of this Resource's record collection, with maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.</summary>
-        /// <returns>A collection of record of type TRecord, of maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.</returns>
-        public IEnumerable<TRecord> GetRecords()
+        /// <summary>Get a subset of this Resource's row collection, with maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.</summary>
+        /// <returns>A collection of row of type TRow, of maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.</returns>
+        public IEnumerable<TRow> GetRows()
         {
-            return Query<TRecord>(new SoqlQuery());
+            return Query<TRow>(new SoqlQuery());
         }
 
-        /// <summary>Get a subset of this Resource's record collection, with maximum size equal to the specified limit.</summary>
-        /// <param name="limit">The maximum number of records to return in the resulting collection.</param>
+        /// <summary>Get a subset of this Resource's row collection, with maximum size equal to the specified limit.</summary>
+        /// <param name="limit">The maximum number of rows to return in the resulting collection.</param>
         /// <returns>A collection of maximum size equal to the specified limit.</returns>
-        public IEnumerable<TRecord> GetRecords(int limit)
+        public IEnumerable<TRow> GetRows(int limit)
         {
             var soqlQuery = new SoqlQuery().Limit(limit);
-            return Query<TRecord>(soqlQuery);
+            return Query<TRow>(soqlQuery);
         }
 
-        /// <summary>Get a subset of this Resource's record collection, with maximum size equal to the specified limit, starting at the specified offset into the total record count.</summary>
-        /// <param name="limit">The maximum number of records to return in the resulting collection.</param>
-        /// <param name="offset">The index into this Resource's total records from which to start.</param>
-        /// <returns>A collection of records of type TRecord, of maximum size equal to the specified limit.</returns>
-        public IEnumerable<TRecord> GetRecords(int limit, int offset)
+        /// <summary>Get a subset of this Resource's row collection, with maximum size equal to the specified limit, starting at the specified offset into the total row count.</summary>
+        /// <param name="limit">The maximum number of rows to return in the resulting collection.</param>
+        /// <param name="offset">The index into this Resource's total rows from which to start.</param>
+        /// <returns>A collection of rows of type TRow, of maximum size equal to the specified limit.</returns>
+        public IEnumerable<TRow> GetRows(int limit, int offset)
         {
             var soqlQuery = new SoqlQuery().Limit(limit).Offset(offset);
-            return Query<TRecord>(soqlQuery);
+            return Query<TRow>(soqlQuery);
         }
 
-        /// <summary>Get a single record of type TRecord from this Resource's record collection using the specified record id.</summary>
-        /// <param name="recordId">The identifier for the record to retrieve.</param>
-        /// <returns>The record with an identifier matching the specified identifier.</returns>
-        public TRecord GetRecord(string recordId)
+        /// <summary>Get a single row of type TRow from this Resource's row collection using the specified row id.</summary>
+        /// <param name="rowId">The identifier for the row to retrieve.</param>
+        /// <returns>The row with an identifier matching the specified identifier.</returns>
+        public TRow GetRow(string rowId)
         {
-            if (String.IsNullOrEmpty(recordId))
-                throw new ArgumentException("recordId", "A record identifier is required.");
+            if (String.IsNullOrEmpty(rowId))
+                throw new ArgumentException("rowId", "A row identifier is required.");
 
             if (Client != null)
             {
-                var resourceUri = SodaUri.ForResourceAPI(Host, Metadata.Identifier, recordId);
-                return Client.Get<TRecord>(resourceUri);
+                var resourceUri = SodaUri.ForResourceAPI(Host, Metadata.Identifier, rowId);
+                return Client.Get<TRow>(resourceUri);
             }
             
-            return default(TRecord);
+            return default(TRow);
         }
     }
 }

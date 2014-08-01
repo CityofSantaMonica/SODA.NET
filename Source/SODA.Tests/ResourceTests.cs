@@ -79,7 +79,7 @@ namespace SODA.Tests
 
         [Test]
         [Category("Resource")]
-        public void GetRecords_With_Null_Client_Returns_Null()
+        public void GetRows_With_Null_Client_Returns_Null()
         {
             var resource = new Resource<object>(null, null);
             IEnumerable<object> nonNullCollection = Enumerable.Empty<object>();
@@ -87,7 +87,7 @@ namespace SODA.Tests
             Assert.IsNull(resource.Client);
 
             Assert.That(
-                () => nonNullCollection = resource.GetRecords(),
+                () => nonNullCollection = resource.GetRows(),
                 Throws.Nothing
             );
 
@@ -98,26 +98,26 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [ExpectedException(typeof(ArgumentException))]
         [Category("Resource")]
-        public void GetRecord_With_Invalid_RecordId_Throws_ArugmentException(string input)
+        public void GetRow_With_Invalid_RowId_Throws_ArugmentException(string input)
         {
-            new Resource<object>(null, null).GetRecord(input);
+            new Resource<object>(null, null).GetRow(input);
         }
 
         [Test]
         [Category("Resource")]
-        public void GetRecord_With_Null_Client_Returns_Null()
+        public void GetRow_With_Null_Client_Returns_Null()
         {
             var resource = new Resource<object>(null, null);
-            object nonNullRecord = new ResourceRecord();
+            object nonNullRow = new ResourceRow();
 
             Assert.IsNull(resource.Client);
 
             Assert.That(
-                () => nonNullRecord = resource.GetRecord("recordId"),
+                () => nonNullRow = resource.GetRow("rowId"),
                 Throws.Nothing
             );
 
-            Assert.IsNull(nonNullRecord);
+            Assert.IsNull(nonNullRow);
         }
     }
 }

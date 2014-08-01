@@ -138,7 +138,7 @@ namespace SODA
         }
 
         /// <summary>Sets this SoqlQuery's order clause using the specified columns and the DefaultOrderDirection.</summary>
-        /// <param name="columns">A list of column names that define the order in which the records selected by this SoqlQuery are returned.</param>
+        /// <param name="columns">A list of column names that define the order in which the rows selected by this SoqlQuery are returned.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Order(params string[] columns)
         {
@@ -146,8 +146,8 @@ namespace SODA
         }
 
         /// <summary>Sets this SoqlQuery's order clause using the specified columns and the specified OrderDirection.</summary>
-        /// <param name="direction">The direction to sort the records selected by this SoqlQuery.</param>
-        /// <param name="columns">A list of column names that define the order in which the records selected by this SoqlQuery are returned.</param>
+        /// <param name="direction">The direction to sort the rows selected by this SoqlQuery.</param>
+        /// <param name="columns">A list of column names that define the order in which the rows selected by this SoqlQuery are returned.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Order(OrderDirection direction, params string[] columns)
         {
@@ -157,7 +157,7 @@ namespace SODA
         }
 
         /// <summary>Sets this SoqlQuery's group clause using the specified columns.</summary>
-        /// <param name="columns">A list of column names that define how records are grouped during execution of this SoqlQuery.</param>
+        /// <param name="columns">A list of column names that define how rows are grouped during execution of this SoqlQuery.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Group(params string[] columns)
         {
@@ -166,7 +166,7 @@ namespace SODA
         }
         
         /// <summary>Sets this SoqlQuery's limit clause using the specified integral limit.</summary>
-        /// <param name="limit">A number representing the maximum number of records this SoqlQuery should return.</param>
+        /// <param name="limit">A number representing the maximum number of rows this SoqlQuery should return.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Limit(int limit)
         {
@@ -177,7 +177,7 @@ namespace SODA
         }
 
         /// <summary>Sets this SoqlQuery's "offset" clause using the specified integral offset.</summary>
-        /// <param name="offset">A number representing the starting offset into the total records that this SoqlQuery returns.</param>
+        /// <param name="offset">A number representing the starting offset into the total rows that this SoqlQuery returns.</param>
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Offset(int offset)
         {
