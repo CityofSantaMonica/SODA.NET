@@ -185,7 +185,7 @@ namespace SODA
                 throw new ArgumentException("appToken", "An app token is required");
 
             if (!String.IsNullOrEmpty(defaultResourceId) && FourByFour.IsNotValid(defaultResourceId))
-                throw new ArgumentException("defaultResourceId", "")
+                throw new ArgumentException("defaultResourceId", "");
 
             Host = host;
             AppToken = appToken;
