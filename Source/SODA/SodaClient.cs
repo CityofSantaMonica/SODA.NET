@@ -269,18 +269,18 @@ namespace SODA
         /// <returns>A collection of ResourceMetadata objects from the specified page of this client's Socrata host.</returns>
         public IEnumerable<ResourceMetadata> GetMetadataPage(int page)
         {
-            if (page > 0)
+            if (page <= 0)
+                throw new ArgumentOutOfRangeException("page", "Resouce metadata catalogs begin on page 1.");
+            
+            var catalogUri = SodaUri.ForMetadataList(Host, page);
+
+            IEnumerable<dynamic> rawDataList = Get<IEnumerable<dynamic>>(catalogUri).ToArray();
+
+            foreach (var rawData in rawDataList)
             {
-                var catalogUri = SodaUri.ForMetadataList(Host, page);
+                var metadata = GetMetadata((string)rawData.id);
 
-                IEnumerable<dynamic> rawDataList = Get<IEnumerable<dynamic>>(catalogUri);
-
-                foreach (var rawData in rawDataList)
-                {
-                    var metadata = GetMetadata((string)rawData.id);
-
-                    yield return metadata;
-                }
+                yield return metadata;
             }
         }
 
