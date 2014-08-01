@@ -11,7 +11,7 @@ namespace SODA
     {
         /// <summary>Metadata about this Resource.</summary>
         /// 
-        public ResourceMetadata Metadata { get; private set; }
+        public readonly ResourceMetadata Metadata;
         
         /// <summary>A collection describing the metadata of each column in this Resource.</summary>
         /// 
@@ -19,23 +19,7 @@ namespace SODA
         {
             get
             {
-                if (Metadata != null && Metadata.Columns != null)
-                    return Metadata.Columns;
-                else
-                    return Enumerable.Empty<ResourceColumn>();
-            }
-        }
-
-        /// <summary>The Socrata Open Data Portal that hosts this Resource.</summary>
-        /// 
-        public string Host
-        {
-            get
-            {
-                if (Client != null)
-                    return Client.Host;
-                else
-                    return null;
+                return Metadata.Columns;
             }
         }
 
@@ -45,16 +29,23 @@ namespace SODA
         {
             get
             {
-                if (Metadata != null)
-                    return Metadata.Identifier;
-                else
-                    return null;
+                return Metadata.Identifier;
             }
         }
-
+                
         /// <summary>A SodaClient object used for sending requests to this Resource's Host.</summary>
         /// 
-        internal SodaClient Client { get; private set; }
+        internal readonly SodaClient Client;
+
+        /// <summary>The Socrata Open Data Portal that hosts this Resource.</summary>
+        /// 
+        public string Host
+        {
+            get
+            {
+                return Client.Host;
+            }
+        }
 
         /// <summary>Create a new Resource object on the specified Socrata host, with the specfieid metadata, and using the specified SodaClient.</summary>
         /// <param name="host">The Socrata Open Data Portal that hosts this Resource.</param>
@@ -65,6 +56,12 @@ namespace SODA
         /// </remarks>
         internal Resource(ResourceMetadata metadata, SodaClient client)
         {
+            if (metadata == null)
+                throw new ArgumentNullException("metadata", "Cannot initialize a Resource with null ResourceMetadata");
+
+            if(client == null)
+                throw new ArgumentNullException("client", "Cannot initialize a Resource with null SodaClient");
+
             Metadata = metadata;
             Client = client;
         }
@@ -75,13 +72,8 @@ namespace SODA
         /// <returns>A collection of entities of type TRow.</returns>
         public IEnumerable<T> Query<T>(SoqlQuery soqlQuery) where T : class
         {
-            if(Client != null)
-            {
-                var queryUri = SodaUri.ForQuery(Host, Metadata.Identifier, soqlQuery);
-                return Client.Get<IEnumerable<T>>(queryUri);
-            }
-
-            return null;
+            var queryUri = SodaUri.ForQuery(Host, Identifier, soqlQuery);
+            return Client.Get<IEnumerable<T>>(queryUri);
         }
 
         /// <summary>Get a subset of this Resource's row collection, with maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.</summary>
@@ -118,13 +110,8 @@ namespace SODA
             if (String.IsNullOrEmpty(rowId))
                 throw new ArgumentException("rowId", "A row identifier is required.");
 
-            if (Client != null)
-            {
-                var resourceUri = SodaUri.ForResourceAPI(Host, Metadata.Identifier, rowId);
-                return Client.Get<TRow>(resourceUri);
-            }
-            
-            return default(TRow);
+            var resourceUri = SodaUri.ForResourceAPI(Host, Identifier, rowId);
+            return Client.Get<TRow>(resourceUri);
         }
     }
 }
