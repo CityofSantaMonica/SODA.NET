@@ -1,7 +1,6 @@
 ﻿using System;
-using SODA.Utilities;
 
-namespace SODA
+namespace SODA.Utilities
 {
     /// <summary>Factory class for creating Socrata-specific Uris.</summary>
     public class SodaUri

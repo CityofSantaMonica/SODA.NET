@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using SODA.Utilities;
 using SODA.Tests.Mocks;
 
 namespace SODA.Tests
