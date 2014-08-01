@@ -3,7 +3,7 @@
 namespace SODA.Utilities
 {
     /// <summary>Factory class for creating Socrata-specific Uris.</summary>
-    internal class SodaUri
+    public class SodaUri
     {
         /// <summary>Create a Url string suitable for interacting with resource metadata on the specified Socrata host.</summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
