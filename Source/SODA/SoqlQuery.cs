@@ -6,6 +6,7 @@ using System.Text;
 namespace SODA
 {
     /// <summary>Enumeration of possible sort orders for use with SoQL queries.</summary>
+    /// 
     public enum OrderDirection
     {
         ASC,
@@ -13,6 +14,7 @@ namespace SODA
     }
 
     /// <summary>A class representing a query against a Socrata resource using a series of SoQL clauses.</summary>
+    /// 
     public class SoqlQuery
     {
         public static readonly string Delimiter = ",";
@@ -52,6 +54,7 @@ namespace SODA
         private string search { get; set; }
 
         /// <summary>Construct a new SoqlQuery using the defaults.</summary>
+        /// 
         public SoqlQuery()
         {
             select = DefaultSelect;
@@ -197,6 +200,7 @@ namespace SODA
         }
         
         /// <summary>Restricts the input to only the non-empty values</summary>
+        ///
         private static string[] getNonEmptyValues(IEnumerable<string> source)
         {
             if (source != null && source.Any(s => !String.IsNullOrEmpty(s)))

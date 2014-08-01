@@ -10,29 +10,30 @@ using SODA.Utilities;
 namespace SODA
 {
     /// <summary>A class for interacting with Socrata Data Portals using the Socrata Open Data API.</summary>
+    /// 
     public class SodaClient 
     {
         /// <summary>The Socrata Open Data Portal that this client will target.</summary>
         /// 
-        public string Host { get; private set; }
+        public readonly string Host;
 
         /// <summary>The Socrata application token that this client will use for all requests.</summary>
         /// <remarks>
         /// Since SodaClient uses Basic Authentication, the application token is only used as a means to reduce API throttling on the part of Socrata.
         /// See http://dev.socrata.com/docs/app-tokens.html for more information.
         /// </remarks>
-        public string AppToken { get; private set; }
+        public readonly string AppToken;
 
         /// <summary>The user account that this client will use for Authentication during each request.</summary>
         /// <remarks>
         /// Authentication is only necessary when accessing datasets that have been marked as private or when making write requests (PUT, POST, and DELETE).
         /// See http://dev.socrata.com/docs/authentication.html for more information.
         /// </remarks>
-        public string Username { get; private set; }
+        public readonly string Username;
 
         /// <summary>The identifier (4x4) for a resource on the Socrata host to target by default in subsequent requests.</summary>
         /// 
-        public string DefaultResourceId { get; private set; }
+        public readonly string DefaultResourceId;
 
         //not publicly readable, can only be set in a constructor
         private readonly string password;
@@ -177,14 +178,14 @@ namespace SODA
         /// <param name="defaultResourceId">The identifier (4x4) for a resource on the Socrata host that this client will use by default.</param>
         public SodaClient(string host, string appToken, string username, string password, string defaultResourceId)
         {
-            if (String.IsNullOrEmpty(appToken))
-                throw new ArgumentException("appToken", "An app token is required");
-
             if (String.IsNullOrEmpty(host))
                 throw new ArgumentException("host", "A host is required");
 
-            AppToken = appToken;
+            if (String.IsNullOrEmpty(appToken))
+                throw new ArgumentException("appToken", "An app token is required");
+
             Host = host;
+            AppToken = appToken;            
             DefaultResourceId = defaultResourceId;
             Username = username;
             this.password = password;
