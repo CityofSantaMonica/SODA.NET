@@ -226,7 +226,7 @@ namespace SODA
         /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
         /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
         /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="T"/>.</returns>
-        public T Get<T>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON) where T : class
+        internal T Get<T>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON) where T : class
         {
             var request = createRequest(uri, "GET", AppToken, Username, password, dataFormat);
 
