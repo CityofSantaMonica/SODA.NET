@@ -180,15 +180,7 @@ namespace SODA.Tests
 
             Assert.AreEqual("text/csv", request.ContentType);
         }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        [Category("SodaClient")]
-        public void CreateRequest_DELETE_With_CSV_DataFormat_Throws_ArugmentOutOfRangeException()
-        {
-            SodaClient.createRequest(exampleUri, "DELETE", null, null, null, SodaDataFormat.CSV);
-        }
-
+        
         [Test]
         [Category("SodaClient")]
         public void CreateRequest_GET_With_XML_DataFormat_Sets_Accept_Header()
@@ -197,17 +189,7 @@ namespace SODA.Tests
 
             Assert.AreEqual("application/rdf+xml", request.Accept);
         }
-
-        [TestCase("POST")]
-        [TestCase("PUT")]
-        [TestCase("DELETE")]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        [Category("SodaClient")]
-        public void CreateRequest_Non_GET_With_XML_DataFormat_Throws_ArugmentOutOfRangeException(string input)
-        {
-            SodaClient.createRequest(exampleUri, input, null, null, null, SodaDataFormat.XML);
-        }
-
+        
         [Test]
         [Category("SodaClient")]
         public void CreateRequest_Returns_Request_With_Unset_ContentLength_For_Empty_Payload()
@@ -334,26 +316,7 @@ namespace SODA.Tests
 
             Assert.AreEqual(username, client.Username);
         }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
-        [Category("SodaClient")]
-        public void New_With_Invalid_DefaultResourceId_Throws_ArgumentException()
-        {
-            new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput, StringMocks.NonEmptyInput);
-        }
-
-        [Test]
-        [Category("SodaClient")]
-        public void New_With_DefaultResourceId_Gets_DefaultResourceId()
-        {
-            string defaultResourceId = StringMocks.ResourceId;
-
-            var client = new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput, defaultResourceId);
-
-            Assert.AreEqual(defaultResourceId, client.DefaultResourceId);
-        }
-
+        
         #endregion
 
         #region GET
@@ -361,21 +324,13 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
-        public void GetMetadata_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void GetMetadata_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
             mockClient.GetMetadata(input);
         }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        [Category("SodaClient")]
-        public void GetMetadata_With_Unset_DefaultResourceId_Throws_InvalidOperationException()
-        {
-            mockClient.GetMetadata();
-        }
-        
+                
         [TestCase(-100)]
         [TestCase(-1)]
         [TestCase(0)]
@@ -390,39 +345,23 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
-        public void GetResource_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void GetResource_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
             mockClient.GetResource(input);
         }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        [Category("SodaClient")]
-        public void GetResource_With_Unset_DefaultResourceId_Throws_InvalidOperationException()
-        {
-            mockClient.GetResource();
-        }
-
+        
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
-        public void Generic_GetResource_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void Generic_GetResource_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
             mockClient.GetResource<object>(input);
         }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        [Category("SodaClient")]
-        public void Generic_GetResource_With_Unset_DefaultResourceId_Throws_InvalidOperationException()
-        {
-            mockClient.GetResource<object>();
-        }
-                
+                        
         #endregion
 
         #region POST
@@ -432,17 +371,9 @@ namespace SODA.Tests
         [Category("SodaClient")]
         public void Upsert_With_String_And_SodaDataFormat_XML_Throws_ArgumentOutOfRangeException()
         {
-            new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput, StringMocks.ResourceId).Upsert("", SodaDataFormat.XML);
+            new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput).Upsert(String.Empty, SodaDataFormat.XML, StringMocks.ResourceId);
         }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        [Category("SodaClient")]
-        public void Upsert_With_String_And_DataFormat_And_Unset_DefaultResourceId_Throws_InvalidOperationException()
-        {
-            mockClient.Upsert("", SodaDataFormat.JSON);
-        }
-
+        
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
@@ -454,17 +385,7 @@ namespace SODA.Tests
 
             mockClient.Upsert(payload, input);
         }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        [Category("SodaClient")]
-        public void Generic_Upsert_With_Entities_And_Unset_DefaultResourceId_Throws_InvalidOperationException()
-        {
-            IEnumerable<object> payload = Enumerable.Empty<object>();
-
-            mockClient.Upsert(payload);
-        }
-
+        
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
@@ -475,20 +396,10 @@ namespace SODA.Tests
             IEnumerable<object> payload = Enumerable.Empty<object>();
             Func<IEnumerable<object>, object, bool> breakFunc = (l, s) => false;
 
-            mockClient.BatchUpsert(payload, 1, breakFunc, input);
+            //call ToList to ensure the IEnumerable is executed
+            mockClient.BatchUpsert(payload, 1, breakFunc, input).ToList();
         }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        [Category("SodaClient")]
-        public void BatchUpsert_With_Entities_And_BatchSize_And_BreakFunction_And_Unset_DefaultResourceId_Throws_InvalidOperationException()
-        {
-            IEnumerable<object> payload = Enumerable.Empty<object>();
-            Func<IEnumerable<object>, object, bool> breakFunc = (l, s) => false;
-
-            mockClient.BatchUpsert(payload, 1, breakFunc);
-        }
-
+        
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
@@ -500,17 +411,7 @@ namespace SODA.Tests
 
             mockClient.BatchUpsert(payload, 1, input);
         }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        [Category("SodaClient")]
-        public void BatchUpsert_With_Entities_And_BatchSize_And_Unset_DefaultResourceId_Throws_InvalidOperationException()
-        {
-            IEnumerable<object> payload = Enumerable.Empty<object>();
-
-            mockClient.BatchUpsert(payload, 1);
-        }
-        
+                
         #endregion
 
         #region PUT
@@ -518,7 +419,7 @@ namespace SODA.Tests
         [Test]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
-        public void Replace_With_String_And_DataFormat_XML_And_ResourceId_Throws_ArgumentOutOfRangeException(string input)
+        public void Replace_With_String_And_DataFormat_XML_And_ResourceId_Throws_ArgumentOutOfRangeException()
         {
             mockClient.Replace(String.Empty, SodaDataFormat.XML, StringMocks.ResourceId);
         }
@@ -526,47 +427,23 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
-        public void Replace_With_String_And_DataFormat_And_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void Replace_With_String_And_DataFormat_And_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
             mockClient.Replace(String.Empty, SodaDataFormat.JSON, input);
         }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        [Category("SodaClient")]
-        public void Replace_With_Entities_And_Unset_DefaultResourceId_Throws_InvalidOperationException()
-        {
-            mockClient.Replace(new[] { "" });
-        }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        [Category("SodaClient")]
-        public void Replace_With_String_And_DataFormat_And_Unset_DefaultResourceId_Throws_InvalidOperationException()
-        {
-            mockClient.Replace("", SodaDataFormat.JSON);
-        }
-
+        
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
-        public void Replace_With_Entities_And_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void Replace_With_Entities_And_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
-            mockClient.Replace(new[] { "" }, input);
-        }
+            IEnumerable<object> payload = Enumerable.Empty<object>();
 
-        [TestCase(StringMocks.NullInput)]
-        [TestCase(StringMocks.EmptyInput)]
-        [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
-        [Category("SodaClient")]
-        public void Replace_With_String_And_DataFormat_And_Invalid_ResourceId_Throws_ArgumentException(string input)
-        {
-            mockClient.Replace("", SodaDataFormat.JSON, input);
+            mockClient.Replace(payload, input);
         }
 
         #endregion

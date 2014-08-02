@@ -32,11 +32,7 @@ namespace SODA
         /// See http://dev.socrata.com/docs/authentication.html for more information.
         /// </remarks>
         public readonly string Username;
-
-        /// <summary>The identifier (4x4) for a resource on the Socrata host to target by default in subsequent requests.</summary>
-        /// 
-        public readonly string DefaultResourceId;
-
+        
         //not publicly readable, can only be set in a constructor
         private readonly string password;
 
@@ -164,54 +160,30 @@ namespace SODA
 
         #region ctor
 
-        /// <summary>Initialize a new SodaClient for the specified Socrata host, using the specified application token and the specified Authentication credentials, and use the specified resource identifier by default in subsequent calls.</summary>
-        /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
-        /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
-        /// <param name="username">The user account that this client will use for Authentication during each request.</param>
-        /// <param name="password">The password for the specified <paramref name="username"/> that this client will use for Authentication during each request.</param>
-        /// <param name="defaultResourceId">The identifier (4x4) for a resource on the Socrata host that this client will use by default.</param>
-        public SodaClient(string host, string appToken, string username, string password, string defaultResourceId)
-        {
-            if (String.IsNullOrEmpty(host))
-                throw new ArgumentException("host", "A host is required");
-
-            if (String.IsNullOrEmpty(appToken))
-                throw new ArgumentException("appToken", "An app token is required");
-
-            if (defaultResourceId != null && FourByFour.IsNotValid(defaultResourceId))
-                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
-
-            Host = host;
-            AppToken = appToken;
-            DefaultResourceId = defaultResourceId;
-            Username = username;
-            this.password = password;
-        }
-
         /// <summary>Initialize a new SodaClient for the specified Socrata host, using the specified application token and the specified Authentication credentials.</summary>
         /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
         /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
         /// <param name="username">The user account that this client will use for Authentication during each request.</param>
         /// <param name="password">The password for the specified <paramref name="username"/> that this client will use for Authentication during each request.</param>
         public SodaClient(string host, string appToken, string username, string password)
-            : this(host, appToken, username, password, null)
         {
-        }
+            if (String.IsNullOrEmpty(host))
+                throw new ArgumentException("host", "A host is required");
 
-        /// <summary>Initialize a new (anonymous) SodaClient for the specified Socrata host, using the specified application token, and use the specified resource identifier by default in subsequent calls.</summary>
-        /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
-        /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
-        /// <param name="defaultResourceId">The identifier (4x4) for a resource on the Socrata host that this client will use by default.</param>
-        public SodaClient(string host, string appToken, string defaultResourceId)
-            : this(host, appToken, null, null, defaultResourceId)
-        {
+            if (String.IsNullOrEmpty(appToken))
+                throw new ArgumentException("appToken", "An app token is required");
+            
+            Host = host;
+            AppToken = appToken;
+            Username = username;
+            this.password = password;
         }
-
+        
         /// <summary>Initialize a new (anonymous) SodaClient for the specified Socrata host, using the specified application token.</summary>
         /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
         /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
         public SodaClient(string host, string appToken)
-            : this(host, appToken, null, null, null)
+            : this(host, appToken, null, null)
         {
         }
                 
@@ -244,18 +216,6 @@ namespace SODA
             var uri = SodaUri.ForMetadata(Host, resourceId);
 
             return Get<ResourceMetadata>(uri);
-        }
-
-        /// <summary>Get a ResourceMetadata object using this client's default resource identifier.</summary>
-        /// <returns>
-        /// A ResourceMetadata object for this client' default resource identifier.
-        /// </returns>
-        public ResourceMetadata GetMetadata()
-        {
-            if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("A DefaultResourceId was not defined.");
-
-            return GetMetadata(DefaultResourceId);
         }
 
         /// <summary>Get a collection of ResourceMetadata objects on the specified page.</summary>
@@ -291,18 +251,7 @@ namespace SODA
 
             return new Resource<TRow>(metadata, this);
         }
-
-        /// <summary>Get a Resource object using this client's default resource identifier.</summary>
-        /// <typeparam name="TRow">The .NET class that represents the type of the underlying row in the Resource.</typeparam>
-        /// <returns>A Resource object with an underlying row set of type <typeparamref name="TRow"/>.</returns>
-        public Resource<TRow> GetResource<TRow>() where TRow : class
-        {
-            if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("A DefaultResourceId was not defined.");
-
-            return GetResource<TRow>(DefaultResourceId);
-        }
-
+        
         /// <summary>Get a Resource object that represents its rows as <see cref="ResourceRow"/>, using the specified resource identifier.</summary>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A Resource object with an underlying row set of type <see cref="ResourceRow"/>.</returns>
@@ -314,16 +263,6 @@ namespace SODA
             return GetResource<ResourceRow>(resourceId);
         }
 
-        /// <summary>Get a Resource object that represents its rows as <see cref="ResourceRow"/>, using this client's default resource identifier.</summary>
-        /// <returns>A Resource object with an underlying row set of type <see cref="ResourceRow"/>.</returns>
-        public Resource<ResourceRow> GetResource()
-        {
-            if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("A DefaultResourceId was not defined.");
-
-            return GetResource<ResourceRow>();
-        }
-        
         #endregion
 
         #region POST
@@ -362,22 +301,7 @@ namespace SODA
 
             return result;
         }
-
-        /// <summary>Update/Insert the payload data using this client's default resource identifier.</summary>
-        /// <param name="payload">A string of serialized data.</param>
-        /// <param name="dataFormat">The data format used for serialization.</param>
-        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
-        public SodaResult Upsert(string payload, SodaDataFormat dataFormat)
-        {
-            if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("A DefaultResourceId was not defined.");
-
-            if (dataFormat == SodaDataFormat.XML)
-                throw new ArgumentOutOfRangeException("dataFormat", "SodaDataFormat.XML is not a valid format for write operations.");
-
-            return Upsert(payload, dataFormat, DefaultResourceId);
-        }
-
+        
         /// <summary>Update/Insert the specified collection of entities using the specified resource identifier.</summary>
         /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -391,18 +315,7 @@ namespace SODA
 
             return Upsert(json, SodaDataFormat.JSON, resourceId);
         }
-
-        /// <summary>Update/Insert the specified collection of entities using this client's default resource identifier.</summary>
-        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
-        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
-        public SodaResult Upsert<T>(IEnumerable<T> payload) where T : class
-        {
-            if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("A DefaultResourceId was not defined.");
-
-            return Upsert(payload, DefaultResourceId);
-        }
-
+        
         /// <summary>Update/Insert the specified collection of entities in batches of the specified size, using the specified resource identifier.</summary>
         /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
@@ -447,20 +360,7 @@ namespace SODA
                 yield return result;
             }
         }
-
-        /// <summary>Update/Insert the specified collection of entities in batches of the specified size, using this client's default resource identifier.</summary>
-        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
-        /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
-        /// <param name="breakFunction">A function which, when evaluated true, causes a batch to be sent (possibly before it reaches <paramref name="batchSize"/>).</param>
-        /// <returns>A collection of <see cref="SodaResult"/>, one for each batched Upsert.</returns>
-        public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction) where T : class
-        {
-            if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("A DefaultResourceId was not defined.");
-
-            return BatchUpsert<T>(payload, batchSize, breakFunction, DefaultResourceId);
-        }
-
+        
         /// <summary>Update/Insert the specified collection of entities in batches of the specified size, using the specified resource identifier.</summary>
         /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
@@ -475,19 +375,7 @@ namespace SODA
 
             return BatchUpsert<T>(payload, batchSize, neverBreak, resourceId);
         }
-
-        /// <summary>Update/Insert the specified collection of entities in batches of the specified size, using this client's default resource id.</summary>
-        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
-        /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
-        /// <returns>A collection of responses, one for each batch processed.</returns>
-        public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize) where T : class
-        {
-            if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("A DefaultResourceId was not defined.");
-
-            return BatchUpsert<T>(payload, batchSize, DefaultResourceId);
-        }
-
+        
         #endregion
 
         #region PUT
@@ -512,21 +400,6 @@ namespace SODA
             return sendRequest<SodaResult>(request);
         }
 
-        /// <summary>Replace any existing rows with the payload data, using this client's default resource identifier.</summary>
-        /// <param name="payload">A string of serialized data.</param>
-        /// <param name="dataFormat">The data format used for serialization.</param>
-        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
-        public SodaResult Replace(string payload, SodaDataFormat dataFormat)
-        {
-            if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("A DefaultResourceId was not defined.");
-
-            if (dataFormat == SodaDataFormat.XML)
-                throw new ArgumentOutOfRangeException("dataFormat", "SodaDataFormat.XML is not a valid format for write operations.");
-
-            return Replace(payload, dataFormat, DefaultResourceId);
-        }
-
         /// <summary>Replace any existing rows with a collection of entities, using the specified resource identifier.</summary>
         /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -540,18 +413,7 @@ namespace SODA
 
             return Replace(json, SodaDataFormat.JSON, resourceId);
         }
-
-        /// <summary>Replace any existing rows with a collection of entities, using this client's default resource identifier.</summary>
-        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
-        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
-        public SodaResult Replace<T>(IEnumerable<T> payload) where T : class
-        {
-            if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("A DefaultResourceId was not defined.");
-
-            return Replace<T>(payload, DefaultResourceId);
-        }
-
+        
         #endregion
 
         #region DELETE
@@ -568,18 +430,7 @@ namespace SODA
 
             return sendRequest<SodaResult>(request);
         }
-
-        /// <summary>Delete a single row using the specified row identifier and this client's default resource identifier.</summary>
-        /// <param name="rowId">The identifier of the row to be deleted.</param>
-        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
-        public SodaResult DeleteRow(string rowId)
-        {
-            if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("A DefaultResourceId was not defined.");
-
-            return DeleteRow(rowId, DefaultResourceId);
-        }
-        
+ 
         #endregion
     }
 }
