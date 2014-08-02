@@ -9,12 +9,22 @@ namespace SODA.Tests
     [TestFixture]
     public class ResourceTests
     {
+        SodaClient mockClient;
+        ResourceMetadata mockMetadata;
+
+        [SetUp]
+        public void TestSetup()
+        {
+            mockClient = new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput);
+            mockMetadata = new ResourceMetadata();
+        }
+
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         [Category("Resource")]
         public void New_With_Null_Metadata_Throws_ArgumentNullException()
         {
-            new Resource<object>(null, SodaClientMocks.New());
+            new Resource<object>(null, mockClient);
         }
 
         [Test]
@@ -31,7 +41,7 @@ namespace SODA.Tests
                 }
             };
 
-            var resource = new Resource<object>(metadata, SodaClientMocks.New());
+            var resource = new Resource<object>(metadata, mockClient);
 
             Assert.AreSame(metadata.Columns, resource.Columns);
         }
@@ -42,7 +52,7 @@ namespace SODA.Tests
         {
             var metadata = new ResourceMetadata() { Identifier = "identifier" };
 
-            var resource = new Resource<object>(metadata, SodaClientMocks.New());
+            var resource = new Resource<object>(metadata, mockClient);
 
             Assert.AreSame(metadata.Identifier, resource.Identifier);
         }
@@ -52,7 +62,7 @@ namespace SODA.Tests
         [Category("Resource")]
         public void New_With_Null_Client_Throws_ArgumentNullException()
         {
-            new Resource<object>(ResourceMetadataMocks.New(), null);
+            new Resource<object>(mockMetadata, null);
         }
 
         [Test]
@@ -61,7 +71,7 @@ namespace SODA.Tests
         {
             var client = new SodaClient("host", "app token");
 
-            var resource = new Resource<object>(ResourceMetadataMocks.New(), client);
+            var resource = new Resource<object>(mockMetadata, client);
 
             Assert.AreEqual(resource.Host, client.Host);
         }
@@ -72,7 +82,7 @@ namespace SODA.Tests
         [Category("Resource")]
         public void GetRow_With_Invalid_RowId_Throws_ArugmentException(string input)
         {
-            new Resource<object>(ResourceMetadataMocks.New(), SodaClientMocks.New()).GetRow(input);
+            new Resource<object>(mockMetadata, mockClient).GetRow(input);
         }
     }
 }

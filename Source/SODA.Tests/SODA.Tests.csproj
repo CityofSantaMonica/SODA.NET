@@ -61,8 +61,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Mocks\RequestMocks.cs" />
-    <Compile Include="Mocks\ResourceMetadataMocks.cs" />
-    <Compile Include="Mocks\SodaClientMocks.cs" />
     <Compile Include="Mocks\StringMocks.cs">
       <SubType>Code</SubType>
     </Compile>
