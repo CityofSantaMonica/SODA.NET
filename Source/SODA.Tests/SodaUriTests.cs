@@ -84,9 +84,9 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
-        public void ForMetadata_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void ForMetadata_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
             SodaUri.ForMetadata(StringMocks.Host, input);
         }
@@ -143,9 +143,9 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
-        public void ForResourceAPI_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void ForResourceAPI_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
             SodaUri.ForResourceAPI(StringMocks.Host, input);
         }
@@ -176,9 +176,9 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
-        public void ForResourcePage_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void ForResourcePage_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
             SodaUri.ForResourcePage(StringMocks.Host, input);
         }
@@ -204,9 +204,9 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
-        public void ForResourceAboutPage_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void ForResourceAboutPage_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
             SodaUri.ForResourceAboutPage(StringMocks.Host, input);
         }
@@ -232,9 +232,9 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
-        public void ForQuery_With_Invalid_ResourceId_Throws_ArgumentException(string input)
+        public void ForQuery_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
             SodaUri.ForQuery(StringMocks.Host, input, new SoqlQuery());
         }

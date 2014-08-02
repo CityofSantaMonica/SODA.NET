@@ -11,8 +11,10 @@ namespace SODA
 {
     /// <summary>A class for interacting with Socrata Data Portals using the Socrata Open Data API.</summary>
     /// 
-    public class SodaClient 
+    public class SodaClient
     {
+        #region data
+
         /// <summary>The Socrata Open Data Portal that this client will target.</summary>
         /// 
         public readonly string Host;
@@ -37,7 +39,9 @@ namespace SODA
 
         //not publicly readable, can only be set in a constructor
         private readonly string password;
-        
+
+        #endregion
+
         #region implementation
 
         /// <summary>Helper method for creating an HttpWebRequest object. </summary>
@@ -81,20 +85,10 @@ namespace SODA
                         case "PUT":
                             request.ContentType = "text/csv";
                             break;
-                        default:
-                            throw new ArgumentOutOfRangeException("dataFormat", "CSV data format is only valid for GET, POST, and PUT requests.");
-
                     }
                     break;
                 case SodaDataFormat.XML:
-                    switch (method)
-                    {
-                        case "GET":
-                            request.Accept = "application/rdf+xml";
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException("dataFormat", "XML data format is only valid for GET requests.");
-                    }
+                    request.Accept = "application/rdf+xml";
                     break;
             }
 
@@ -184,8 +178,8 @@ namespace SODA
             if (String.IsNullOrEmpty(appToken))
                 throw new ArgumentException("appToken", "An app token is required");
 
-            if (!String.IsNullOrEmpty(defaultResourceId) && FourByFour.IsNotValid(defaultResourceId))
-                throw new ArgumentException("defaultResourceId", "");
+            if (defaultResourceId != null && FourByFour.IsNotValid(defaultResourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             Host = host;
             AppToken = appToken;
@@ -245,7 +239,7 @@ namespace SODA
         public ResourceMetadata GetMetadata(string resourceId)
         {
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             var uri = SodaUri.ForMetadata(Host, resourceId);
 
@@ -259,7 +253,7 @@ namespace SODA
         public ResourceMetadata GetMetadata()
         {
             if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("No DefaultResourceId has been defined.");
+                throw new InvalidOperationException("A DefaultResourceId was not defined.");
 
             return GetMetadata(DefaultResourceId);
         }
@@ -291,7 +285,7 @@ namespace SODA
         public Resource<TRow> GetResource<TRow>(string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             var metadata = GetMetadata(resourceId);
 
@@ -304,7 +298,7 @@ namespace SODA
         public Resource<TRow> GetResource<TRow>() where TRow : class
         {
             if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("No DefaultResourceId has been defined.");
+                throw new InvalidOperationException("A DefaultResourceId was not defined.");
 
             return GetResource<TRow>(DefaultResourceId);
         }
@@ -314,6 +308,9 @@ namespace SODA
         /// <returns>A Resource object with an underlying row set of type <see cref="ResourceRow"/>.</returns>
         public Resource<ResourceRow> GetResource(string resourceId)
         {
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
             return GetResource<ResourceRow>(resourceId);
         }
 
@@ -322,7 +319,7 @@ namespace SODA
         public Resource<ResourceRow> GetResource()
         {
             if (String.IsNullOrEmpty(DefaultResourceId))
-                throw new InvalidOperationException("No DefaultResourceId has been defined.");
+                throw new InvalidOperationException("A DefaultResourceId was not defined.");
 
             return GetResource<ResourceRow>();
         }
@@ -338,8 +335,11 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
         {
+            if (dataFormat == SodaDataFormat.XML)
+                throw new ArgumentOutOfRangeException("dataFormat", "SodaDataFormat.XML is not a valid format for write operations.");
+
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
@@ -369,6 +369,12 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Upsert(string payload, SodaDataFormat dataFormat)
         {
+            if (String.IsNullOrEmpty(DefaultResourceId))
+                throw new InvalidOperationException("A DefaultResourceId was not defined.");
+
+            if (dataFormat == SodaDataFormat.XML)
+                throw new ArgumentOutOfRangeException("dataFormat", "SodaDataFormat.XML is not a valid format for write operations.");
+
             return Upsert(payload, dataFormat, DefaultResourceId);
         }
 
@@ -378,6 +384,9 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Upsert<T>(IEnumerable<T> payload, string resourceId) where T : class
         {
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
             string json = JsonConvert.SerializeObject(payload);
 
             return Upsert(json, SodaDataFormat.JSON, resourceId);
@@ -388,6 +397,9 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Upsert<T>(IEnumerable<T> payload) where T : class
         {
+            if (String.IsNullOrEmpty(DefaultResourceId))
+                throw new InvalidOperationException("A DefaultResourceId was not defined.");
+
             return Upsert(payload, DefaultResourceId);
         }
 
@@ -400,7 +412,7 @@ namespace SODA
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             Queue<T> queue = new Queue<T>(payload);
 
@@ -410,7 +422,7 @@ namespace SODA
 
                 for (var index = 0; index < batchSize && queue.Count > 0; index++)
                 {
-                    if (breakFunction(batch, queue.Peek()))
+                    if (breakFunction != null && breakFunction(batch, queue.Peek()))
                         break;
 
                     batch.Add(queue.Dequeue());
@@ -443,6 +455,9 @@ namespace SODA
         /// <returns>A collection of <see cref="SodaResult"/>, one for each batched Upsert.</returns>
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction) where T : class
         {
+            if (String.IsNullOrEmpty(DefaultResourceId))
+                throw new InvalidOperationException("A DefaultResourceId was not defined.");
+
             return BatchUpsert<T>(payload, batchSize, breakFunction, DefaultResourceId);
         }
 
@@ -453,6 +468,9 @@ namespace SODA
         /// <returns>A collection of <see cref="SodaResult"/>, one for each batch processed.</returns>
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, string resourceId) where T : class
         {
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
             Func<IEnumerable<T>, T, bool> neverBreak = (a, b) => false;
 
             return BatchUpsert<T>(payload, batchSize, neverBreak, resourceId);
@@ -464,6 +482,9 @@ namespace SODA
         /// <returns>A collection of responses, one for each batch processed.</returns>
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize) where T : class
         {
+            if (String.IsNullOrEmpty(DefaultResourceId))
+                throw new InvalidOperationException("A DefaultResourceId was not defined.");
+
             return BatchUpsert<T>(payload, batchSize, DefaultResourceId);
         }
 
@@ -478,8 +499,11 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Replace(string payload, SodaDataFormat dataFormat, string resourceId)
         {
+            if (dataFormat == SodaDataFormat.XML)
+                throw new ArgumentOutOfRangeException("dataFormat", "SodaDataFormat.XML is not a valid format for write operations.");
+
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
@@ -494,6 +518,12 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Replace(string payload, SodaDataFormat dataFormat)
         {
+            if (String.IsNullOrEmpty(DefaultResourceId))
+                throw new InvalidOperationException("A DefaultResourceId was not defined.");
+
+            if (dataFormat == SodaDataFormat.XML)
+                throw new ArgumentOutOfRangeException("dataFormat", "SodaDataFormat.XML is not a valid format for write operations.");
+
             return Replace(payload, dataFormat, DefaultResourceId);
         }
 
@@ -503,6 +533,9 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Replace<T>(IEnumerable<T> payload, string resourceId) where T : class
         {
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
             string json = JsonConvert.SerializeObject(payload);
 
             return Replace(json, SodaDataFormat.JSON, resourceId);
@@ -513,6 +546,9 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Replace<T>(IEnumerable<T> payload) where T : class
         {
+            if (String.IsNullOrEmpty(DefaultResourceId))
+                throw new InvalidOperationException("A DefaultResourceId was not defined.");
+
             return Replace<T>(payload, DefaultResourceId);
         }
 
@@ -538,6 +574,9 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult DeleteRow(string rowId)
         {
+            if (String.IsNullOrEmpty(DefaultResourceId))
+                throw new InvalidOperationException("A DefaultResourceId was not defined.");
+
             return DeleteRow(rowId, DefaultResourceId);
         }
         

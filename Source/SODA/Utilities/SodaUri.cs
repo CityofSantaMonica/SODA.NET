@@ -31,7 +31,7 @@ namespace SODA.Utilities
                 throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             string url = metadataUrl(socrataHost, resourceId);
 
@@ -66,7 +66,7 @@ namespace SODA.Utilities
                 throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             string url = metadataUrl(socrataHost, resourceId).Replace("views", "resource");
 
@@ -88,7 +88,7 @@ namespace SODA.Utilities
                 throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             string url = metadataUrl(socrataHost, resourceId).Replace("views", "-/-");
 
@@ -105,7 +105,7 @@ namespace SODA.Utilities
                 throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             string url = metadataUrl(socrataHost, resourceId).Replace("views", "-/-") + "/about";
 
@@ -123,7 +123,7 @@ namespace SODA.Utilities
                 throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
             if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             if (soqlQuery == null)
                 throw new ArgumentNullException("soqlQuery", "Must provide a valid SoqlQuery object");
