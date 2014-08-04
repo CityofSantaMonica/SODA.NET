@@ -140,6 +140,15 @@ namespace SODA
             return this;
         }
 
+        /// <summary>Sets this SoqlQuery's where clause using the specified format string and substitution arguments.</summary>
+        /// <param name="format">A composite format string, suitable for use with String.Format()</param>
+        /// <param name="arguments">An array of objects to format.</param>
+        /// <returns>This SoqlQuery.</returns>
+        public SoqlQuery Where(string format, params object[] args)
+        {
+            return Where(String.Format(format, args));
+        }
+
         /// <summary>Sets this SoqlQuery's order clause using the specified columns and the DefaultOrderDirection.</summary>
         /// <param name="columns">A list of column names that define the order in which the rows selected by this SoqlQuery are returned.</param>
         /// <returns>This SoqlQuery.</returns>
@@ -197,6 +206,15 @@ namespace SODA
         {
             this.search = searchText;
             return this;
+        }
+
+        /// <summary>Sets this SoqlQuery's full text search clause using the specified format string and substitution arguments.</summary>
+        /// <param name="format">A composite format string, suitable for use with String.Format()</param>
+        /// <param name="arguments">An array of objects to format.</param>
+        /// <returns>This SoqlQuery.</returns>
+        public SoqlQuery FullTextSearch(string format, params object[] args)
+        {
+            return FullTextSearch(String.Format(format, args));
         }
         
         /// <summary>Restricts the input to only the non-empty values</summary>

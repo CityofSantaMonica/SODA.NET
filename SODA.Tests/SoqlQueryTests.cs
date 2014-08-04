@@ -196,6 +196,19 @@ namespace SODA.Tests
 
         [Test]
         [Category("SoqlQuery")]
+        public void Where_Clause_Gets_Formatted_Input()
+        {
+            string format = "something > {0}";
+
+            string expected = String.Format("{0}={1}", SoqlQuery.WhereKey, String.Format(format, "nothing"));
+
+            string soql = new SoqlQuery().Where(format, "nothing").ToString();
+
+            StringAssert.Contains(expected, soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
         public void Last_Where_Overwrites_All_Previous()
         {
             string first = "first > 0";
@@ -403,6 +416,19 @@ namespace SODA.Tests
             string expected = String.Format("{0}={1}", SoqlQuery.SearchKey, searchText);
 
             string soql = new SoqlQuery().FullTextSearch(searchText).ToString();
+
+            StringAssert.Contains(expected, soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Search_Clause_Gets_FormattedInput()
+        {
+            string format = "search term is {0}";
+
+            string expected = String.Format("{0}={1}", SoqlQuery.SearchKey, String.Format(format, "test"));
+
+            string soql = new SoqlQuery().FullTextSearch(format, "test").ToString();
 
             StringAssert.Contains(expected, soql);
         }
