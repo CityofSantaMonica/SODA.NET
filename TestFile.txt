@@ -1,1 +1,0 @@
-File was added in VS then checked in to TFS.
