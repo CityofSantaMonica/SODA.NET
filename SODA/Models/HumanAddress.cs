@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace SODA.Models
 {
     [DataContract]
-    public class HumanAddress
+    public class HumanAddress : IEquatable<HumanAddress>
     {
         [DataMember(Name = "address")]
         public string Address { get; set; }
@@ -48,6 +48,19 @@ namespace SODA.Models
             City = other.City;
             State = other.State;
             Zip = other.Zip;
+        }
+
+        /// <summary>
+        /// Overload Equals for HumanAddresses.
+        /// </summary>
+        /// <param name="other">Another HumanAddress object to compare to this instance.</param>
+        /// <returns>True if all of Address, City, State, and Zip are equal for the two instances. False otherwise.</returns>
+        public bool Equals(HumanAddress other)
+        {
+            return this.Address.Equals(other.Address)
+                && this.City.Equals(other.City)
+                && this.State.Equals(other.State)
+                && this.Zip.Equals(other.Zip);
         }
     }
 }
