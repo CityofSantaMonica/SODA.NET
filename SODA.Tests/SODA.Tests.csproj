@@ -62,6 +62,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="HumanAddressTests.cs" />
     <Compile Include="Mocks\RequestMocks.cs" />
     <Compile Include="Mocks\StringMocks.cs">
       <SubType>Code</SubType>
