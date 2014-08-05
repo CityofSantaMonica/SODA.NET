@@ -17,7 +17,19 @@ namespace SODA.Models
         public string Latitude { get; set; }
 
         [DataMember(Name = "human_address")]
-        public string HumanAddress { get; set; }
+        private string HumanAddressString { get; set; }
+        public HumanAddress HumanAddress { get; set; }
+
+        [OnSerializing]
+        internal void OnSerializingMethod(StreamingContext context)
+        {
+            HumanAddressString =HumanAddress.ToString();
+        }
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext contex)
+        {
+            HumanAddress = new HumanAddress(HumanAddressString);
+        }
     }
 
     [DataContract]
