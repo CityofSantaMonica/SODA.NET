@@ -38,8 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\BusinessLicense\Main\Source\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\DeletedFlag.cs" />
+    <Compile Include="Models\HumanAddress.cs" />
     <Compile Include="Models\LocationColumn.cs" />
     <Compile Include="Models\WebsiteUrlColumn.cs" />
     <Compile Include="Resource.cs" />
@@ -64,6 +64,7 @@
     <Compile Include="ResourceRow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SodaClient.cs" />
+    <Compile Include="Utilities\JsonSerializationExtensions.cs" />
     <Compile Include="Utilities\SodaUri.cs" />
     <Compile Include="Utilities\DateTimeConverter.cs" />
     <Compile Include="Utilities\FourByFour.cs">
