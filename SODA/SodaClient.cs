@@ -252,17 +252,6 @@ namespace SODA
             return new Resource<TRow>(metadata, this);
         }
         
-        /// <summary>Get a Resource object that represents its rows as <see cref="ResourceRow"/>, using the specified resource identifier.</summary>
-        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A Resource object with an underlying row set of type <see cref="ResourceRow"/>.</returns>
-        public Resource<ResourceRow> GetResource(string resourceId)
-        {
-            if (FourByFour.IsNotValid(resourceId))
-                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
-
-            return GetResource<ResourceRow>(resourceId);
-        }
-
         #endregion
 
         #region POST

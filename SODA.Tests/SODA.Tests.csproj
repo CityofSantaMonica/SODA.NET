@@ -73,11 +73,11 @@
     <Compile Include="DateTimeConverterTests.cs" />
     <Compile Include="FourByFourTests.cs" />
     <Compile Include="ResourceMetadataTests.cs" />
-    <Compile Include="ResourceRowTests.cs" />
     <Compile Include="ResourceTests.cs" />
     <Compile Include="SodaClientTests.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SodaRowTests.cs" />
     <Compile Include="SodaUriTests.cs" />
     <Compile Include="SoqlQueryTests.cs" />
   </ItemGroup>

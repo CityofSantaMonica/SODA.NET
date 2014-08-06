@@ -349,7 +349,7 @@ namespace SODA.Tests
         [Category("SodaClient")]
         public void GetResource_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
-            mockClient.GetResource(input);
+            mockClient.GetResource<object>(input);
         }
         
         [TestCase(StringMocks.NullInput)]
