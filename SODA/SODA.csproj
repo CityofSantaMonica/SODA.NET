@@ -51,7 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\DeletedFlag.cs" />
     <Compile Include="Models\HumanAddress.cs" />
     <Compile Include="Models\LocationColumn.cs" />
     <Compile Include="Models\WebsiteUrlColumn.cs" />
