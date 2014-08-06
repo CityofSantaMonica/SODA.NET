@@ -281,11 +281,11 @@ namespace SODA
             catch (WebException webEx)
             {
                 string message = unwrapExceptionMessage(webEx);
-                result = new SodaResult() { Message = String.Format("{0}{1}{2}", message, Environment.NewLine, payload) };
+                result = new SodaResult() { Message = webEx.Message, IsError = true, ErrorCode = message, Data = payload };
             }
             catch (Exception ex)
             {
-                result = new SodaResult() { Message = String.Format("{0}{1}{2}", ex.Message, Environment.NewLine, payload) };
+                result = new SodaResult() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
             }
 
             return result;
@@ -336,14 +336,14 @@ namespace SODA
                 {
                     result = Upsert<T>(batch, resourceId);
                 }
-                catch (WebException ex)
+                catch (WebException webEx)
                 {
-                    string message = unwrapExceptionMessage(ex);
-                    result = new SodaResult() { Message = String.Format("{0}{1}{2}", message, Environment.NewLine, JsonConvert.SerializeObject(batch)) };
+                    string message = unwrapExceptionMessage(webEx);
+                    result = new SodaResult() { Message = webEx.Message, IsError = true, ErrorCode = message, Data = payload };
                 }
                 catch (Exception ex)
                 {
-                    result = new SodaResult() { Message = String.Format("{0}{1}{2}", ex.Message, Environment.NewLine, JsonConvert.SerializeObject(batch)) };
+                    result = new SodaResult() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
                 }
 
                 yield return result;

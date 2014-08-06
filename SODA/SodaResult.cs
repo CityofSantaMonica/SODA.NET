@@ -1,10 +1,11 @@
-﻿using System.Runtime.Serialization;
-using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace SODA
 {
-    /// <summary>A class representing the response from a SODA call.</summary>
-    /// 
+    /// <summary>
+    /// A class representing the response from a SODA call.
+    /// </summary>
     [DataContract]
     public class SodaResult
     {
@@ -26,7 +27,16 @@ namespace SODA
         [DataMember(Name = "By SID")]
         public int BySID { get; set; }
 
-        [DataMember]
+        [DataMember(Name = "message")]
         public string Message { get; set; }
+
+        [DataMember(Name = "error")]
+        public bool IsError { get; set; }
+
+        [DataMember(Name = "code")]
+        public string ErrorCode { get; set; }
+
+        [DataMember(Name = "data")]
+        public dynamic Data { get; set; }
     }
 }
