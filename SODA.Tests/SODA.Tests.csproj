@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="SodaUriTests.cs" />
     <Compile Include="SoqlQueryTests.cs" />
+    <Compile Include="WebsiteUrlColumnTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
