@@ -7,6 +7,7 @@ namespace SODA.Tests
     [TestFixture]
     public class ResourceMetadataTests
     {
+
         [Test]
         [Category("ResourceMetadata")]
         public void Null_UnixDates_Return_Null_DateTimes()
@@ -64,7 +65,6 @@ namespace SODA.Tests
             Assert.Null(resourceMetadata.TimePeriod);
             Assert.Null(resourceMetadata.UpdateFrequency);
             Assert.Null(resourceMetadata.RowIdentifierFieldId);
-            Assert.Null(resourceMetadata.RowIdentifierField);
         }
 
         [Test]
@@ -104,8 +104,21 @@ namespace SODA.Tests
 
         [Test]
         [Category("ResourceMetadata")]
-        public void RowIdentifierField_Is_Null_If_RowIdentifierFieldId_Has_Value_With_No_Matching_Columns()
+        public void RowIdentifierField_Is_Socrata_Id_If_Metadata_Is_Null()
         {
+            var resourceMetadata = new ResourceMetadata();
+
+            Assert.Null(resourceMetadata.Metadata);
+
+            Assert.AreEqual(":id", resourceMetadata.RowIdentifierField);
+        }
+
+        [Test]
+        [Category("ResourceMetadata")]
+        public void RowIdentifierField_Is_Socrata_Id_If_RowIdentifierFieldId_Has_Value_With_No_Matching_Columns()
+        {
+            string expected = ":id";
+
             var resourceMetadata = new ResourceMetadata()
             {
                 Metadata = new Dictionary<string, dynamic>()
@@ -115,12 +128,12 @@ namespace SODA.Tests
             };
             
             Assert.Null(resourceMetadata.Columns);
-            Assert.Null(resourceMetadata.RowIdentifierField);
+            Assert.AreEqual(expected, resourceMetadata.RowIdentifierField);
 
             resourceMetadata.Columns = new List<ResourceColumn>();
 
             Assert.IsNotNull(resourceMetadata.Columns);
-            Assert.Null(resourceMetadata.RowIdentifierField);
+            Assert.AreEqual(expected, resourceMetadata.RowIdentifierField);
 
             resourceMetadata.Columns = new List<ResourceColumn>()
             {
@@ -128,7 +141,7 @@ namespace SODA.Tests
             };
 
             Assert.IsNotEmpty(resourceMetadata.Columns);
-            Assert.Null(resourceMetadata.RowIdentifierField);
+            Assert.AreEqual(expected, resourceMetadata.RowIdentifierField);
         }
 
         [Test]

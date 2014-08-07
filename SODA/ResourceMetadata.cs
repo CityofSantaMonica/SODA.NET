@@ -204,7 +204,7 @@ namespace SODA
                     return Metadata["rowIdentifier"];
                 }
 
-                return null;
+                return ":id";
             }
         }
 
