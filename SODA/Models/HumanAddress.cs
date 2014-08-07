@@ -57,6 +57,7 @@ namespace SODA.Models
         /// <returns>True if all of Address, City, State, and Zip are equal for the two instances. False otherwise.</returns>
         public bool Equals(HumanAddress other)
         {
+            if (ReferenceEquals(other, null)) return false;
             return this.Address.Equals(other.Address)
                 && this.City.Equals(other.City)
                 && this.State.Equals(other.State)

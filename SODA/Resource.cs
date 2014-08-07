@@ -76,10 +76,36 @@ namespace SODA
         /// <typeparam name="T">The .NET class that represents the type of the underlying rows in this resultset of this query.</typeparam>
         /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute against this Resource.</param>
         /// <returns>A collection of entities of type TRow.</returns>
+        /// <remarks>
+        /// By default, Socrata will only return the first 1000 rows unless otherwise specified in SoQL using the Limit and Offset parameters.
+        /// This method checks the specified SoqlQuery object for either the Limit or Offset parameter, and honors those parameters if present.
+        /// If both Limit and Offset are not part of the SoqlQuery, this method attempts to retrieve all rows in the dataset across all pages.
+        /// In other words, this method hides the fact that Socrata will only return 1000 rows at a time, unless explicity told not to via the SoqlQuery argument.
+        /// </remarks>
         public IEnumerable<T> Query<T>(SoqlQuery soqlQuery) where T : class
         {
-            var queryUri = SodaUri.ForQuery(Host, Identifier, soqlQuery);
-            return Client.Get<IEnumerable<T>>(queryUri);
+            //if the query explicitly asks for a limit/offset, honor the ask
+            if (soqlQuery.LimitValue > 0 || soqlQuery.OffsetValue > 0)
+            {
+                var queryUri = SodaUri.ForQuery(Host, Identifier, soqlQuery);
+                return Client.Get<IEnumerable<T>>(queryUri);
+            }
+            //otherwise, go nuts and get EVERYTHING
+            else
+            {
+                List<T> allResults = new List<T>();
+                int offset = 0;
+                IEnumerable<T> offsetResults = Client.Get<IEnumerable<T>>(SodaUri.ForQuery(Host, Identifier, soqlQuery));
+
+                while (offsetResults.Any())
+                {
+                    allResults.AddRange(offsetResults);
+                    soqlQuery = soqlQuery.Offset(++offset * SoqlQuery.MaximumLimit);
+                    offsetResults = Client.Get<IEnumerable<T>>(SodaUri.ForQuery(Host, Identifier, soqlQuery));
+                }
+
+                return allResults;
+            }
         }
 
         /// <summary>
