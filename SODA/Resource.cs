@@ -9,19 +9,15 @@ namespace SODA
     /// <typeparam name="TRow">The .NET class that represents the type of the underlying row in this resource.</typeparam>
     public class Resource<TRow> where TRow : class
     {
-        /// <summary>Metadata about this Resource.</summary>
-        /// 
+        /// <summary>
+        /// Metadata about this Resource.
+        /// </summary>
         public readonly ResourceMetadata Metadata;
-        
-        /// <summary>A collection describing the metadata of each column in this Resource.</summary>
-        /// 
-        public IEnumerable<ResourceColumn> Columns
-        {
-            get
-            {
-                return Metadata.Columns;
-            }
-        }
+
+        /// <summary>
+        /// A collection describing the metadata of each column in this Resource.
+        /// </summary>
+        public readonly IEnumerable<ResourceColumn> Columns;
 
         /// <summary>The Socrata identifier (4x4) for this Resource.</summary>
         /// 
@@ -64,6 +60,7 @@ namespace SODA
 
             Metadata = metadata;
             Client = client;
+            Columns = metadata.Columns;
         }
         
         /// <summary>Query this Resource using the specified <see cref="SoqlQuery"/>.</summary>
