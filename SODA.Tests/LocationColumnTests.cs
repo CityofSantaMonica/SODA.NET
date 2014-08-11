@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using SODA.Models;
+using SODA.Tests.Mocks;
 
 namespace SODA.Tests
 {
@@ -57,6 +58,22 @@ namespace SODA.Tests
             Assert.AreEqual(city, locationColumn.HumanAddress.City);
             Assert.AreEqual(state, locationColumn.HumanAddress.State);
             Assert.AreEqual(zip, locationColumn.HumanAddress.Zip);
+        }
+
+        [TestCase(StringMocks.EmptyInput)]
+        [TestCase(StringMocks.NullInput)]
+        [Category("LocationColumn")]
+        public void OnDeserializedMethod_Sets_HumanAddress_To_Null_For_Empty_HumanAddressJsonString_Member(string input)
+        {
+            var locationColumn = new LocationColumn() {
+                HumanAddressJsonString = input
+            };
+
+            Assert.IsNull(locationColumn.HumanAddress);
+
+            locationColumn.OnDeserializedMethod(new StreamingContext());
+
+            Assert.IsNull(locationColumn.HumanAddress);
         }
     }
 }

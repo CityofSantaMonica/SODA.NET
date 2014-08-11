@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using SODA.Utilities;
 
 namespace SODA.Models
@@ -29,7 +30,7 @@ namespace SODA.Models
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext contex)
         {
-            HumanAddress = new HumanAddress(HumanAddressJsonString);
+            HumanAddress = String.IsNullOrEmpty(HumanAddressJsonString) ? null : new HumanAddress(HumanAddressJsonString);
         }
     }
 }
