@@ -11,15 +11,13 @@ namespace SODA.Tests
     {
         [Test]
         [Category("JsonSerializationExtensions")]
-        public void ToJsonString_On_Null_Object_Serializes_To_The_Word_null()
+        public void ToJsonString_On_Null_Object_Serializes_To_Null_String()
         {
             object nullObject = null;
-
-            string expected = "null";
-
+            
             string nullObjectSerialized = nullObject.ToJsonString();
 
-            Assert.AreEqual(expected, nullObjectSerialized);
+            Assert.IsNull(nullObjectSerialized);
         }
 
         [Test]

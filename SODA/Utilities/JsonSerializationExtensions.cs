@@ -10,7 +10,7 @@ namespace SODA.Utilities
         /// <returns>The serialized JSON string of the target object.</returns>
         public static string ToJsonString(this object target)
         {
-            return JsonConvert.SerializeObject(target);
+            return target == null ? null : JsonConvert.SerializeObject(target);
         }
     }
 }
