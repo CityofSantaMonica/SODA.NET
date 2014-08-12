@@ -109,19 +109,19 @@ namespace SODA
         }
 
         /// <summary>
-        /// Get a subset of this Resource's row collection, with maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.
+        /// Get the rows contained in this Resource.
         /// </summary>
-        /// <returns>A collection of row of type TRow, of maximum size equal to <see cref="SoqlQuery.MaximumLimit"/>.</returns>
+        /// <returns>A collection of type TRow.</returns>
         public IEnumerable<TRow> GetRows()
         {
             return Query<TRow>(new SoqlQuery());
         }
 
         /// <summary>
-        /// Get a subset of this Resource's row collection, with maximum size equal to the specified limit.
+        /// Get a subset of the rows contained in this Resource, with maximum size equal to the specified limit.
         /// </summary>
         /// <param name="limit">The maximum number of rows to return in the resulting collection.</param>
-        /// <returns>A collection of maximum size equal to the specified limit.</returns>
+        /// <returns>A collection of type TRow, of maximum size equal to the specified limit.</returns>
         public IEnumerable<TRow> GetRows(int limit)
         {
             var soqlQuery = new SoqlQuery().Limit(limit);
@@ -129,11 +129,11 @@ namespace SODA
         }
 
         /// <summary>
-        /// Get a subset of this Resource's row collection, with maximum size equal to the specified limit, starting at the specified offset into the total row count.
+        /// Get a subset of the rows contained in this Resource, with maximum size equal to the specified limit, starting at the specified offset into the total row count.
         /// </summary>
         /// <param name="limit">The maximum number of rows to return in the resulting collection.</param>
         /// <param name="offset">The index into this Resource's total rows from which to start.</param>
-        /// <returns>A collection of rows of type TRow, of maximum size equal to the specified limit.</returns>
+        /// <returns>A collection of type TRow, of maximum size equal to the specified limit.</returns>
         public IEnumerable<TRow> GetRows(int limit, int offset)
         {
             var soqlQuery = new SoqlQuery().Limit(limit).Offset(offset);
