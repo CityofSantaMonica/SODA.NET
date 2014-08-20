@@ -309,7 +309,7 @@ namespace SODA
         public SodaResult Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (dataFormat == SodaDataFormat.XML)
-                throw new ArgumentOutOfRangeException("dataFormat", "SodaDataFormat.XML is not a valid format for write operations.");
+                throw new ArgumentOutOfRangeException("dataFormat", "XML is not a valid format for write operations.");
 
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
@@ -438,7 +438,7 @@ namespace SODA
         public SodaResult Replace(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (dataFormat == SodaDataFormat.XML)
-                throw new ArgumentOutOfRangeException("dataFormat", "SodaDataFormat.XML is not a valid format for write operations.");
+                throw new ArgumentOutOfRangeException("dataFormat", "XML is not a valid format for write operations.");
 
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
