@@ -252,25 +252,7 @@ namespace SODA.Tests
                 StringAssert.AreEqualIgnoringCase(input, webResponse.Method);
             }
         }
-
-        [Test]
-        [ExpectedException(typeof(NotImplementedException))]
-        [Category("SodaClient")]
-        public void SendRequest_CSV_DataFormat_Not_Implemented()
-        {
-            var request = RequestMocks.New(exampleUri);
-            SodaClient.sendRequest<object>(request, SodaDataFormat.CSV);
-        }
-
-        [Test]
-        [ExpectedException(typeof(NotImplementedException))]
-        [Category("SodaClient")]
-        public void SendRequest_XML_DataFormat_Not_Implemented()
-        {
-            var request = RequestMocks.New(exampleUri);
-            SodaClient.sendRequest<object>(request, SodaDataFormat.XML);
-        }
-
+        
         #endregion
 
         #region ctor
@@ -293,6 +275,16 @@ namespace SODA.Tests
             new SodaClient(StringMocks.NonEmptyInput, input);
         }
 
+        [TestCase("host.com")]
+        [TestCase("http://host.com")]
+        [Category("SodaClient")]
+        public void New_With_Http_Host_Enforces_Https_Host(string input)
+        {   
+            var client = new SodaClient(input, "appToken");
+
+            StringAssert.StartsWith("https", client.Host);
+        }
+
         [Test]
         [Category("SodaClient")]
         public void New_With_Host_And_AppToken_Gets_Host_And_AppToken()
@@ -302,7 +294,7 @@ namespace SODA.Tests
 
             var client = new SodaClient(host, appToken);
 
-            Assert.AreEqual(host, client.Host);
+            Assert.AreEqual(String.Format("https://{0}", host), client.Host);
             Assert.AreEqual(appToken, client.AppToken);
         }
 
@@ -351,17 +343,7 @@ namespace SODA.Tests
         {
             mockClient.GetResource<object>(input);
         }
-        
-        [TestCase(StringMocks.NullInput)]
-        [TestCase(StringMocks.EmptyInput)]
-        [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        [Category("SodaClient")]
-        public void Generic_GetResource_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
-        {
-            mockClient.GetResource<object>(input);
-        }
-                        
+                                
         #endregion
 
         #region POST
@@ -371,7 +353,7 @@ namespace SODA.Tests
         [Category("SodaClient")]
         public void Upsert_With_String_And_SodaDataFormat_XML_Throws_ArgumentOutOfRangeException()
         {
-            new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput).Upsert(String.Empty, SodaDataFormat.XML, StringMocks.ResourceId);
+            mockClient.Upsert(String.Empty, SodaDataFormat.XML, StringMocks.ResourceId);
         }
         
         [TestCase(StringMocks.NullInput)]
@@ -379,7 +361,7 @@ namespace SODA.Tests
         [TestCase(StringMocks.NonEmptyInput)]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
-        public void Generic_Upsert_With_Entities_And_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
+        public void Upsert_With_Entities_And_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
             IEnumerable<object> payload = Enumerable.Empty<object>();
 

@@ -46,9 +46,17 @@ namespace SODA.Tests
         {
             Uri uri = SodaUri.ForMetadata(StringMocks.Host, StringMocks.ResourceId);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForMetadata("http://" + StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
             
             uri = null;
             uri = SodaUri.ForMetadataList(StringMocks.Host, 1);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForMetadataList("http://" + StringMocks.Host, 1);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
@@ -56,7 +64,15 @@ namespace SODA.Tests
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
+            uri = SodaUri.ForResourceAPI("http://" + StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
             uri = SodaUri.ForResourcePage(StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForResourcePage("http://" + StringMocks.Host, StringMocks.ResourceId);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
@@ -64,11 +80,23 @@ namespace SODA.Tests
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
 
             uri = null;
+            uri = SodaUri.ForResourceAboutPage("http://" + StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
             uri = SodaUri.ForQuery(StringMocks.Host, StringMocks.ResourceId, new SoqlQuery());
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForQuery("http://" + StringMocks.Host, StringMocks.ResourceId, new SoqlQuery());
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
             
             uri = null;
             uri = SodaUri.ForCategoryPage(StringMocks.Host, StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForCategoryPage("http://" + StringMocks.Host, StringMocks.NonEmptyInput);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
         }
 
