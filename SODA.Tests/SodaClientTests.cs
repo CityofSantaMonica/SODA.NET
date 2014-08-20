@@ -311,7 +311,7 @@ namespace SODA.Tests
         
         #endregion
 
-        #region GET
+        #region public API
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
@@ -343,10 +343,6 @@ namespace SODA.Tests
         {
             mockClient.GetResource<object>(input);
         }
-                                
-        #endregion
-
-        #region POST
 
         [Test]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
@@ -355,7 +351,15 @@ namespace SODA.Tests
         {
             mockClient.Upsert(String.Empty, SodaDataFormat.XML, StringMocks.ResourceId);
         }
-        
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        [Category("SodaClient")]
+        public void Upsert_With_String_And_SodaDataFormat_Using_Anonymous_Client_Throws_InvalidOperationException()
+        {
+            mockClient.Upsert(String.Empty, SodaDataFormat.JSON, StringMocks.ResourceId);
+        }
+
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
@@ -367,7 +371,17 @@ namespace SODA.Tests
 
             mockClient.Upsert(payload, input);
         }
-        
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        [Category("SodaClient")]
+        public void Upsert_With_Entities_Using_Anonymous_Client_Throws_InvalidOperationException()
+        {
+            IEnumerable<object> payload = Enumerable.Empty<object>();
+
+            mockClient.Upsert(payload, StringMocks.ResourceId);
+        }
+
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
@@ -381,6 +395,18 @@ namespace SODA.Tests
             //call ToList to ensure the IEnumerable is executed
             mockClient.BatchUpsert(payload, 1, breakFunc, input).ToList();
         }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        [Category("SodaClient")]
+        public void BatchUpsert_With_Entities_And_BatchSize_And_BreakFunction_Using_Anonymous_Client_Throws_InvalidOperationException()
+        {
+            IEnumerable<object> payload = Enumerable.Empty<object>();
+            Func<IEnumerable<object>, object, bool> breakFunc = (l, s) => false;
+
+            //call ToList to ensure the IEnumerable is executed
+            mockClient.BatchUpsert(payload, 1, breakFunc, StringMocks.ResourceId).ToList();
+        }
         
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
@@ -393,10 +419,16 @@ namespace SODA.Tests
 
             mockClient.BatchUpsert(payload, 1, input);
         }
-                
-        #endregion
 
-        #region PUT
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        [Category("SodaClient")]
+        public void BatchUpsert_With_Entities_And_BatchSize_Using_Anonymous_Client_Throws_InvalidOperationException()
+        {
+            IEnumerable<object> payload = Enumerable.Empty<object>();
+
+            mockClient.BatchUpsert(payload, 1, StringMocks.ResourceId);
+        }
 
         [Test]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
@@ -415,6 +447,14 @@ namespace SODA.Tests
         {
             mockClient.Replace(String.Empty, SodaDataFormat.JSON, input);
         }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        [Category("SodaClient")]
+        public void Replace_With_String_And_DataFormat_Using_Anonymous_Client_Throws_InvalidOperationException()
+        {
+            mockClient.Replace(String.Empty, SodaDataFormat.JSON, StringMocks.ResourceId);
+        }
         
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
@@ -428,10 +468,43 @@ namespace SODA.Tests
             mockClient.Replace(payload, input);
         }
 
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        [Category("SodaClient")]
+        public void Replace_With_Entities_Using_Anonymous_Client_Throws_InvalidOperationException()
+        {
+            IEnumerable<object> payload = Enumerable.Empty<object>();
+
+            mockClient.Replace(payload, StringMocks.ResourceId);
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
+        [Category("SodaClient")]
+        public void DeleteRow_With_Empty_RowId_Throws_ArgumentException(string input)
+        {
+            mockClient.DeleteRow(input, StringMocks.ResourceId);
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [TestCase(StringMocks.NonEmptyInput)]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [Category("SodaClient")]
+        public void DeleteRow_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
+        {
+            mockClient.DeleteRow(StringMocks.NonEmptyInput, input);
+        }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        [Category("SodaClient")]
+        public void DeleteRow_Using_Anonymous_Client_Throws_InvalidOperationException()
+        {
+            mockClient.DeleteRow(StringMocks.NonEmptyInput, StringMocks.ResourceId);
+        }
+
         #endregion
-
-        #region DELETE
-
-        #endregion   
     }
 }

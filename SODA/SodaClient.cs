@@ -313,6 +313,9 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
             var request = createRequest(uri, "POST", AppToken, Username, password, dataFormat, payload);
@@ -346,6 +349,9 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
             string json = JsonConvert.SerializeObject(payload);
 
             return Upsert(json, SodaDataFormat.JSON, resourceId);
@@ -363,6 +369,9 @@ namespace SODA
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
 
             Queue<T> queue = new Queue<T>(payload);
 
@@ -410,6 +419,9 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
             Func<IEnumerable<T>, T, bool> neverBreak = (a, b) => false;
 
             return BatchUpsert<T>(payload, batchSize, neverBreak, resourceId);
@@ -430,6 +442,9 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
             var request = createRequest(uri, "PUT", AppToken, Username, password, dataFormat, payload);
@@ -448,6 +463,9 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
             string json = JsonConvert.SerializeObject(payload);
 
             return Replace(json, SodaDataFormat.JSON, resourceId);
@@ -461,6 +479,15 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult DeleteRow(string rowId, string resourceId)
         {
+            if (String.IsNullOrEmpty(rowId))
+                throw new ArgumentException("Must specify the row to be deleted using its row identifier.", "rowId");
+
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
             var uri = SodaUri.ForResourceAPI(Host, resourceId, rowId);
 
             var request = createRequest(uri, "DELETE", AppToken, Username, password);
