@@ -53,7 +53,7 @@ namespace SODA
         /// </summary>
         /// <param name="uri">The Uri to send the request to.</param>
         /// <param name="method">The HTTP method to use for the request.</param>
-        /// <param name="dataFormat">The data format used for the request.</param>
+        /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
         /// <param name="appToken">The Socrata App Token to send with the request.</param>
         /// <param name="username">The Socrata user account to use for the request.</param>
         /// <param name="password">The password for the specified Socrata <paramref name="username"/>.</param>
@@ -61,7 +61,7 @@ namespace SODA
         internal static HttpWebRequest createRequest(Uri uri, string method, string appToken, string username, string password, SodaDataFormat dataFormat = SodaDataFormat.JSON, string payload = null)
         {
             var request = WebRequest.Create(uri) as HttpWebRequest;
-            request.Method = method;
+            request.Method = method.ToUpper();
             request.ProtocolVersion = new System.Version("1.1");
             request.PreAuthenticate = true;
 
@@ -78,11 +78,11 @@ namespace SODA
             {
                 case SodaDataFormat.JSON:
                     request.Accept = "application/json";
-                    if (!method.Equals("GET", StringComparison.OrdinalIgnoreCase))
+                    if (!request.Method.Equals("GET"))
                         request.ContentType = "application/json";
                     break;
                 case SodaDataFormat.CSV:
-                    switch(method)
+                    switch (request.Method)
                     {
                         case "GET":
                             request.Accept = "text/csv";
@@ -112,10 +112,11 @@ namespace SODA
         }
 
         /// <summary>
-        /// Helper method for sending web requests.
+        /// Helper method for sending an HttpWebRequest and interpreting the response.
         /// </summary>
         /// <typeparam name="TResult">The target type during response deserialization.</typeparam>
         /// <param name="webRequest">The HttpWebRequest to send.</param>
+        /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
         internal static TResult sendRequest<TResult>(HttpWebRequest webRequest, SodaDataFormat dataFormat = SodaDataFormat.JSON) where TResult : class
         {
             TResult result = default(TResult);
@@ -166,7 +167,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Helper method for getting the response string a WebException.
+        /// Helper method for getting the response string from an instance of a WebException.
         /// </summary>
         /// <param name="webException">The WebException whose response string will be read.</param>
         /// <returns>The response string if it exists, otherwise the Message property of the WebException.</returns>
@@ -191,7 +192,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Send an HTTP GET request to the specified URI, and include an appropriate Accept header for the specified data format.
+        /// Send an HTTP GET request to the specified URI, including an appropriate Accept header for the specified data format.
         /// </summary>
         /// <typeparam name="T">The .NET class to use for response deserialization.</typeparam>
         /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
@@ -302,7 +303,7 @@ namespace SODA
         /// Update/Insert the specified payload string using the specified resource identifier.
         /// </summary>
         /// <param name="payload">A string of serialized data.</param>
-        /// <param name="dataFormat">The data format used for serialization.</param>
+        /// <param name="dataFormat">One of the data-interchange formats that Socrata supports, into which the payload has been serialized.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
@@ -431,7 +432,7 @@ namespace SODA
         /// Replace any existing rows with the payload data, using the specified resource identifier.
         /// </summary>
         /// <param name="payload">A string of serialized data.</param>
-        /// <param name="dataFormat">The data format used for serialization.</param>
+        /// <param name="dataFormat">One of the data-interchange formats that Socrata supports, into which the payload has been serialized.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Replace(string payload, SodaDataFormat dataFormat, string resourceId)
