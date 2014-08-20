@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace SODA.Models
 {
+    /// <summary>
+    /// A class to model the Socrata Website URL column type.
+    /// </summary>
     [DataContract]
     public class WebsiteUrlColumn
     {

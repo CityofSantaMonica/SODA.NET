@@ -6,7 +6,9 @@ using SODA.Utilities;
 
 namespace SODA
 {
-    /// <summary>A class that represents metadata about a <see cref="Resource"/> in Socrata.</summary>
+    /// <summary>
+    /// A class that represents metadata about a <see cref="Resource"/> in Socrata.
+    /// </summary>
     [DataContract]
     public class ResourceMetadata
     {

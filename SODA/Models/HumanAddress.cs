@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace SODA.Models
 {
+    /// <summary>
+    /// A class to model the human-readable address portion of a <see cref="LocationColumn"/> in a Socrata resource. 
+    /// </summary>
     [DataContract]
     public class HumanAddress : IEquatable<HumanAddress>
     {

@@ -1,11 +1,12 @@
 ﻿namespace SODA
 {
-    /// <summary>Enumeration of data interchange formats supported by SODA.</summary>
-    /// 
+    /// <summary>
+    /// Enumeration of the data-interchange formats supported by SODA.
+    /// </summary>
     public enum SodaDataFormat
     {
         JSON,
-        XML,
-        CSV
+        CSV,
+        XML
     }
 }

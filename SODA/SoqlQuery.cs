@@ -6,15 +6,6 @@ using System.Text;
 namespace SODA
 {
     /// <summary>
-    /// Enumeration of possible sort orders for use with SoQL queries.
-    /// </summary>
-    public enum OrderDirection
-    {
-        ASC,
-        DESC        
-    }
-
-    /// <summary>
     /// A class representing a query against a Socrata resource using a series of SoQL clauses.
     /// </summary>
     public class SoqlQuery

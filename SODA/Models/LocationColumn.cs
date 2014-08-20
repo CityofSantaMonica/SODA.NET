@@ -4,6 +4,9 @@ using SODA.Utilities;
 
 namespace SODA.Models
 {
+    /// <summary>
+    /// A class to model the Socrata Location column type.
+    /// </summary>
     [DataContract]
     public class LocationColumn
     {

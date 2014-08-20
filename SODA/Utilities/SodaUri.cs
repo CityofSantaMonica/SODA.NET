@@ -25,18 +25,16 @@ namespace SODA.Utilities
         /// <returns>A SODA-compatible Url</returns>
         internal static string enforceHttps(string socrataHost)
         {
-            string domain = socrataHost;
-
             if (httpPrefix.IsMatch(socrataHost))
             {
-                domain = httpPrefix.Match(socrataHost).Groups[1].Value;
+                socrataHost = httpPrefix.Match(socrataHost).Groups[1].Value;
             }
-            if (!httpsPrefix.IsMatch(domain))
+            if (!httpsPrefix.IsMatch(socrataHost))
             {
-                domain = String.Format("https://{0}", domain);
+                socrataHost = String.Format("https://{0}", socrataHost);
             }
 
-            return domain;
+            return socrataHost;
         }
 
         /// <summary>
