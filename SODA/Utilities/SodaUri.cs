@@ -1,17 +1,55 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace SODA.Utilities
 {
-    /// <summary>Factory class for creating Socrata-specific Uris.</summary>
+    /// <summary>
+    /// Factory class for creating Socrata-specific Uris.
+    /// </summary>
     public class SodaUri
     {
-        /// <summary>Create a Url string suitable for interacting with resource metadata on the specified Socrata host.</summary>
+        /// <summary>
+        /// A regex used to strip out the http prefix in incoming socrataHost parameters.
+        /// </summary>
+        private static readonly Regex httpPrefix = new Regex(@"^http:\/\/(.+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        /// <summary>
+        /// A regex used to check incoming socrataHost parameters for having the https prefix.
+        /// </summary>
+        private static readonly Regex httpsPrefix = new Regex(@"^https:\/\/", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        /// <summary>
+        /// Ensure that the specified socrata host url uses the https protocol.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <returns>A SODA-compatible Url</returns>
+        internal static string enforceHttps(string socrataHost)
+        {
+            string domain = socrataHost;
+
+            if (httpPrefix.IsMatch(socrataHost))
+            {
+                domain = httpPrefix.Match(socrataHost).Groups[1].Value;
+            }
+            if (!httpsPrefix.IsMatch(domain))
+            {
+                domain = String.Format("https://{0}", domain);
+            }
+
+            return domain;
+        }
+
+        /// <summary>
+        /// Create a url string suitable for interacting with resource metadata on the specified Socrata host.
+        /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A SODA-compatible Url for the target Socrata host.</returns>
         private static string metadataUrl(string socrataHost, string resourceId = null)
         {
-            string url = String.Format("https://{0}/views", socrataHost);
+            string httpsHost = enforceHttps(socrataHost);
+
+            string url = String.Format("{0}/views", httpsHost);
 
             if(!String.IsNullOrEmpty(resourceId))
             {
@@ -21,7 +59,9 @@ namespace SODA.Utilities
             return url;
         }
 
-        /// <summary>Create a Uri for sending a request to the specified resource metadata on the specified domain.</summary>
+        /// <summary>
+        /// Create a Uri for sending a request to the specified resource metadata on the specified domain.
+        /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A Uri pointing to resource metadata for the specified Socrata host and resource identifier.</returns>
@@ -38,7 +78,9 @@ namespace SODA.Utilities
             return new Uri(url);
         }
 
-        /// <summary>Create a Uri for sending a request to a catalog of resource metadata on the specified domain and page of the catalog. </summary>
+        /// <summary>
+        /// Create a Uri for sending a request to a catalog of resource metadata on the specified domain and page of the catalog.
+        /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="page">The page of the resource metadata catalog on the Socrata host to target.</param>
         /// <returns>A Uri pointing to the specified page of the resource metadata catalog for the specified Socrata host.</returns>
@@ -55,7 +97,9 @@ namespace SODA.Utilities
             return new Uri(url);
         }
 
-        /// <summary>Create a Uri for sending a request to the specified resource on the specified domain. </summary>
+        /// <summary>
+        /// Create a Uri for sending a request to the specified resource on the specified domain.
+        /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <param name="rowId">The identifier for a row in the resource to target.</param>
@@ -78,7 +122,9 @@ namespace SODA.Utilities
             return new Uri(url);
         }
 
-        /// <summary>Create a Uri to the landing page of the specified resource on the specified Socrata host.</summary>
+        /// <summary>
+        /// Create a Uri to the landing page of the specified resource on the specified Socrata host.
+        /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A Uri pointing to the landing page of the specified resource on the specified Socrata doamin.</returns>
@@ -95,7 +141,9 @@ namespace SODA.Utilities
             return new Uri(url);
         }
 
-        /// <summary>Create a Uri to the landing page of the specified resource on the specified Socrata host.</summary>
+        /// <summary>
+        /// Create a Uri to the landing page of the specified resource on the specified Socrata host.
+        /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A Uri pointing to the landing page of the specified resource on the specified Socrata doamin.</returns>
@@ -112,7 +160,9 @@ namespace SODA.Utilities
             return new Uri(url);
         }
 
-        /// <summary>Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.</summary>
+        /// <summary>
+        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <param name="soqlQuery">A SoqlQuery object to use for querying.</param>
@@ -135,7 +185,9 @@ namespace SODA.Utilities
             return new Uri(queryUrl);
         }
                 
-        /// <summary>Create a Uri to the landing page of a specified category on the specified Socrata host.</summary>
+        /// <summary>
+        /// Create a Uri to the landing page of a specified category on the specified Socrata host.
+        /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="category">The name of a category on the target Socrata host.</param>
         /// <returns>A Uri pointing to the landing page of the specified category on the specified Socrata host.</returns>
