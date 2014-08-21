@@ -1,7 +1,7 @@
 # How to Contribute
 
-Open Data! Open Source! Get Involved! We want this tool to be useful for the 
-community at large.
+Open Data! Open Source! Get Involved! We built this tool for our own projects
+but hope that it will be useful for the community at large.
 
 Contributions take many forms, from submitting issues, writing docs, 
 to making code changes. We welcome it all. Don't forget to sign up for a 
@@ -12,24 +12,24 @@ to making code changes. We welcome it all. Don't forget to sign up for a
 You can clone this repository locally from GitHub using the "Clone in Desktop" 
 button from the main project site, or run this command in the Git Shell:
 
-`git clone git@github.com:CityOfSantaMonica/SODA.net.git SODA`
+`git clone git@github.com:CityOfSantaMonica/SODA.NET.git SODA`
 
 If you want to make contributions to the project, 
 [forking the project](https://help.github.com/articles/fork-a-repo) is the easiest 
 way to do this. You can then clone down your fork instead:
 
-`git clone git@github.com:MY-USERNAME-HERE/SODA.net.git SODA`
+`git clone git@github.com:MY-USERNAME-HERE/SODA.NET.git SODA`
 
 ### What needs to be done?
 
 Please check our 
-[`issue tracker`](https://github.com/CityofSantaMonica/SODA.net/issues?state=open) 
+[`issue tracker`](https://github.com/CityofSantaMonica/SODA.NET/issues?state=open) 
 for tasks which contributors can pick up.
 
 If you've found something you'd like to contribute to, 
 leave a comment in the issue so everyone is aware.
 
-Ideally, we'd like SODA.net to support all of the functionality that 
+Ideally, we'd like SODA.NET to support all of the functionality that 
 [`soda-java`](https://github.com/socrata/soda-java) supports. 
 With that in mind, this will remain a pre-1.0 release until we can incorporate some of the 
 more advanced functionality like Workflow and create/update/delete on dataset structure.
@@ -45,7 +45,7 @@ in master might cause conflicts down the track.
 If you make focused commits (instead of one monolithic commit) and have descriptive
 commit messages, this will help speed up the review process.
 
-SODA.net also has a suite of tests (built on [NUnit 2.6.3](http://www.nunit.org/)) 
+SODA.NET also has a suite of tests (built with [NUnit 2.6.3](http://www.nunit.org/)) 
 which you can run to ensure existing behavior is unchanged. If you're adding new features, 
 please add some tests to keep us all sane!
 
@@ -63,10 +63,11 @@ against it.
 A few tips with pull requests:
 
  - prefix the title with `[WIP]` to indicate this is a work-in-progress. It's
-   always good to get feedback early, so don't be afraid to open the PR before it's "done".
+   always good to get feedback early, so don't be afraid to open the pull request 
+   before it's "done"
  - use [checklists](https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments) 
-   to indicate the tasks which need to be done, so everyone knows how close you are to done.
- - add comments to the PR about things that are unclear or you would like suggestions on
+   to indicate the tasks which need to be done, so everyone knows how close you are to done
+ - add comments to the pull request about things that are unclear or you would like suggestions on
 
 Don't forget to mention in the pull request description which issue/issues are 
 being addressed.
@@ -74,15 +75,19 @@ being addressed.
 Some things that will increase the chance that your pull request is accepted.
 
 - Follow existing code conventions. Most of what we do follows standard .NET
-  conventions except in a few places.
+  conventions except in a few places
 - Include unit tests that would otherwise fail without your code, but pass with 
-  it.
+  it
 - Update the documentation, the surrounding comments/docs, examples elsewhere, guides, 
   whatever is affected by your contribution
 
 # Additional Resources
 
 - [General GitHub documentation](http://help.github.com/)
+- [Socrata Open Data API](http://dev.socrata.com/)
+- [`soda-java`](https://github.com/socrata/soda-java)
+- [`soda-ruby`](https://github.com/socrata/soda-ruby)
+- [`RSocrata`](https://github.com/Chicago/RSocrata)
 
 # Thank you!
 
