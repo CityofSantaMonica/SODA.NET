@@ -20,6 +20,23 @@ way to do this. You can then clone down your fork instead:
 
 `git clone git@github.com:MY-USERNAME-HERE/SODA.NET.git SODA`
 
+### How is the code organized?
+
+The two primary projects are `SODA` and `SODA.Utilities`.
+
+`SODA` is the Socrata Open Data API implementation code. Most of the objects required for basic 
+operations live directly under the *SODA* namespace. 
+These include `SodaClient`, `SoqlQuery`, `Resource`, and `ResourceMetadata`.
+
+Two additional namespaces inside the `SODA` project encapsulate some related functionality:
+
+  - **Models**: implementation of some Socrata-specific datatypes, e.g. `LocationColumn`
+  - **Utilities**: helper classes for e.g. URI generation and data conversion.
+
+The `SODA.Utilities` project is related to the `SODA` project only in that we needed some extra 
+functionality for our publishing workflow that wasn't directly related to the Socrata Open Data API.
+`SODA.Utilities` depends on `SODA` - and not the other way around - so this is a purely optional helper library. 
+
 ### What needs to be done?
 
 Please check our 
@@ -92,4 +109,4 @@ Some things that will increase the chance that your pull request is accepted.
 # Thank you!
 
 Many thanks to the [octokit.net](https://github.com/octokit/octokit.net) team for the
-inspiration and foundation behind these contributing guidelines.
+inspiration behind these contributing guidelines.
