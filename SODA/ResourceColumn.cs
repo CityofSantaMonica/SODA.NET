@@ -18,7 +18,7 @@ namespace SODA
         public string DataTypeName { get; set; }
 
         [DataMember(Name = "fieldName")]
-        public string ApiFieldName { get; set; }
+        public string SodaFieldName { get; set; }
 
         [DataMember(Name = "position")]
         public int Position { get; set; }

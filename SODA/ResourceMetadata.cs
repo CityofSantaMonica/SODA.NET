@@ -197,7 +197,7 @@ namespace SODA
                         var column = Columns.SingleOrDefault(c => c.Id.Equals(RowIdentifierFieldId.Value));
                         if (column != null)
                         {
-                            return column.ApiFieldName;
+                            return column.SodaFieldName;
                         }
                     }
                 }

@@ -137,7 +137,7 @@ namespace SODA.Tests
 
             resourceMetadata.Columns = new List<ResourceColumn>()
             {
-                new ResourceColumn() { Id = 12345, ApiFieldName = "something" }
+                new ResourceColumn() { Id = 12345, SodaFieldName = "something" }
             };
 
             Assert.IsNotEmpty(resourceMetadata.Columns);
@@ -173,7 +173,7 @@ namespace SODA.Tests
             {
                 Columns = new[]
                 {
-                    new ResourceColumn() { Id = rowIdentifierFieldId, ApiFieldName = rowIdentifierField }
+                    new ResourceColumn() { Id = rowIdentifierFieldId, SodaFieldName = rowIdentifierField }
                 },
                 Metadata = new Dictionary<string, dynamic>()
                 {
