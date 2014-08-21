@@ -116,7 +116,7 @@ IEwsClient ewsClient = new Ews2007Sp1Client("username", "password", "domain.org"
 bool foundAttachment = ewsClient.DownloadAttachment(new Regex("file\\d{6}\\.xlsx"), "C:\\temp");
 
 //send an email message to a list of recipients
-ewsClient.SendMessage("Subject Line", "Body text here", "test@example.com", "someone@example.com");
+ewsClient.SendMessage("Subject Line", "Body text here", "recipient@example.com", "another.recipient@example.com");
 ```
 
 ## Contributing
