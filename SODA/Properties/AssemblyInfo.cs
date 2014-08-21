@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SODA")]
-[assembly: AssemblyDescription("Socrata Open Data API Library")]
+[assembly: AssemblyDescription("Socrata Open Data API client library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("City of Santa Monica")]
+[assembly: AssemblyCompany("City of Santa Monica, CA")]
 [assembly: AssemblyProduct("SODA")]
-[assembly: AssemblyCopyright("Copyright © City of Santa Monica 2014")]
+[assembly: AssemblyCopyright("Copyright © 2014 City of Santa Monica, CA")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,5 +34,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
