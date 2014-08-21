@@ -10,15 +10,15 @@ Simple, read-only access
 ```c#
 var client = new SodaClient("data.smgov.net", "AppToken");
 
-//read metadata of a dataset
+//read metadata of a dataset using the resource identifier (Socrata 4x4)
 var metadata = client.GetMetadata("1234-wxyz");
 Console.WriteLine("Dataset '{0}' has {1} views.", metadata.Name, metadata.ViewsCount);
 
 //get a reference to the resource itself
-//Resource is a generic type, the type parameter represents the underlying rows of the resource
+//the result (a Resouce object) is a generic type, the type parameter represents the underlying rows of the resource
 var dataset = client.GetResource<Dictionary<string, object>>("1234-wxyz");
 
-//of course, a custom type can be used as long as the type is JSON serializable.
+//of course, a custom type can be used as long as it is JSON serializable
 var dataset = client.GetResource<MyClass>("1234-wxyz");
 
 //Resource objects read their own data
