@@ -25,7 +25,7 @@ namespace SODA
         
         //the default sort direction is ascending
         //http://dev.socrata.com/docs/queries.html#the_order_parameter
-        public static readonly OrderDirection DefaultOrderDirection = OrderDirection.ASC;
+        public static readonly SoqlOrderDirection DefaultOrderDirection = SoqlOrderDirection.ASC;
         
         //there is no implicit order of results of a query
         //so at a minimum provide $order=:id to guarantee that the order of results will be stable for paging
@@ -39,7 +39,7 @@ namespace SODA
         public string[] SelectColumns { get; private set; }
         public string[] SelectColumnAliases { get; private set; }
         public string WhereClause { get; private set; }
-        public OrderDirection OrderDirection { get; private set; }
+        public SoqlOrderDirection OrderDirection { get; private set; }
         public string[] OrderByColumns { get; private set; }
         public string[] GroupByColumns { get; private set; }
         public int LimitValue { get; private set; }
@@ -164,12 +164,12 @@ namespace SODA
         }
 
         /// <summary>
-        /// Sets this SoqlQuery's order clause using the specified columns and the specified OrderDirection.
+        /// Sets this SoqlQuery's order clause using the specified columns and the specified SoqlOrderDirection.
         /// </summary>
         /// <param name="direction">The direction to sort the rows selected by this SoqlQuery.</param>
         /// <param name="columns">A list of column names that define the order in which the rows selected by this SoqlQuery are returned.</param>
         /// <returns>This SoqlQuery.</returns>
-        public SoqlQuery Order(OrderDirection direction, params string[] columns)
+        public SoqlQuery Order(SoqlOrderDirection direction, params string[] columns)
         {
             OrderDirection = direction;
             OrderByColumns = getNonEmptyValues(columns) ?? DefaultOrder;

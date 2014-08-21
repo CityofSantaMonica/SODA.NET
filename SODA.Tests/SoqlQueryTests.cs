@@ -241,10 +241,10 @@ namespace SODA.Tests
             StringAssert.Contains(defaultOrderClause, nullGroup);
         }
         
-        [TestCase(OrderDirection.DESC, "column1", "")]
-        [TestCase(OrderDirection.ASC, "column1", "", "column2")]
+        [TestCase(SoqlOrderDirection.DESC, "column1", "")]
+        [TestCase(SoqlOrderDirection.ASC, "column1", "", "column2")]
         [Category("SoqlQuery")]
-        public void Order_Clause_Gets_Order_Direction_And_Valid_Columns(OrderDirection direction, params string[] columns)
+        public void Order_Clause_Gets_Order_Direction_And_Valid_Columns(SoqlOrderDirection direction, params string[] columns)
         {
             string expected = String.Format("{0}={1} {2}", SoqlQuery.OrderKey, String.Join(SoqlQuery.Delimiter, columns.Where(c => !String.IsNullOrEmpty(c))), direction);
 
@@ -459,7 +459,7 @@ namespace SODA.Tests
             var original = new SoqlQuery();
             var select = original.Select("something");
             var where = original.Where("something");
-            var order = original.Order(OrderDirection.DESC, "something");
+            var order = original.Order(SoqlOrderDirection.DESC, "something");
             var group = original.Group("something");
             var limit = original.Limit(10);
             var offset = original.Offset(10);
