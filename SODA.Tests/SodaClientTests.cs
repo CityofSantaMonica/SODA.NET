@@ -23,8 +23,6 @@ namespace SODA.Tests
             mockClient = new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput);
         }
 
-        #region implementation
-
         [Test]
         [Category("SodaClient")]
         public void UnwrapExceptionMessage_Returns_Empty_String_For_Null_Input()
@@ -180,7 +178,7 @@ namespace SODA.Tests
 
             Assert.AreEqual("text/csv", request.ContentType);
         }
-        
+
         [Test]
         [Category("SodaClient")]
         public void CreateRequest_GET_With_XML_DataFormat_Sets_Accept_Header()
@@ -189,7 +187,7 @@ namespace SODA.Tests
 
             Assert.AreEqual("application/rdf+xml", request.Accept);
         }
-        
+
         [Test]
         [Category("SodaClient")]
         public void CreateRequest_Returns_Request_With_Unset_ContentLength_For_Empty_Payload()
@@ -252,10 +250,6 @@ namespace SODA.Tests
                 StringAssert.AreEqualIgnoringCase(input, webResponse.Method);
             }
         }
-        
-        #endregion
-
-        #region ctor
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
@@ -279,7 +273,7 @@ namespace SODA.Tests
         [TestCase("http://host.com")]
         [Category("SodaClient")]
         public void New_With_Http_Host_Enforces_Https_Host(string input)
-        {   
+        {
             var client = new SodaClient(input, "appToken");
 
             StringAssert.StartsWith("https", client.Host);
@@ -308,10 +302,6 @@ namespace SODA.Tests
 
             Assert.AreEqual(username, client.Username);
         }
-        
-        #endregion
-
-        #region public API
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
@@ -322,7 +312,7 @@ namespace SODA.Tests
         {
             mockClient.GetMetadata(input);
         }
-                
+
         [TestCase(-100)]
         [TestCase(-1)]
         [TestCase(0)]
@@ -407,7 +397,7 @@ namespace SODA.Tests
             //call ToList to ensure the IEnumerable is executed
             mockClient.BatchUpsert(payload, 1, breakFunc, StringMocks.ResourceId).ToList();
         }
-        
+
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
@@ -455,7 +445,7 @@ namespace SODA.Tests
         {
             mockClient.Replace(String.Empty, SodaDataFormat.JSON, StringMocks.ResourceId);
         }
-        
+
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
@@ -504,7 +494,5 @@ namespace SODA.Tests
         {
             mockClient.DeleteRow(StringMocks.NonEmptyInput, StringMocks.ResourceId);
         }
-
-        #endregion
     }
 }

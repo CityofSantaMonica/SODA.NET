@@ -16,8 +16,6 @@ namespace SODA
     /// </summary>
     public class SodaClient
     {
-        #region data
-
         /// <summary>
         /// The Socrata Open Data Portal that this client will target.
         /// </summary>
@@ -43,10 +41,6 @@ namespace SODA
         
         //not publicly readable, can only be set in a constructor
         private readonly string password;
-
-        #endregion
-
-        #region implementation
 
         /// <summary>
         /// Helper method for creating an HttpWebRequest object.
@@ -205,10 +199,6 @@ namespace SODA
             return sendRequest<T>(request);
         }
 
-        #endregion
-
-        #region ctor
-
         /// <summary>
         /// Initialize a new SodaClient for the specified Socrata host, using the specified application token and the specified Authentication credentials.
         /// </summary>
@@ -239,10 +229,6 @@ namespace SODA
             : this(host, appToken, null, null)
         {
         }
-                
-        #endregion
-
-        #region public API
         
         /// <summary>
         /// Get a ResourceMetadata object using the specified resource identifier.
@@ -495,7 +481,5 @@ namespace SODA
 
             return sendRequest<SodaResult>(request);
         }
- 
-        #endregion
     }
 }
