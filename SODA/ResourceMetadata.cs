@@ -77,10 +77,16 @@ namespace SODA
 
         [DataMember(Name = "metadata")]
         public Dictionary<string, dynamic> Metadata { get; set; }
-        
+
+        [DataMember(Name = "query")]
+        public Dictionary<string, dynamic> Query { get; set; }
+
         [DataMember(Name = "privateMetadata")]
         public Dictionary<string, dynamic> PrivateMetadata { get; set; }
-        
+
+        [DataMember(Name = "viewFilters")]
+        public Dictionary<string, dynamic> ViewFilters { get; set; }
+
         public DateTime? CreationDate
         {
             get

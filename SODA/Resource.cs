@@ -14,22 +14,22 @@ namespace SODA
         /// <summary>
         /// Metadata about this Resource.
         /// </summary>
-        public readonly ResourceMetadata Metadata;
+        public ResourceMetadata Metadata { get; private set; }
 
         /// <summary>
         /// A collection describing the metadata of each column in this Resource.
         /// </summary>
-        public readonly IEnumerable<ResourceColumn> Columns;
+        public IEnumerable<ResourceColumn> Columns
+        {
+            get { return Metadata.Columns; }
+        }
 
         /// <summary>
         /// The Socrata identifier (4x4) for this Resource.
         /// </summary>
         public string Identifier
         {
-            get
-            {
-                return Metadata.Identifier;
-            }
+            get { return Metadata.Identifier; }
         }
                 
         /// <summary>
@@ -42,10 +42,7 @@ namespace SODA
         /// </summary>
         public string Host
         {
-            get
-            {
-                return Client.Host;
-            }
+            get { return Client.Host; }
         }
 
         /// <summary>
@@ -67,7 +64,6 @@ namespace SODA
 
             Metadata = metadata;
             Client = client;
-            Columns = metadata.Columns;
         }
         
         /// <summary>
@@ -152,6 +148,36 @@ namespace SODA
 
             var resourceUri = SodaUri.ForResourceAPI(Host, Identifier, rowId);
             return Client.read<TRow>(resourceUri);
+        }
+
+        /// <summary>
+        /// Overwrites this Resource's Metadata with the specified ResourceMetadata object.
+        /// </summary>
+        /// <param name="metadata">A ResourceMetadata object that will become this Resource's Metadata.</param>
+        /// <returns>A SodaResult, indicating success or failure.</returns>
+        public SodaResult UpdateMetadata(ResourceMetadata metadata)
+        {
+            if (String.IsNullOrEmpty(metadata.Identifier))
+                metadata.Identifier = Identifier;
+
+            var metadataUri = SodaUri.ForMetadata(Host, Identifier);
+            SodaResult result = new SodaResult();
+
+            try
+            {
+                result = Client.write<ResourceMetadata, SodaResult>(metadataUri, "PUT", metadata);
+                result.IsError = false;
+                result.Message = String.Format("Metadata for {0} updated successfully.", Identifier);
+                Metadata = metadata;
+            }
+            catch (Exception ex)
+            {
+                result.IsError = true;
+                result.Message = ex.Message;
+                result.Data = ex.StackTrace;
+            }
+
+            return result;
         }
     }
 }
