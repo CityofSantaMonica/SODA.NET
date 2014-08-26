@@ -54,6 +54,7 @@
     <Compile Include="Models\HumanAddress.cs" />
     <Compile Include="Models\LocationColumn.cs" />
     <Compile Include="Models\WebsiteUrlColumn.cs" />
+    <Compile Include="SodaRequest.cs" />
     <Compile Include="SoqlOrderDirection.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="ResourceColumn.cs" />

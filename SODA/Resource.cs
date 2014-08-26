@@ -88,20 +88,20 @@ namespace SODA
             if (soqlQuery.LimitValue > 0 || soqlQuery.OffsetValue > 0)
             {
                 var queryUri = SodaUri.ForQuery(Host, Identifier, soqlQuery);
-                return Client.get<IEnumerable<T>>(queryUri);
+                return Client.read<IEnumerable<T>>(queryUri);
             }
             //otherwise, go nuts and get EVERYTHING
             else
             {
                 List<T> allResults = new List<T>();
                 int offset = 0;
-                IEnumerable<T> offsetResults = Client.get<IEnumerable<T>>(SodaUri.ForQuery(Host, Identifier, soqlQuery));
+                IEnumerable<T> offsetResults = Client.read<IEnumerable<T>>(SodaUri.ForQuery(Host, Identifier, soqlQuery));
 
                 while (offsetResults.Any())
                 {
                     allResults.AddRange(offsetResults);
                     soqlQuery = soqlQuery.Offset(++offset * SoqlQuery.MaximumLimit);
-                    offsetResults = Client.get<IEnumerable<T>>(SodaUri.ForQuery(Host, Identifier, soqlQuery));
+                    offsetResults = Client.read<IEnumerable<T>>(SodaUri.ForQuery(Host, Identifier, soqlQuery));
                 }
 
                 return allResults;
@@ -151,7 +151,7 @@ namespace SODA
                 throw new ArgumentException("rowId", "A row identifier is required.");
 
             var resourceUri = SodaUri.ForResourceAPI(Host, Identifier, rowId);
-            return Client.get<TRow>(resourceUri);
+            return Client.read<TRow>(resourceUri);
         }
     }
 }
