@@ -13,7 +13,7 @@ namespace SODA
     public class SodaClient
     {
         /// <summary>
-        /// The Socrata Open Data Portal that this client will target.
+        /// The url to the Socrata Open Data Portal this client will target.
         /// </summary>
         public readonly string Host;
 
@@ -141,7 +141,10 @@ namespace SODA
 
             var uri = SodaUri.ForMetadata(Host, resourceId);
 
-            return read<ResourceMetadata>(uri);
+            var metadata = read<ResourceMetadata>(uri);
+            metadata.Client = this;
+
+            return metadata;
         }
 
         /// <summary>
@@ -179,7 +182,7 @@ namespace SODA
 
             var metadata = GetMetadata(resourceId);
 
-            return new Resource<TRow>(metadata, this);
+            return new Resource<TRow>(metadata);
         }
 
         /// <summary>
@@ -188,7 +191,7 @@ namespace SODA
         /// <param name="payload">A string of serialized data.</param>
         /// <param name="dataFormat">One of the data-interchange formats that Socrata supports, into which the payload has been serialized.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
         public SodaResult Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (dataFormat == SodaDataFormat.XML)
@@ -227,7 +230,7 @@ namespace SODA
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
         public SodaResult Upsert<T>(IEnumerable<T> payload, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -248,7 +251,7 @@ namespace SODA
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
         /// <param name="breakFunction">A function which, when evaluated true, causes a batch to be sent (possibly before it reaches <paramref name="batchSize"/>).</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A collection of <see cref="SodaResult"/>, one for each batched Upsert.</returns>
+        /// <returns>A collection of <see cref="SodaResult">SodaResult</see>, one for each batched Upsert.</returns>
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -297,7 +300,7 @@ namespace SODA
         /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A collection of <see cref="SodaResult"/>, one for each batch processed.</returns>
+        /// <returns>A collection of <see cref="SodaResult">SodaResult</see>, one for each batch processed.</returns>
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -317,7 +320,7 @@ namespace SODA
         /// <param name="payload">A string of serialized data.</param>
         /// <param name="dataFormat">One of the data-interchange formats that Socrata supports, into which the payload has been serialized.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
         public SodaResult Replace(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (dataFormat == SodaDataFormat.XML)
@@ -341,7 +344,7 @@ namespace SODA
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
         public SodaResult Replace<T>(IEnumerable<T> payload, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -360,7 +363,7 @@ namespace SODA
         /// </summary>
         /// <param name="rowId">The identifier of the row to be deleted.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
         public SodaResult DeleteRow(string rowId, string resourceId)
         {
             if (String.IsNullOrEmpty(rowId))
