@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using Newtonsoft.Json;
 using SODA.Utilities;
 
 namespace SODA
@@ -65,12 +64,12 @@ namespace SODA
         }
 
         /// <summary>
-        /// Send an HTTP GET request to the specified URI, including an appropriate Accept header for the specified data format.
+        /// Send an HTTP GET request to the specified URI and intepret the result as TResult.
         /// </summary>
-        /// <typeparam name="T">The .NET class to use for response deserialization.</typeparam>
+        /// <typeparam name="TResult">The .NET class to use for response deserialization.</typeparam>
         /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
         /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
-        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="T"/>.</returns>
+        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
         internal TResult read<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
             where TResult : class
         {
@@ -80,22 +79,22 @@ namespace SODA
         }
 
         /// <summary>
-        /// 
+        /// Send an HTTP request of the specified method and interpret the result.
         /// </summary>
-        /// <typeparam name="TPayload"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="uri"></param>
-        /// <param name="method"></param>
-        /// <param name="payload"></param>
-        /// <returns></returns>
+        /// <typeparam name="TPayload">The .NET class that represents the request payload.</typeparam>
+        /// <typeparam name="TResult">The .NET class to use for response deserialization.</typeparam>
+        /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
+        /// <param name="method">One of POST, PUT, or DELETE</param>
+        /// <param name="payload">An object graph to serialize and send with the request.</param>
+        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
         internal TResult write<TPayload, TResult>(Uri uri, string method, TPayload payload)
-        where TPayload : class
-        where TResult : class
-    {
-        var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString());
+            where TPayload : class
+            where TResult : class
+        {
+            var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString());
 
-        return request.ParseResponse<TResult>();
-    }
+            return request.ParseResponse<TResult>();
+        }
 
         /// <summary>
         /// Initialize a new SodaClient for the specified Socrata host, using the specified application token and the specified Authentication credentials.
@@ -237,7 +236,7 @@ namespace SODA
             if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
-            string json = JsonConvert.SerializeObject(payload);
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
 
             return Upsert(json, SodaDataFormat.JSON, resourceId);
         }
@@ -351,7 +350,7 @@ namespace SODA
             if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
-            string json = JsonConvert.SerializeObject(payload);
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
 
             return Replace(json, SodaDataFormat.JSON, resourceId);
         }

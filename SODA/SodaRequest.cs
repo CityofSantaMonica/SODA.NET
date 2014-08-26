@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -9,12 +8,18 @@ using System.Xml.Serialization;
 namespace SODA
 {
     /// <summary>
-    /// Helper class modeling a request/response to/from a SODA endpoint.
+    /// Implementation detail representing a request/response to/from a SODA endpoint.
     /// </summary>
     internal class SodaRequest
     {
+        /// <summary>
+        /// The underlying HttpWebRequest handled by this SodaRequest
+        /// </summary>
         internal HttpWebRequest webRequest { get; private set; }
 
+        /// <summary>
+        /// The Socrata supported data-interchange formats that this SodaRequest uses
+        /// </summary>
         internal SodaDataFormat dataFormat { get; private set; }
 
         /// <summary>
@@ -40,11 +45,14 @@ namespace SODA
 
             if (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password))
             {
+                //Authentication using HTTP Basic Authentication
+                //http://dev.socrata.com/docs/authentication.html
                 string authKVP = String.Format("{0}:{1}", username, password);
                 byte[] authBytes = Encoding.UTF8.GetBytes(authKVP);
                 request.Headers.Add("Authorization", String.Format("Basic {0}", Convert.ToBase64String(authBytes)));
             }
 
+            //http://dev.socrata.com/docs/formats/index.html
             switch (dataFormat)
             {
                 case SodaDataFormat.JSON:
@@ -94,12 +102,13 @@ namespace SODA
             {
                 string response = new StreamReader(responseStream).ReadToEnd();
 
+                //attempt to deserialize based on the requested format
                 switch (dataFormat)
                 {
                     case SodaDataFormat.JSON:
                         try
                         {
-                            result = JsonConvert.DeserializeObject<TResult>(response);
+                            result = Newtonsoft.Json.JsonConvert.DeserializeObject<TResult>(response);
                         }
                         catch (Newtonsoft.Json.JsonReaderException)
                         {
