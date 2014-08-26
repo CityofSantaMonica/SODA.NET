@@ -12,12 +12,28 @@ namespace SODA
     public class Resource<TRow> where TRow : class
     {
         /// <summary>
-        /// Metadata about this Resource.
+        /// The metadata describing this Resource.
         /// </summary>
-        public ResourceMetadata Metadata { get; private set; }
+        public readonly ResourceMetadata Metadata;
 
         /// <summary>
-        /// A collection describing the metadata of each column in this Resource.
+        /// Gets the SodaClient object used for sending requests to this Resource's Host.
+        /// </summary>
+        public SodaClient Client
+        {
+            get { return Metadata.Client; }    
+        }
+
+        /// <summary>
+        /// Gets the url to the Socrata Open Data Portal that hosts this Resource.
+        /// </summary>
+        public string Host
+        {
+            get { return Metadata.Host; }
+        }
+
+        /// <summary>
+        /// Gets the collection of <see cref="ResourceColumn">ResourceColumn</see> describing the schema of this Resource.
         /// </summary>
         public IEnumerable<ResourceColumn> Columns
         {
@@ -25,52 +41,35 @@ namespace SODA
         }
 
         /// <summary>
-        /// The Socrata identifier (4x4) for this Resource.
+        /// Gets the Socrata identifier (4x4) for this Resource.
         /// </summary>
         public string Identifier
         {
             get { return Metadata.Identifier; }
         }
-                
-        /// <summary>
-        /// A SodaClient object used for sending requests to this Resource's Host.
-        /// </summary>
-        public readonly SodaClient Client;
-
-        /// <summary>
-        /// The Socrata Open Data Portal that hosts this Resource.
-        /// </summary>
-        public string Host
-        {
-            get { return Client.Host; }
-        }
-
+        
         /// <summary>
         /// Initialize a new Resource object with the specified ResourceMetadata using the specified SodaClient.
         /// </summary>
         /// <param name="host">The Socrata Open Data Portal that hosts this Resource.</param>
-        /// <param name="metadata">The <see cref="ResourceMetadata"/> object that describes this Resource.</param>
+        /// <param name="metadata">The <see cref="ResourceMetadata">ResourceMetadata</see> object that describes this Resource.</param>
         /// <param name="client">A SodaClient object used for sending requests to this Resource's Host.</param>
         /// <remarks>
         /// The only available constructor is internal because Resources should be obtained through a SodaClient.
         /// </remarks>
-        internal Resource(ResourceMetadata metadata, SodaClient client)
+        internal Resource(ResourceMetadata metadata)
         {
             if (metadata == null)
                 throw new ArgumentNullException("metadata", "Cannot initialize a Resource with null ResourceMetadata");
 
-            if(client == null)
-                throw new ArgumentNullException("client", "Cannot initialize a Resource with null SodaClient");
-
             Metadata = metadata;
-            Client = client;
         }
         
         /// <summary>
-        /// Query this Resource using the specified <see cref="SoqlQuery"/>.
+        /// Query this Resource using the specified <see cref="SoqlQuery">SoqlQuery</see>.
         /// </summary>
         /// <typeparam name="T">The .NET class that represents the type of the underlying rows in this resultset of this query.</typeparam>
-        /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute against this Resource.</param>
+        /// <param name="soqlQuery">A <see cref="SoqlQuery">SoqlQuery</see> to execute against this Resource.</param>
         /// <returns>A collection of entities of type TRow.</returns>
         /// <remarks>
         /// By default, Socrata will only return the first 1000 rows unless otherwise specified in SoQL using the Limit and Offset parameters.
@@ -105,9 +104,13 @@ namespace SODA
         }
 
         /// <summary>
-        /// Get the rows contained in this Resource.
+        /// Get all of the rows contained in this Resource.
         /// </summary>
         /// <returns>A collection of type TRow.</returns>
+        /// <remarks>
+        /// GetRows will attempt to return *all rows* in the Resource, beyond the 1000 rows per request limit that Socrata imposes.
+        /// See <see cref="Query{T}">Query{T}</see>
+        /// </remarks>
         public IEnumerable<TRow> GetRows()
         {
             return Query<TRow>(new SoqlQuery());
@@ -148,36 +151,6 @@ namespace SODA
 
             var resourceUri = SodaUri.ForResourceAPI(Host, Identifier, rowId);
             return Client.read<TRow>(resourceUri);
-        }
-
-        /// <summary>
-        /// Overwrites this Resource's Metadata with the specified ResourceMetadata object.
-        /// </summary>
-        /// <param name="metadata">A ResourceMetadata object that will become this Resource's Metadata.</param>
-        /// <returns>A SodaResult, indicating success or failure.</returns>
-        public SodaResult UpdateMetadata(ResourceMetadata metadata)
-        {
-            if (String.IsNullOrEmpty(metadata.Identifier))
-                metadata.Identifier = Identifier;
-
-            var metadataUri = SodaUri.ForMetadata(Host, Identifier);
-            SodaResult result = new SodaResult();
-
-            try
-            {
-                result = Client.write<ResourceMetadata, SodaResult>(metadataUri, "PUT", metadata);
-                result.IsError = false;
-                result.Message = String.Format("Metadata for {0} updated successfully.", Identifier);
-                Metadata = metadata;
-            }
-            catch (Exception ex)
-            {
-                result.IsError = true;
-                result.Message = ex.Message;
-                result.Data = ex.StackTrace;
-            }
-
-            return result;
         }
     }
 }

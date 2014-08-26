@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using SODA.Tests.Mocks;
 
 namespace SODA.Tests
 {
     [TestFixture]
     public class ResourceMetadataTests
     {
+        SodaClient mockClient;
+
+        [SetUp]
+        public void TestSetup()
+        {
+            mockClient = new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput);
+        }
 
         [Test]
         [Category("ResourceMetadata")]
         public void Null_UnixDates_Return_Null_DateTimes()
         {
-            var resourceMetadata = new ResourceMetadata();
+            var resourceMetadata = new ResourceMetadata(mockClient);
 
             Assert.Null(resourceMetadata.CreationDateUnix);
             Assert.Null(resourceMetadata.CreationDate);
@@ -34,7 +42,7 @@ namespace SODA.Tests
             DateTime now = DateTime.Now;
             double unixTimestamp = (now.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
 
-            var resourceMetadata = new ResourceMetadata()
+            var resourceMetadata = new ResourceMetadata(mockClient)
             {
                 CreationDateUnix = unixTimestamp,
                 PublishedDateUnix = unixTimestamp,
@@ -56,57 +64,36 @@ namespace SODA.Tests
 
         [Test]
         [Category("ResourceMetadata")]
-        public void Null_Metadata_Returns_Null_Metadata_Fields()
+        public void RowIdentifierFieldId_Is_Null_If_Metadata_Is_Null()
         {
-            var resourceMetadata = new ResourceMetadata();
+            var resourceMetadata = new ResourceMetadata(mockClient);
 
             Assert.Null(resourceMetadata.Metadata);
-
-            Assert.Null(resourceMetadata.TimePeriod);
-            Assert.Null(resourceMetadata.UpdateFrequency);
             Assert.Null(resourceMetadata.RowIdentifierFieldId);
         }
 
         [Test]
         [Category("ResourceMetadata")]
-        public void DataFreshness_Metadata_Can_Be_Read_If_Present()
+        public void RowIdentifierFieldId_Metadata_Can_Be_Read_If_Present()
         {
-            string timePeriodValue = "Time Period Value";
-            string updateFrequencyValue = "Update Frequency Value";
+            long rowIdentifier = 12345;
 
-            var resourceMetadata = new ResourceMetadata()
-            {
+            var resourceMetadata = new ResourceMetadata(mockClient) {
                 Metadata = new Dictionary<string, dynamic>()
                 {
-                    { 
-                        "custom_fields",
-                        new Dictionary<string, Dictionary<string, string>>()
-                        {
-                            {  "Data Freshness", null }
-                        }
-                    }
+                    { "rowIdentifier", rowIdentifier }
                 }
             };
 
-            Assert.IsNotNull(resourceMetadata.Metadata);
-            Assert.IsNull(resourceMetadata.TimePeriod);
-            Assert.IsNull(resourceMetadata.UpdateFrequency);
-
-            resourceMetadata.Metadata["custom_fields"]["Data Freshness"] = new Dictionary<string, string>()
-            {
-                { "Time Period", timePeriodValue },
-                { "Update Frequency", updateFrequencyValue }
-            };
-
-            Assert.AreEqual(timePeriodValue, resourceMetadata.TimePeriod);
-            Assert.AreEqual(updateFrequencyValue, resourceMetadata.UpdateFrequency);
+            Assert.That(resourceMetadata.RowIdentifierFieldId.HasValue);
+            Assert.AreEqual(rowIdentifier, resourceMetadata.RowIdentifierFieldId.Value);
         }
-
+        
         [Test]
         [Category("ResourceMetadata")]
         public void RowIdentifierField_Is_Socrata_Id_If_Metadata_Is_Null()
         {
-            var resourceMetadata = new ResourceMetadata();
+            var resourceMetadata = new ResourceMetadata(mockClient);
 
             Assert.Null(resourceMetadata.Metadata);
 
@@ -119,7 +106,7 @@ namespace SODA.Tests
         {
             string expected = ":id";
 
-            var resourceMetadata = new ResourceMetadata()
+            var resourceMetadata = new ResourceMetadata(mockClient)
             {
                 Metadata = new Dictionary<string, dynamic>()
                 {
@@ -143,25 +130,7 @@ namespace SODA.Tests
             Assert.IsNotEmpty(resourceMetadata.Columns);
             Assert.AreEqual(expected, resourceMetadata.RowIdentifierField);
         }
-
-        [Test]
-        [Category("ResourceMetadata")]
-        public void RowIdentifierFieldId_Metadata_Can_Be_Read_If_Present()
-        {
-            long rowIdentifier = 12345;
-
-            var resourceMetadata = new ResourceMetadata()
-            {
-                Metadata = new Dictionary<string, dynamic>()
-                {
-                    { "rowIdentifier", rowIdentifier }
-                }
-            };
-
-            Assert.That(resourceMetadata.RowIdentifierFieldId.HasValue);
-            Assert.AreEqual(rowIdentifier, resourceMetadata.RowIdentifierFieldId.Value);
-        }
-
+        
         [Test]
         [Category("ResourceMetadata")]
         public void RowIdentifierField_Metadata_Can_Be_Read_If_Present()
@@ -169,7 +138,7 @@ namespace SODA.Tests
             long rowIdentifierFieldId = 12345;
             string rowIdentifierField = "rowIdentifierField";
 
-            var resourceMetadataWithNumericRowIdentifier = new ResourceMetadata()
+            var resourceMetadataWithNumericRowIdentifier = new ResourceMetadata(mockClient)
             {
                 Columns = new[]
                 {
@@ -183,7 +152,7 @@ namespace SODA.Tests
 
             Assert.AreEqual(rowIdentifierField, resourceMetadataWithNumericRowIdentifier.RowIdentifierField);
 
-            var resourceMetadataWithTextRowIdentifier = new ResourceMetadata()
+            var resourceMetadataWithTextRowIdentifier = new ResourceMetadata(mockClient)
             {
                 Metadata = new Dictionary<string, dynamic>()
                 {
@@ -196,9 +165,9 @@ namespace SODA.Tests
 
         [Test]
         [Category("ResourceMetadata")]
-        public void Null_PrivateMetadata_Returns_Null_PrivateMetadata_Fields()
+        public void ContactEmail_Is_Null_If_PrivateMetadata_Is_Null()
         {
-            var resourceMetadata = new ResourceMetadata();
+            var resourceMetadata = new ResourceMetadata(mockClient);
 
             Assert.Null(resourceMetadata.PrivateMetadata);
 
@@ -207,11 +176,11 @@ namespace SODA.Tests
 
         [Test]
         [Category("ResourceMetadata")]
-        public void PrivateMetadataFields_Can_Be_Read_If_Present()
+        public void ContactEmail_Can_Be_Read_If_Present()
         {
             string contactEmail = "test@example.com";
 
-            var resourceMetadata = new ResourceMetadata()
+            var resourceMetadata = new ResourceMetadata(mockClient)
             {
                 PrivateMetadata = new Dictionary<string, dynamic>()
                 {
