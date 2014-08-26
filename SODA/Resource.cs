@@ -17,7 +17,7 @@ namespace SODA
         private readonly Lazy<ResourceMetadata> lazyMetadata;
 
         /// <summary>
-        /// The metadata describing this Resource.
+        /// Gets the <see cref="ResourceMetadata">ResourceMetadata</see> describing this Resource.
         /// </summary>
         public ResourceMetadata Metadata
         {
@@ -25,7 +25,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Gets the SodaClient object used for sending requests to this Resource's Host.
+        /// Gets the <see cref="SodaClient">SodaClient</see> used for sending requests to this Resource's Host.
         /// </summary>
         public SodaClient Client
         {
@@ -62,6 +62,7 @@ namespace SODA
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <remarks>
         /// The only available constructors are internal because Resources should be obtained through a SodaClient.
+        /// This constructor sets up the Resource to lazy-load its ResourceMetadata upon first request.
         /// </remarks>
         internal Resource(string resourceIdentifier, SodaClient client)
         {
@@ -172,7 +173,7 @@ namespace SODA
         /// <summary>
         /// Update/Insert this Resource with the specified collection of entities.
         /// </summary>
-        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
+        /// <param name="payload">A collection of entities, where each represents a single row to be upserted.</param>
         /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
         public SodaResult Upsert(IEnumerable<TRow> payload)
         {
@@ -182,7 +183,7 @@ namespace SODA
         /// <summary>
         /// Update/Insert this Resource with the specified collection of entities in batches of the specified size.
         /// </summary>
-        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
+        /// <param name="payload">A collection of entities, where each represents a single row to be upserted.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
         /// <param name="breakFunction">A function which, when evaluated true, causes a batch to be sent (possibly before it reaches <paramref name="batchSize"/>).</param>
         /// <returns>A collection of <see cref="SodaResult">SodaResult</see>, one for each batched Upsert.</returns>
@@ -194,7 +195,7 @@ namespace SODA
         /// <summary>
         /// Update/Insert this Resource with the specified collection of entities in batches of the specified size.
         /// </summary>
-        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
+        /// <param name="payload">A collection of entities, where each represents a single row to be upserted.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
         /// <returns>A collection of <see cref="SodaResult">SodaResult</see>, one for each batch processed.</returns>
         public IEnumerable<SodaResult> BatchUpsert(IEnumerable<TRow> payload, int batchSize)
@@ -205,7 +206,7 @@ namespace SODA
         /// <summary>
         /// Replace any existing rows in this Resource with the specified collection of entities.
         /// </summary>
-        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
+        /// <param name="payload">A collection of entities, where each represents a single row.</param>
         /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
         public SodaResult Replace(IEnumerable<TRow> payload)
         {
