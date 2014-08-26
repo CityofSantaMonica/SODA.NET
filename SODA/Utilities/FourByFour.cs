@@ -26,7 +26,7 @@ namespace SODA.Utilities
         /// <param name="testFourByFour">An input string to test.</param>
         /// <returns>True if the specified input is an invalid Socrata "4x4" resource identifier. False otherwise.</returns>
         /// <remarks>
-        /// This is the logical negation of <see cref="IsValid"/>
+        /// This is the logical negation of <see cref="IsValid">IsValid</see>
         /// </remarks>
         public static bool IsNotValid(string testFourByFour)
         {

@@ -12,14 +12,19 @@ namespace SODA.Models
         [DataMember(Name="description")]
         public string Description { get; set; }
 
+        private string url;
         [DataMember(Name="url")]
-        public string Url { get; set; }
+        public string Url
+        {
+            get { return url; }
+            set { url = String.IsNullOrEmpty(value) ? String.Empty : Uri.EscapeUriString(value); }
+        }
 
         public WebsiteUrlColumn() { }
 
         public WebsiteUrlColumn(string url, string description)
         {
-            Url = String.IsNullOrEmpty(url) ? String.Empty : Uri.EscapeUriString(url);
+            Url = url;
             Description = description;
         }
 

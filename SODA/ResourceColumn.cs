@@ -3,7 +3,7 @@
 namespace SODA
 {
     /// <summary>
-    /// A class that represents a single column of a <see cref="Resource"/> in Socrata.
+    /// A class that represents a single column of a <see cref="Resource">Resource</see> in Socrata.
     /// </summary>
     [DataContract]
     public class ResourceColumn
