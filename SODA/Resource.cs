@@ -12,9 +12,17 @@ namespace SODA
     public class Resource<TRow> where TRow : class
     {
         /// <summary>
+        /// Lazy-load container for this Resource's metadata.
+        /// </summary>
+        private readonly Lazy<ResourceMetadata> lazyMetadata;
+
+        /// <summary>
         /// The metadata describing this Resource.
         /// </summary>
-        public readonly ResourceMetadata Metadata;
+        public ResourceMetadata Metadata
+        {
+            get { return lazyMetadata.Value; }
+        }
 
         /// <summary>
         /// Gets the SodaClient object used for sending requests to this Resource's Host.
@@ -47,24 +55,32 @@ namespace SODA
         {
             get { return Metadata.Identifier; }
         }
-        
+
         /// <summary>
-        /// Initialize a new Resource object with the specified ResourceMetadata using the specified SodaClient.
+        /// Initialize a new Resource object.
+        /// </summary>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <remarks>
+        /// The only available constructors are internal because Resources should be obtained through a SodaClient.
+        /// </remarks>
+        internal Resource(string resourceIdentifier, SodaClient client)
+        {
+            lazyMetadata = new Lazy<ResourceMetadata>(() => client.GetMetadata(resourceIdentifier));
+        }
+
+        /// <summary>
+        /// Initialize a new Resource object with the specified ResourceMetadata.
         /// </summary>
         /// <param name="host">The Socrata Open Data Portal that hosts this Resource.</param>
         /// <param name="metadata">The <see cref="ResourceMetadata">ResourceMetadata</see> object that describes this Resource.</param>
-        /// <param name="client">A SodaClient object used for sending requests to this Resource's Host.</param>
         /// <remarks>
-        /// The only available constructor is internal because Resources should be obtained through a SodaClient.
+        /// The only available constructors are internal because Resources should be obtained through a SodaClient.
         /// </remarks>
         internal Resource(ResourceMetadata metadata)
         {
-            if (metadata == null)
-                throw new ArgumentNullException("metadata", "Cannot initialize a Resource with null ResourceMetadata");
-
-            Metadata = metadata;
+            lazyMetadata = new Lazy<ResourceMetadata>(() => metadata);
         }
-        
+
         /// <summary>
         /// Query this Resource using the specified <see cref="SoqlQuery">SoqlQuery</see>.
         /// </summary>

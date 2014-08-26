@@ -20,16 +20,8 @@ namespace SODA.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         [Category("Resource")]
-        public void New_With_Null_Metadata_Throws_ArgumentNullException()
-        {
-            new Resource<object>(null);
-        }
-
-        [Test]
-        [Category("Resource")]
-        public void New_With_Metadata_Gets_Metadata_Client()
+        public void New_Gets_Metadata_Client()
         {
             var metadata = new ResourceMetadata(mockClient);
 
@@ -40,7 +32,7 @@ namespace SODA.Tests
 
         [Test]
         [Category("Resource")]
-        public void New_With_Metadata_Gets_Metadata_Host()
+        public void New_Gets_Metadata_Host()
         {
             var metadata = new ResourceMetadata(mockClient);
 
@@ -51,7 +43,7 @@ namespace SODA.Tests
 
         [Test]
         [Category("Resource")]
-        public void New_With_Metadata_Gets_Metadata_Columns()
+        public void New_Gets_Metadata_Columns()
         {
             var metadata = new ResourceMetadata(mockClient) {
                 Columns = new[]
@@ -69,7 +61,7 @@ namespace SODA.Tests
 
         [Test]
         [Category("Resource")]
-        public void New_With_Metadata_Gets_Metadata_Identifier()
+        public void New_Gets_Metadata_Identifier()
         {
             var metadata = new ResourceMetadata(mockClient) { Identifier = "identifier" };
 

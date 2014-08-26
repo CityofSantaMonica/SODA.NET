@@ -179,10 +179,8 @@ namespace SODA
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
-
-            var metadata = GetMetadata(resourceId);
-
-            return new Resource<TRow>(metadata);
+            
+            return new Resource<TRow>(resourceId, this);
         }
 
         /// <summary>
