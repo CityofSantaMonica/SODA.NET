@@ -65,7 +65,6 @@
     <Compile Include="HumanAddressTests.cs" />
     <Compile Include="JsonSerializationExtensionTests.cs" />
     <Compile Include="LocationColumnTests.cs" />
-    <Compile Include="Mocks\RequestMocks.cs" />
     <Compile Include="Mocks\StringMocks.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -77,6 +76,7 @@
     <Compile Include="SodaClientTests.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SodaRequestTests.cs" />
     <Compile Include="SodaUriTests.cs" />
     <Compile Include="SoqlQueryTests.cs" />
     <Compile Include="WebsiteUrlColumnTests.cs" />
