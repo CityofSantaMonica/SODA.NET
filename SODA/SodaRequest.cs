@@ -110,7 +110,7 @@ namespace SODA
                         {
                             result = Newtonsoft.Json.JsonConvert.DeserializeObject<TResult>(response);
                         }
-                        catch (Newtonsoft.Json.JsonReaderException)
+                        catch (Newtonsoft.Json.JsonException jex)
                         {
                             result = response as TResult;
                         }

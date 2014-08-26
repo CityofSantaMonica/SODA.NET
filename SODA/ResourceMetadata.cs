@@ -340,8 +340,11 @@ namespace SODA
 
             return result;
         }
+        
+        //constructors are internal because ResourceMetadata should be obtained through a SodaClient or Resource object.
 
-        //constructor is internal because ResourceMetadata should be obtained through a SodaClient or Resource object.
+        internal ResourceMetadata() { }
+
         internal ResourceMetadata(SodaClient client)
         {
             if (client == null)
