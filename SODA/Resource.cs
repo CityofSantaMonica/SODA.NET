@@ -152,5 +152,58 @@ namespace SODA
             var resourceUri = SodaUri.ForResourceAPI(Host, Identifier, rowId);
             return Client.read<TRow>(resourceUri);
         }
+
+        /// <summary>
+        /// Update/Insert this Resource with the specified collection of entities.
+        /// </summary>
+        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
+        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        public SodaResult Upsert(IEnumerable<TRow> payload)
+        {
+            return Client.Upsert(payload, Identifier);
+        }
+
+        /// <summary>
+        /// Update/Insert this Resource with the specified collection of entities in batches of the specified size.
+        /// </summary>
+        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
+        /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
+        /// <param name="breakFunction">A function which, when evaluated true, causes a batch to be sent (possibly before it reaches <paramref name="batchSize"/>).</param>
+        /// <returns>A collection of <see cref="SodaResult">SodaResult</see>, one for each batched Upsert.</returns>
+        public IEnumerable<SodaResult> BatchUpsert(IEnumerable<TRow> payload, int batchSize, Func<IEnumerable<TRow>, TRow, bool> breakFunction)
+        {
+            return Client.BatchUpsert(payload, batchSize, breakFunction, Identifier);
+        }
+
+        /// <summary>
+        /// Update/Insert this Resource with the specified collection of entities in batches of the specified size.
+        /// </summary>
+        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
+        /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
+        /// <returns>A collection of <see cref="SodaResult">SodaResult</see>, one for each batch processed.</returns>
+        public IEnumerable<SodaResult> BatchUpsert(IEnumerable<TRow> payload, int batchSize)
+        {
+            return Client.BatchUpsert(payload, batchSize, Identifier);
+        }
+
+        /// <summary>
+        /// Replace any existing rows in this Resource with the specified collection of entities.
+        /// </summary>
+        /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
+        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        public SodaResult Replace(IEnumerable<TRow> payload)
+        {
+            return Client.Replace(payload, Identifier);
+        }
+
+        /// <summary>
+        /// Delete a single row in this Resource identified by the specified rowId.
+        /// </summary>
+        /// <param name="rowId">The identifier of the row to be deleted.</param>
+        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        public SodaResult DeleteRow(string rowId)
+        {
+            return Client.DeleteRow(rowId, Identifier);
+        }
     }
 }
