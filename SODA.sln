@@ -7,10 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA", "SODA\SODA.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA.Tests", "SODA.Tests\SODA.Tests.csproj", "{6872AC23-29E5-4EDB-A826-A3FC35AAFDA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA.Utilities", "..\Main\Source\SODA.Utilities\SODA.Utilities.csproj", "{63B7FAD7-5927-417C-AD2A-608D777AD1A7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA.Utilities.Tests", "..\Main\Source\SODA.Utilities.Tests\SODA.Utilities.Tests.csproj", "{6AAB405A-D32F-4D8B-B491-BDD5088561A7}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{363A2B26-5F83-4D42-A974-59C68E6E552C}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -25,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA.Utilities", "SODA.Utilities\SODA.Utilities.csproj", "{63B7FAD7-5927-417C-AD2A-608D777AD1A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA.Utilities.Tests", "SODA.Utilities.Tests\SODA.Utilities.Tests.csproj", "{6AAB405A-D32F-4D8B-B491-BDD5088561A7}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 5
@@ -37,12 +37,12 @@ Global
 		SccProjectUniqueName2 = SODA.Tests\\SODA.Tests.csproj
 		SccProjectName2 = SODA.Tests
 		SccLocalPath2 = SODA.Tests
-		SccProjectUniqueName3 = ..\\Main\\Source\\SODA.Utilities\\SODA.Utilities.csproj
-		SccProjectName3 = ../Main/Source/SODA.Utilities
-		SccLocalPath3 = ..\\Main\\Source\\SODA.Utilities
-		SccProjectUniqueName4 = ..\\Main\\Source\\SODA.Utilities.Tests\\SODA.Utilities.Tests.csproj
-		SccProjectName4 = ../Main/Source/SODA.Utilities.Tests
-		SccLocalPath4 = ..\\Main\\Source\\SODA.Utilities.Tests
+		SccProjectUniqueName3 = SODA.Utilities\\SODA.Utilities.csproj
+		SccProjectName3 = SODA.Utilities
+		SccLocalPath3 = SODA.Utilities
+		SccProjectUniqueName4 = SODA.Utilities.Tests\\SODA.Utilities.Tests.csproj
+		SccProjectName4 = SODA.Utilities.Tests
+		SccLocalPath4 = SODA.Utilities.Tests
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

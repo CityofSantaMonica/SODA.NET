@@ -43,9 +43,6 @@
       <Private>True</Private>
       <HintPath>..\..\..\ScopeCreep\packages\EWS-Api-2.1.1.0.0\lib\net35\Microsoft.Exchange.WebServices.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Exchange.WebServices.Auth">
-      <HintPath>..\..\..\ScopeCreep\packages\EWS-Api-2.1.1.0.0\lib\net35\Microsoft.Exchange.WebServices.Auth.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -66,7 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ScopeCreep\SODA\SODA.csproj">
+    <ProjectReference Include="..\SODA\SODA.csproj">
       <Project>{837ebdd7-eb58-44f8-834b-f2903a05a16e}</Project>
       <Name>SODA</Name>
     </ProjectReference>

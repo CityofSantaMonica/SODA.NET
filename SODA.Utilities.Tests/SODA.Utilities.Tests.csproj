@@ -98,7 +98,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ScopeCreep\SODA\SODA.csproj">
+    <ProjectReference Include="..\SODA\SODA.csproj">
       <Project>{837ebdd7-eb58-44f8-834b-f2903a05a16e}</Project>
       <Name>SODA</Name>
     </ProjectReference>
