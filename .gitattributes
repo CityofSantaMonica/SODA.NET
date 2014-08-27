@@ -1,0 +1,14 @@
+# we don't want files with LF - sorry Git
+
+*.cs  text eol=crlf diff=csharp
+*.sln text eol=crlf
+*.config text eol=crlf
+*.csproj text eol=crlf
+*.vspscc text eol=crlf
+
+# don't modify these
+
+*.dll binary
+*.exe binary
+*.xls binary
+*.xlsx binary
