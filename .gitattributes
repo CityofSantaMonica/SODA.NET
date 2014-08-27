@@ -2,12 +2,15 @@
 * text=auto
 
 # Text files that should be normalized to LF in odb.
-*.cs       eol=crlf diff=csharp
-*.config   eol=crlf
-*.sln      eol=crlf
-*.csproj   eol=crlf
+*.cs       text eol=crlf diff=csharp
+*.sln      text eol=crlf
+*.config   text eol=crlf
+*.csproj   text eol=crlf
+*.vspscc   text eol=crlf
 
 # Binary files that should not be normalized or diffed
 *.dll    binary
 *.exe    binary
 *.pdb    binary
+*.xls    binary
+*.xlsx   binary
