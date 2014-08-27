@@ -7,6 +7,9 @@ namespace SODA.Utilities
     /// </summary>
     public class DateTimeConverter
     {
+        /// <summary>
+        /// The beginning of time for the Unix calendar.
+        /// </summary>
         public static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>

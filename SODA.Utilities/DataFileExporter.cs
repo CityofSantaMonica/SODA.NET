@@ -14,8 +14,19 @@ namespace SODA.Utilities
     /// </summary>
     public class DataFileExporter
     {
+        /// <summary>
+        /// The default filepath used for exporting CSV data.
+        /// </summary>
         public static readonly string DefaultCSVPath = "data.csv";
+
+        /// <summary>
+        /// The default filepath used for exporting TSV data.
+        /// </summary>
         public static readonly string DefaultTSVPath = "data.tsv";
+
+        /// <summary>
+        /// The default filepath used for exporting JSON data.
+        /// </summary>
         public static readonly string DefaultJSONPath = "data.json";
 
         /// <summary>

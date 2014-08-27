@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 
 namespace SODA.Utilities
 {
+    /// <summary>
+    /// Extension methods for working with a <see cref="System.Data.DataRow"/>.
+    /// </summary>
     public static class DataRowExtensions
     {
         /// <summary>
@@ -39,6 +42,9 @@ namespace SODA.Utilities
         }
     }
 
+    /// <summary>
+    /// Extension methods for all objects.
+    /// </summary>
     public static class ObjectExtensions
     {
         /// <summary>
@@ -53,6 +59,9 @@ namespace SODA.Utilities
         }
     }
 
+    /// <summary>
+    /// Extension methods for string objects.
+    /// </summary>
     public static class StringExtensions
     {
         /// <summary>

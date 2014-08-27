@@ -223,7 +223,7 @@ namespace SODA
         /// </summary>
         /// <remarks>
         /// If the Socrata Host has defined any custom metadata fields, these will be available in this dictionary
-        /// as a Dictionary<string, dynamic> under the "custom_fields" key.
+        /// as a Dictionary&lt;string, dynamic&gt; under the "custom_fields" key.
         /// </remarks>
         [DataMember(Name = "metadata")]
         public Dictionary<string, dynamic> Metadata { get; set; }
@@ -341,10 +341,21 @@ namespace SODA
             return result;
         }
         
-        //constructors are internal because ResourceMetadata should be obtained through a SodaClient or Resource object.
-
+        /// <summary>
+        /// Initialize a new ResourceMetadata object.
+        /// </summary>
+        /// <remarks>
+        /// The constructor is internal because ResourceMetadata should be obtained through a SodaClient or Resource object.
+        /// </remarks>
         internal ResourceMetadata() { }
 
+        /// <summary>
+        /// Initialize a new ResourceMetadata object with the specified <see cref="SodaClient"/>.
+        /// </summary>
+        /// <param name="client">A <see cref="SodaClient"/> used to access this ResourceMetadata on a Socrata Host.</param>
+        /// <remarks>
+        /// The constructor is internal because ResourceMetadata should be obtained through a SodaClient or Resource object.
+        /// </remarks>
         internal ResourceMetadata(SodaClient client)
         {
             if (client == null)

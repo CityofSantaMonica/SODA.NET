@@ -10,24 +10,39 @@ namespace SODA.Models
     [DataContract]
     public class HumanAddress : IEquatable<HumanAddress>
     {
+        /// <summary>
+        /// Gets or sets the number and street component of an address.
+        /// </summary>
         [DataMember(Name = "address")]
         public string Address { get; set; }
 
+        /// <summary>
+        /// Gets or sets the city in which this address resides.
+        /// </summary>
         [DataMember(Name = "city")]
         public string City { get; set; }
 
+        /// <summary>
+        /// Gets or sets the state in which this address resides.
+        /// </summary>
         [DataMember(Name = "state")]
         public string State { get; set; }
 
+        /// <summary>
+        /// Gets or sets the zipcode in which this address resides.
+        /// </summary>
         [DataMember(Name = "zip")]
         public string Zip { get; set; }
 
+        /// <summary>
+        /// Initialize a new HumanAddress object.
+        /// </summary>
         public HumanAddress()
         {
         }
 
         /// <summary>
-        /// Construct a new HumanAddress object from its JSON string representation.
+        /// Initialize a new HumanAddress object from its JSON string representation.
         /// </summary>
         /// <param name="humanAddressJson">The serialized JSON string of a HumanAddress object.</param>
         public HumanAddress(string humanAddressJson)

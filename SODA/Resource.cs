@@ -17,7 +17,7 @@ namespace SODA
         private readonly Lazy<ResourceMetadata> lazyMetadata;
 
         /// <summary>
-        /// Gets the <see cref="ResourceMetadata">ResourceMetadata</see> describing this Resource.
+        /// Gets the <see cref="ResourceMetadata"/> describing this Resource.
         /// </summary>
         public ResourceMetadata Metadata
         {
@@ -25,7 +25,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Gets the <see cref="SodaClient">SodaClient</see> used for sending requests to this Resource's Host.
+        /// Gets the <see cref="SodaClient"/> used for sending requests to this Resource's Host.
         /// </summary>
         public SodaClient Client
         {
@@ -41,7 +41,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Gets the collection of <see cref="ResourceColumn">ResourceColumn</see> describing the schema of this Resource.
+        /// Gets the collection of <see cref="ResourceColumn"/> describing the schema of this Resource.
         /// </summary>
         public IEnumerable<ResourceColumn> Columns
         {
@@ -59,7 +59,8 @@ namespace SODA
         /// <summary>
         /// Initialize a new Resource object.
         /// </summary>
-        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <param name="resourceIdentifier">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <param name="client">A <see cref="SodaClient"/> used to access this Resource on a Socrata Host.</param>
         /// <remarks>
         /// The only available constructors are internal because Resources should be obtained through a SodaClient.
         /// This constructor sets up the Resource to lazy-load its ResourceMetadata upon first request.
@@ -72,8 +73,7 @@ namespace SODA
         /// <summary>
         /// Initialize a new Resource object with the specified ResourceMetadata.
         /// </summary>
-        /// <param name="host">The Socrata Open Data Portal that hosts this Resource.</param>
-        /// <param name="metadata">The <see cref="ResourceMetadata">ResourceMetadata</see> object that describes this Resource.</param>
+        /// <param name="metadata">The <see cref="ResourceMetadata"/> object that describes this Resource.</param>
         /// <remarks>
         /// The only available constructors are internal because Resources should be obtained through a SodaClient.
         /// </remarks>
@@ -83,10 +83,10 @@ namespace SODA
         }
 
         /// <summary>
-        /// Query this Resource using the specified <see cref="SoqlQuery">SoqlQuery</see>.
+        /// Query this Resource using the specified <see cref="SoqlQuery"/>.
         /// </summary>
         /// <typeparam name="T">The .NET class that represents the type of the underlying rows in this resultset of this query.</typeparam>
-        /// <param name="soqlQuery">A <see cref="SoqlQuery">SoqlQuery</see> to execute against this Resource.</param>
+        /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute against this Resource.</param>
         /// <returns>A collection of entities of type TRow.</returns>
         /// <remarks>
         /// By default, Socrata will only return the first 1000 rows unless otherwise specified in SoQL using the Limit and Offset parameters.
@@ -126,7 +126,7 @@ namespace SODA
         /// <returns>A collection of type TRow.</returns>
         /// <remarks>
         /// GetRows will attempt to return *all rows* in the Resource, beyond the 1000 rows per request limit that Socrata imposes.
-        /// See <see cref="Query{T}">Query{T}</see>
+        /// See <see cref="Query{T}"/>
         /// </remarks>
         public IEnumerable<TRow> GetRows()
         {
@@ -161,6 +161,7 @@ namespace SODA
         /// </summary>
         /// <param name="rowId">The identifier for the row to retrieve.</param>
         /// <returns>The row with an identifier matching the specified identifier.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if the specified <paramref name="rowId"/> is null or empty.</exception>
         public TRow GetRow(string rowId)
         {
             if (String.IsNullOrEmpty(rowId))
@@ -174,7 +175,7 @@ namespace SODA
         /// Update/Insert this Resource with the specified collection of entities.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single row to be upserted.</param>
-        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Upsert(IEnumerable<TRow> payload)
         {
             return Client.Upsert(payload, Identifier);
@@ -186,7 +187,7 @@ namespace SODA
         /// <param name="payload">A collection of entities, where each represents a single row to be upserted.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
         /// <param name="breakFunction">A function which, when evaluated true, causes a batch to be sent (possibly before it reaches <paramref name="batchSize"/>).</param>
-        /// <returns>A collection of <see cref="SodaResult">SodaResult</see>, one for each batched Upsert.</returns>
+        /// <returns>A collection of <see cref="SodaResult"/>, one for each batched Upsert.</returns>
         public IEnumerable<SodaResult> BatchUpsert(IEnumerable<TRow> payload, int batchSize, Func<IEnumerable<TRow>, TRow, bool> breakFunction)
         {
             return Client.BatchUpsert(payload, batchSize, breakFunction, Identifier);
@@ -197,7 +198,7 @@ namespace SODA
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single row to be upserted.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
-        /// <returns>A collection of <see cref="SodaResult">SodaResult</see>, one for each batch processed.</returns>
+        /// <returns>A collection of <see cref="SodaResult"/>, one for each batch processed.</returns>
         public IEnumerable<SodaResult> BatchUpsert(IEnumerable<TRow> payload, int batchSize)
         {
             return Client.BatchUpsert(payload, batchSize, Identifier);
@@ -207,7 +208,7 @@ namespace SODA
         /// Replace any existing rows in this Resource with the specified collection of entities.
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single row.</param>
-        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult Replace(IEnumerable<TRow> payload)
         {
             return Client.Replace(payload, Identifier);
@@ -217,7 +218,7 @@ namespace SODA
         /// Delete a single row in this Resource identified by the specified rowId.
         /// </summary>
         /// <param name="rowId">The identifier of the row to be deleted.</param>
-        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         public SodaResult DeleteRow(string rowId)
         {
             return Client.DeleteRow(rowId, Identifier);

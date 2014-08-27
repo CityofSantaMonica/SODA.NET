@@ -13,12 +13,12 @@ namespace SODA
     public class SodaClient
     {
         /// <summary>
-        /// The url to the Socrata Open Data Portal this client will target.
+        /// The url to the Socrata Open Data Portal this client targets.
         /// </summary>
         public readonly string Host;
 
         /// <summary>
-        /// The Socrata application token that this client will use for all requests.
+        /// The Socrata application token that this client uses for all requests.
         /// </summary>
         /// <remarks>
         /// Since SodaClient uses Basic Authentication, the application token is only used as a means to reduce API throttling on the part of Socrata.
@@ -27,7 +27,7 @@ namespace SODA
         public readonly string AppToken;
 
         /// <summary>
-        /// The user account that this client will use for Authentication during each request.
+        /// The user account that this client uses for Authentication during each request.
         /// </summary>
         /// <remarks>
         /// Authentication is only necessary when accessing datasets that have been marked as private or when making write requests (PUT, POST, and DELETE).
@@ -103,6 +103,7 @@ namespace SODA
         /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
         /// <param name="username">The user account that this client will use for Authentication during each request.</param>
         /// <param name="password">The password for the specified <paramref name="username"/> that this client will use for Authentication during each request.</param>
+        /// <exception cref="System.ArgumentException">Thrown if either of <paramref name="host"/> or <paramref name="appToken"/> is null or empty.</exception>
         public SodaClient(string host, string appToken, string username, string password)
         {
             if (String.IsNullOrEmpty(host))
@@ -122,6 +123,7 @@ namespace SODA
         /// </summary>
         /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
         /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
+        /// <exception cref="System.ArgumentException">Thrown if either of <paramref name="host"/> or <paramref name="appToken"/> is null or empty.</exception>
         public SodaClient(string host, string appToken)
             : this(host, appToken, null, null)
         {
@@ -134,6 +136,7 @@ namespace SODA
         /// <returns>
         /// A ResourceMetadata object for the specified resource identifier.
         /// </returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         public ResourceMetadata GetMetadata(string resourceId)
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -152,6 +155,7 @@ namespace SODA
         /// </summary>
         /// <param name="page">The 1-indexed page of the Metadata Catalog on this client's Socrata host.</param>
         /// <returns>A collection of ResourceMetadata objects from the specified page of this client's Socrata host.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="page"/> is zero or negative.</exception>
         public IEnumerable<ResourceMetadata> GetMetadataPage(int page)
         {
             if (page <= 0)
@@ -175,6 +179,7 @@ namespace SODA
         /// <typeparam name="TRow">The .NET class that represents the type of the underlying row in the Resource.</typeparam>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A Resource object with an underlying row set of type <typeparamref name="TRow"/>.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         public Resource<TRow> GetResource<TRow>(string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -189,7 +194,10 @@ namespace SODA
         /// <param name="payload">A string of serialized data.</param>
         /// <param name="dataFormat">One of the data-interchange formats that Socrata supports, into which the payload has been serialized.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="dataFormat"/> is equal to <see cref="SodaDataFormat.XML"/>.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
         public SodaResult Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (dataFormat == SodaDataFormat.XML)
@@ -228,7 +236,9 @@ namespace SODA
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
         public SodaResult Upsert<T>(IEnumerable<T> payload, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -249,7 +259,9 @@ namespace SODA
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
         /// <param name="breakFunction">A function which, when evaluated true, causes a batch to be sent (possibly before it reaches <paramref name="batchSize"/>).</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A collection of <see cref="SodaResult">SodaResult</see>, one for each batched Upsert.</returns>
+        /// <returns>A collection of <see cref="SodaResult"/>, one for each batched Upsert.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -298,7 +310,9 @@ namespace SODA
         /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
         /// <param name="batchSize">The maximum number of entities to process in a single batch.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A collection of <see cref="SodaResult">SodaResult</see>, one for each batch processed.</returns>
+        /// <returns>A collection of <see cref="SodaResult"/>, one for each batch processed.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
         public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -318,7 +332,10 @@ namespace SODA
         /// <param name="payload">A string of serialized data.</param>
         /// <param name="dataFormat">One of the data-interchange formats that Socrata supports, into which the payload has been serialized.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="dataFormat"/> is equal to <see cref="SodaDataFormat.XML"/>.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
         public SodaResult Replace(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (dataFormat == SodaDataFormat.XML)
@@ -342,7 +359,9 @@ namespace SODA
         /// </summary>
         /// <param name="payload">A collection of entities, where each represents a single row in the target resource.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
         public SodaResult Replace<T>(IEnumerable<T> payload, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
@@ -361,7 +380,10 @@ namespace SODA
         /// </summary>
         /// <param name="rowId">The identifier of the row to be deleted.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A <see cref="SodaResult">SodaResult</see> indicating success or failure.</returns>
+        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if the specified <paramref name="rowId"/> is null or empty.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
         public SodaResult DeleteRow(string rowId, string resourceId)
         {
             if (String.IsNullOrEmpty(rowId))

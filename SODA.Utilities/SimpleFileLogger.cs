@@ -10,11 +10,24 @@ namespace SODA.Utilities
     {
         static readonly string timestamp = "yyyy-MM-dd HH:mm:ss";
 
+        /// <summary>
+        /// The default filepath used for logging.
+        /// </summary>
         public static readonly string DefaultLogFile = "log.txt";
+
+        /// <summary>
+        /// The default maximum size a log file can grow to before it is rolled over. The default is 1MB.
+        /// </summary>
         public static readonly int DefaultMaximumLogBytes = 1048576;
 
+        /// <summary>
+        /// Handle to the underlying log file.
+        /// </summary>
         private readonly TextWriter logger = null;
 
+        /// <summary>
+        /// The complete filepath to this SimpleFileLogger's log file.
+        /// </summary>
         public string LogFilePath { get; private set; }
         
         /// <summary>

@@ -2,6 +2,9 @@
 
 namespace SODA.Utilities
 {
+    /// <summary>
+    /// Convenience methods for JSON serialization.
+    /// </summary>
     public static class JsonSerializationExtensions
     {
         /// <summary>

@@ -10,40 +10,123 @@ namespace SODA
     /// </summary>
     public class SoqlQuery
     {
+        /// <summary>
+        /// The delimiter used for lists of parameters (e.g. a list of columns in Select)
+        /// </summary>
         public static readonly string Delimiter = ",";
+
+        /// <summary>
+        /// The querystring key for the SoQL Select clause.
+        /// </summary>
         public static readonly string SelectKey = "$select";
+
+        /// <summary>
+        /// The querystring key for the SoQL Where clause.
+        /// </summary>
         public static readonly string WhereKey = "$where";
+
+        /// <summary>
+        /// The querystring key for the SoQL Order clause.
+        /// </summary>
         public static readonly string OrderKey = "$order";
+
+        /// <summary>
+        /// The querystring key for the SoQL Group clause.
+        /// </summary>
         public static readonly string GroupKey = "$group";
+
+        /// <summary>
+        /// The querystring key for the SoQL Limit clause.
+        /// </summary>
         public static readonly string LimitKey = "$limit";
+
+        /// <summary>
+        /// The querystring key for the SoQL Offset clause.
+        /// </summary>
         public static readonly string OffsetKey = "$offset";
+
+        /// <summary>
+        /// The querystring key for the SoQL full-text search clause.
+        /// </summary>
         public static readonly string SearchKey = "$q";
 
-        //the default is to select all columns
-        //http://dev.socrata.com/docs/queries.html
+        /// <summary>
+        /// The default values for a Select clause.
+        /// </summary>
+        /// <remarks>
+        /// The default is to select all columns (http://dev.socrata.com/docs/queries.html)
+        /// </remarks>
         public static readonly string[] DefaultSelect = new[] { "*" };
         
-        //the default sort direction is ascending
-        //http://dev.socrata.com/docs/queries.html#the_order_parameter
+        /// <summary>
+        /// The default sort direction for an Order clause.
+        /// </summary>
+        /// <remarks>
+        /// the default sort direction is ascending (http://dev.socrata.com/docs/queries.html#the_order_parameter)
+        /// </remarks>
         public static readonly SoqlOrderDirection DefaultOrderDirection = SoqlOrderDirection.ASC;
         
-        //there is no implicit order of results of a query
-        //so at a minimum provide $order=:id to guarantee that the order of results will be stable for paging
-        //http://dev.socrata.com/docs/queries.html#the_order_parameter
+        /// <summary>
+        /// The default values for an Order clause.
+        /// </summary>
+        /// <remarks>
+        /// There is no implicit order of results of a query,
+        /// so at a minimum provide $order=:id to guarantee that the order of results will be stable for paging.
+        /// (http://dev.socrata.com/docs/queries.html#the_order_parameter)
+        /// </remarks>
         public static readonly string[] DefaultOrder = new[] { ":id" };
 
-        //the maximum that can be requested with limit is 1000
-        //http://dev.socrata.com/docs/queries.html#the_limit_parameter
+        /// <summary>
+        /// The maximum number of results a query may return.
+        /// </summary>
+        /// <remarks>
+        /// The maximum that can be requested with limit is 1000 (http://dev.socrata.com/docs/queries.html#the_limit_parameter)
+        /// </remarks>
         public static readonly int MaximumLimit = 1000;
 
+        /// <summary>
+        /// Gets the columns that this SoqlQuery will select.
+        /// </summary>
         public string[] SelectColumns { get; private set; }
+
+        /// <summary>
+        /// Gets the aliases for the columns that this SoqlQuery will select.
+        /// </summary>
         public string[] SelectColumnAliases { get; private set; }
+
+        /// <summary>
+        /// Gets the predicate that this SoqlQuery will use for results filtering.
+        /// </summary>
         public string WhereClause { get; private set; }
+
+        /// <summary>
+        /// Gets the sort direction that results from this SoqlQuery will be ordered on.
+        /// </summary>
         public SoqlOrderDirection OrderDirection { get; private set; }
+
+        /// <summary>
+        /// Gets the columns that define the ordering for the results of this SoqlQuery.
+        /// </summary>
         public string[] OrderByColumns { get; private set; }
+
+        /// <summary>
+        /// Gets the columns that define grouping for the results of this SoqlQuery.
+        /// </summary>
         public string[] GroupByColumns { get; private set; }
+
+        /// <summary>
+        /// Gets the maximum number of results that this SoqlQuery will return.
+        /// </summary>
         public int LimitValue { get; private set; }
+
+        /// <summary>
+        /// Gets the offset into the full resultset that this SoqlQuery will begin from.
+        /// </summary>
         public int OffsetValue { get; private set; }
+
+        /// <summary>
+        /// Gets the input to a full-text search that this SoqlQuery will perform.
+        /// </summary>
         public string SearchText { get; private set; }
 
         /// <summary>
