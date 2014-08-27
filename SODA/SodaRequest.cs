@@ -94,9 +94,12 @@ namespace SODA
         /// Send this SodaRequest's webRequest and interpret the response.
         /// </summary>
         /// <typeparam name="TResult">The target type during response deserialization.</typeparam>
+        /// <exception cref="System.InvalidOperationException">Thrown if response deserialization into the requested type fails.</exception>
         internal TResult ParseResponse<TResult>() where TResult : class
         {
             TResult result = default(TResult);
+            Exception inner = null;
+            bool exception = false;
 
             using (var responseStream = webRequest.GetResponse().GetResponseStream())
             {
@@ -112,7 +115,8 @@ namespace SODA
                         }
                         catch (Newtonsoft.Json.JsonException jex)
                         {
-                            result = response as TResult;
+                            inner = jex;
+                            exception = true;
                         }
                         break;
                     case SodaDataFormat.CSV:
@@ -132,13 +136,19 @@ namespace SODA
                                 var serializer = new XmlSerializer(ttype);
                                 result = serializer.Deserialize(reader) as TResult;
                             }
-                            catch
+                            catch (Exception ex)
                             {
-                                result = response as TResult;
+                                inner = ex;
+                                exception = true;
                             }
                         }
                         break;
                 }
+            }
+
+            if (exception)
+            {
+                throw new InvalidOperationException(String.Format("Couldn't deserialize the ({0}) response into an instance of type {1}.", dataFormat, typeof(TResult)), inner);
             }
 
             return result;
