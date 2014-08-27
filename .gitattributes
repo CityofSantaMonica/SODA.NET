@@ -1,16 +1,1 @@
-# Catch all for anything we forgot. Add rules if you get CRLF to LF warnings.
-* text=auto
-
-# Text files that should be normalized to LF in odb.
-*.cs       text eol=crlf diff=csharp
-*.sln      text eol=crlf
-*.config   text eol=crlf
-*.csproj   text eol=crlf
-*.vspscc   text eol=crlf
-
-# Binary files that should not be normalized or diffed
-*.dll    binary
-*.exe    binary
-*.pdb    binary
-*.xls    binary
-*.xlsx   binary
+* text eol=crlf
