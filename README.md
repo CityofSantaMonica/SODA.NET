@@ -15,7 +15,8 @@ var metadata = client.GetMetadata("1234-wxyz");
 Console.WriteLine("Dataset '{0}' has {1} views.", metadata.Name, metadata.ViewsCount);
 
 //get a reference to the resource itself
-//the result (a Resouce object) is a generic type, the type parameter represents the underlying rows of the resource
+//the result (a Resouce object) is a generic type
+//the type parameter represents the underlying rows of the resource
 var dataset = client.GetResource<Dictionary<string, object>>("1234-wxyz");
 
 //of course, a custom type can be used as long as it is JSON serializable
@@ -30,7 +31,7 @@ var soql = new SoqlQuery().Select("column1", "column2").Where("something > nothi
 var results = dataset.Query<MyOtherClass>(soql);
 ```
 
-SodaClient is also capable of performing write operations
+**SodaClient** is also capable of performing write operations
 
 ```c#
 //make sure to provide auth credentials!
@@ -69,7 +70,7 @@ SODA.Utilities has a few dependencies of its own:
 
 ### Usage examples
 
-SimpleFileLogger, a simple file logging utility (imagine that!)
+**SimpleFileLogger**, a simple file logging utility (imagine that!)
 
 ```c#
 using (var logger = new SimpleFileLogger("log.txt"))
@@ -81,7 +82,7 @@ using (var logger = new SimpleFileLogger("log.txt"))
 }
 ```
 
-DataFileExporter, a utility for exporting data to a text-based file format
+**DataFileExporter**, a utility for exporting data to a text-based file format
 
 ```c#
 IEnumerable<MyClass> payload = GetPayloadData();
@@ -90,10 +91,10 @@ IEnumerable<MyClass> payload = GetPayloadData();
 DataFileExporter.ExportJSON(payload, "data.json");
 
 //export as CSV
-DataFileExporter.ExportJSON(payload, "data.json");
+DataFileExporter.ExportCSV(payload, "data.csv");
 ```
 
-ExcelOleDbHelper, a utility for reading 
+**ExcelOleDbHelper**, a utility for reading 
 [DataRows](http://msdn.microsoft.com/en-us/library/system.data.datarow) 
 out of Excel documents
 
@@ -105,7 +106,7 @@ OleDbConnection connection = ExcelOleDbHelper.MakeConnection("data.xlsx");
 IEnumerable<DataRow> rows = ExcelOleDbHelper.GetRowsFromDataSheets(connection);
 ```
 
-IEwsClient, an interface that wraps some Exchange WebServices functionality
+**IEwsClient**, an interface that wraps some Exchange WebServices functionality
 
 ```c#
 //initialize a new client targeting Exchange Server 2007 SP1
