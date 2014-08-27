@@ -2,32 +2,12 @@
 * text=auto
 
 # Text files that should be normalized to LF in odb.
-*.cs     text diff=csharp
-*.config text
-*.sln     text
-*.csproj  text
-*.vcxproj text
-*.md       text
-*.tt       text
-*.sh       text
-*.ps1      text
-*.cmd      text
-*.bat      text
-*.markdown text
-*.msbuild  text
+*.cs       eol=crlf diff=csharp
+*.config   eol=crlf
+*.sln      eol=crlf
+*.csproj   eol=crlf
 
 # Binary files that should not be normalized or diffed
-*.png    binary
-*.jpg    binary
-*.gif    binary
-*.ico    binary
-*.rc     binary
-*.pfx    binary
-*.snk    binary
 *.dll    binary
 *.exe    binary
-*.lib    binary
-*.exp    binary
 *.pdb    binary
-*.sdf    binary
-*.7z     binary
