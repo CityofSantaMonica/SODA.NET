@@ -67,6 +67,7 @@ namespace SODA
         /// </remarks>
         internal Resource(string resourceIdentifier, SodaClient client)
         {
+            //setup the lazy loading for this Resource's metadata
             lazyMetadata = new Lazy<ResourceMetadata>(() => client.GetMetadata(resourceIdentifier));
         }
 
@@ -79,6 +80,7 @@ namespace SODA
         /// </remarks>
         internal Resource(ResourceMetadata metadata)
         {
+            //lazy loading will just return the metadata parameter
             lazyMetadata = new Lazy<ResourceMetadata>(() => metadata);
         }
 

@@ -49,10 +49,12 @@ namespace SODA
 
             if (webException != null)
             {
+                //set a default just in case there isn't a response property
                 message = webException.Message;
 
                 if (webException.Response != null)
                 {
+                    //read the response property
                     using (var streamReader = new StreamReader(webException.Response.GetResponseStream()))
                     {
                         message = streamReader.ReadToEnd();
@@ -163,12 +165,14 @@ namespace SODA
             
             var catalogUri = SodaUri.ForMetadataList(Host, page);
 
+            //an entry of raw data contains some, but not all, of the fields required to populate a ResourceMetadata
             IEnumerable<dynamic> rawDataList = read<IEnumerable<dynamic>>(catalogUri).ToArray();
-
+            //so loop over the collection, using the identifier to make another call for the "real" metadata
             foreach (var rawData in rawDataList)
             {
                 var metadata = GetMetadata((string)rawData.id);
-
+                //yield return here creates an interator - results aren't returned until explicitly requested via foreach
+                //or similar interation on the result of the call to GetMetadataPage.
                 yield return metadata;
             }
         }
@@ -274,15 +278,20 @@ namespace SODA
 
             while (queue.Any())
             {
+                //make the next batch to send
+
                 var batch = new List<T>();
 
                 for (var index = 0; index < batchSize && queue.Count > 0; index++)
                 {
+                    //if we have a break function that returns true => bail out early
                     if (breakFunction != null && breakFunction(batch, queue.Peek()))
                         break;
-
+                    //otherwise add the next item in queue to this batch
                     batch.Add(queue.Dequeue());
                 }
+
+                //now send this batch
 
                 SodaResult result;
 
@@ -300,6 +309,8 @@ namespace SODA
                     result = new SodaResult() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
                 }
 
+                //yield return here creates an iterator - results aren't returned until explicitly requested via foreach
+                //or similar interation on the result of the call to BatchUpsert.
                 yield return result;
             }
         }
@@ -321,6 +332,9 @@ namespace SODA
             if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
+            //we create a no-op function that returns false for all inputs
+            //in other words, the size of a batch will never be affected by this break function
+            //and will always be the minimum of (batchSize, remaining items in total collection)
             Func<IEnumerable<T>, T, bool> neverBreak = (a, b) => false;
 
             return BatchUpsert<T>(payload, batchSize, neverBreak, resourceId);

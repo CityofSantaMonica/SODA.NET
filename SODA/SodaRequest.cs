@@ -40,7 +40,8 @@ namespace SODA
             request.Method = method.ToUpper();
             request.ProtocolVersion = new System.Version("1.1");
             request.PreAuthenticate = true;
-
+            
+            //http://dev.socrata.com/docs/app-tokens.html
             request.Headers.Add("X-App-Token", appToken);
 
             if (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password))
@@ -120,9 +121,11 @@ namespace SODA
                         }
                         break;
                     case SodaDataFormat.CSV:
+                        //TODO: should we consider this an error (i.e. InvalidOperationException) if this cast returns null?
                         result = response as TResult;
                         break;
                     case SodaDataFormat.XML:
+                        //see if the caller just wanted the XML string
                         var ttype = typeof(TResult);
                         if (ttype == typeof(string))
                         {
@@ -130,6 +133,7 @@ namespace SODA
                         }
                         else
                         {
+                            //try to deserialize the XML response
                             try
                             {
                                 var reader = XmlReader.Create(new StringReader(response));
@@ -148,6 +152,7 @@ namespace SODA
 
             if (exception)
             {
+                //we want to float this error up to clients
                 throw new InvalidOperationException(String.Format("Couldn't deserialize the ({0}) response into an instance of type {1}.", dataFormat, typeof(TResult)), inner);
             }
 

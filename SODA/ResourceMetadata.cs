@@ -327,7 +327,9 @@ namespace SODA
 
             try
             {
+                //use PUT to replace all existing metadata with the new values
                 result = Client.write<ResourceMetadata, SodaResult>(metadataUri, "PUT", this);
+                //no exception thrown => success!
                 result.IsError = false;
                 result.Message = String.Format("Metadata for {0} updated successfully.", Identifier);
             }

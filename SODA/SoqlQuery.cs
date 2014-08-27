@@ -159,9 +159,9 @@ namespace SODA
                 //evaluate the provided aliases
                 var finalColumns = SelectColumns.Zip(SelectColumnAliases, (c, a) => String.Format("{0} AS {1},", c, a)).ToList();
 
-                //if some columns were left un-aliased
                 if (SelectColumns.Length > SelectColumnAliases.Length)
                 {
+                    //some columns were left un-aliased
                     finalColumns.AddRange(SelectColumns.Skip(SelectColumnAliases.Length));
                 }
 
