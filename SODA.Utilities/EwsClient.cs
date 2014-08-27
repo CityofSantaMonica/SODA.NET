@@ -7,41 +7,21 @@ using Microsoft.Exchange.WebServices.Data;
 namespace SODA.Utilities
 {
     /// <summary>
-    /// Interface definition for an Exchange Web Services Client
-    /// </summary>
-    public interface IEwsClient
-    {
-        /// <summary>
-        /// The Uri at which the target Exchange Web Services are hosted.
-        /// </summary>
-        Uri ServiceEndpoint { get; }
-
-        /// <summary>
-        /// Search the Inbox for the first unread email with an attachment matching the specified regular expression, and if found, download the attachment to the specified directory.
-        /// </summary>
-        /// <param name="attachmentNamePattern">The attachment filename pattern to search for.</param>
-        /// <param name="targetDirectory">The (writable) directory where a found attachment will be saved.</param>
-        /// <returns>True if a matching attachment was found and downloaded. False otherwise.</returns>
-        bool DownloadAttachment(Regex attachmentNamePattern, string targetDirectory);
-
-        /// <summary>
-        /// Send an email message with the specified subject and body to the specified list of recipient email addresses.
-        /// </summary>
-        /// <param name="messageSubject">The subject line of the email message.</param>
-        /// <param name="messageBody">The plain-text content of the email message.</param>
-        /// <param name="recipients">One or more email addresses that will be recipients of the email message.</param>
-        void SendMessage(string messageSubject, string messageBody, params string[] recipients);
-    }
-
-    /// <summary>
     /// Base implementation of the IEwsClient interface
     /// </summary>
     public abstract class EwsClient : IEwsClient
     {
+        /// <summary>
+        /// The underlying <see cref="Microsoft.Exchange.WebServices.ExchangeService"/> that this client uses to talk to EWS.
+        /// </summary>
         protected readonly ExchangeService exchangeService;
         
         //lazy-load the inbox folder
         private Folder inbox = null;
+
+        /// <summary>
+        /// Gets a <see cref="Microsoft.Exchange.WebServices.Data.Folder"/> object representing the Inbox that this client connects to.
+        /// </summary>
         protected Folder Inbox
         {
             get
@@ -52,6 +32,9 @@ namespace SODA.Utilities
             }
         }
 
+        /// <summary>
+        /// The Uri at which the target Exchange Web Services are hosted.
+        /// </summary>
         public Uri ServiceEndpoint
         {
             get { return exchangeService.Url; }
@@ -77,7 +60,13 @@ namespace SODA.Utilities
             
             exchangeService.AutodiscoverUrl(String.Format("{0}@{1}", username, domain));
         }
-        
+
+        /// <summary>
+        /// Search the Inbox for the first unread email with an attachment matching the specified regular expression, and if found, download the attachment to the specified directory.
+        /// </summary>
+        /// <param name="attachmentNamePattern">The attachment filename pattern to search for.</param>
+        /// <param name="targetDirectory">The (writable) directory where a found attachment will be saved.</param>
+        /// <returns>True if a matching attachment was found and downloaded. False otherwise.</returns>
         public virtual bool DownloadAttachment(Regex attachmentNamePattern, string targetDirectory)
         {
             //we don't know how many items we'll have to search (likely nowhere near int.MaxValue)
@@ -130,6 +119,12 @@ namespace SODA.Utilities
             return foundAttachment;
         }
 
+        /// <summary>
+        /// Send an email message with the specified subject and body to the specified list of recipient email addresses.
+        /// </summary>
+        /// <param name="messageSubject">The subject line of the email message.</param>
+        /// <param name="messageBody">The plain-text content of the email message.</param>
+        /// <param name="recipients">One or more email addresses that will be recipients of the email message.</param>
         public virtual void SendMessage(string messageSubject, string messageBody, params string[] recipients)
         {
             var email = new EmailMessage(exchangeService);
@@ -139,36 +134,6 @@ namespace SODA.Utilities
             email.ToRecipients.AddRange(recipients);
 
             email.SendAndSaveCopy();
-        }
-    }
-
-    /// <summary>
-    /// EwsClient implementation for Exchange Server 2007 SP1
-    /// </summary>
-    public class Ews2007Sp1Client : EwsClient
-    {
-        public Ews2007Sp1Client(string username, string password, string domain)
-            : base(username, password, domain, ExchangeVersion.Exchange2007_SP1)
-        {
-        }
-
-        public override bool DownloadAttachment(Regex attachmentNamePattern, string targetDirectory)
-        {
-            if (attachmentNamePattern == null)
-                throw new ArgumentNullException("attachmentNamePattern");
-
-            if (!Directory.Exists(targetDirectory))
-                Directory.CreateDirectory(targetDirectory);
-
-            return base.DownloadAttachment(attachmentNamePattern, targetDirectory);
-        }
-
-        public override void SendMessage(string messageSubject, string messageBody, params string[] recipients)
-        {
-            if (recipients == null || !recipients.Any())
-                throw new ArgumentException("Must specify at least 1 email recipient.", "recipients");
-
-            base.SendMessage(messageSubject, messageBody, recipients);
         }
     }
 }
