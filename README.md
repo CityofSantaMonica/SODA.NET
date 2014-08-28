@@ -48,12 +48,28 @@ client.Upsert(payload, "1234-wxyz");
 
 ## Dependencies
 
-SODA.NET uses the popular [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/) 
-library for JSON (de)serialization.
+SODA.NET uses the popular [Newtonsoft.Json (6.0.4)](https://www.nuget.org/packages/Newtonsoft.Json/) 
+package for JSON (de)serialization.
 
-[NUnit 2.6.3](https://www.nuget.org/packages/NUnit/) was used to build the test projects.
+[NUnit (2.6.3)](https://www.nuget.org/packages/NUnit/) was used to build the test projects.
 
-NuGet package restore should get you everything you need on first build.
+## Getting Started
+
+SODA.NET is available as a [NuGet package](https://www.nuget.org/packages/CSM.SodaDotNet/).
+
+    Install-Package CSM.SodaDotNet
+
+### Build
+
+If you'd like to compile SODA.NET yourself, you will need:
+
+  - Visual Studio 2013
+
+To clone it locally, click the "Clone in Windows" button above or run the follow git commands
+
+    git clone git@github.com:CityofSantaMonica/SODA.NET.git SODA.NET
+    cd SODA.NET
+    .\build.cmd
 
 ## SODA.Utilities
 
@@ -67,6 +83,10 @@ SODA.Utilities has a few dependencies of its own:
 (for reading Excel documents through OLEDB)
   - [Microsoft Exchange WebServices 2.1](https://www.nuget.org/packages/EWS-Api-2.1/1.0.0) 
 (for talking to an Exchange server)
+
+SODA.Utilities is also available as a [NuGet package](https://www.nuget.org/packages/CSM.SodaDotNet.Utilities/).
+
+    Install-Package CSM.SodaDotNet.Utilities
 
 ### Usage examples
 

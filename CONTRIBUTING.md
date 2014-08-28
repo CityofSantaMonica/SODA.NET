@@ -12,13 +12,13 @@ to making code changes. We welcome it all. Don't forget to sign up for a
 You can clone this repository locally from GitHub using the "Clone in Desktop" 
 button from the main project site, or run this command in the Git Shell:
 
-`git clone git@github.com:CityOfSantaMonica/SODA.NET.git SODA`
+`git clone git@github.com:CityofSantaMonica/SODA.NET.git SODA.NET`
 
 If you want to make contributions to the project, 
 [forking the project](https://help.github.com/articles/fork-a-repo) is the easiest 
 way to do this. You can then clone down your fork instead:
 
-`git clone git@github.com:MY-USERNAME-HERE/SODA.NET.git SODA`
+`git clone git@github.com:MY-USERNAME-HERE/SODA.NET.git SODA.NET`
 
 ### How is the code organized?
 
