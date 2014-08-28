@@ -12,7 +12,7 @@ var client = new SodaClient("data.smgov.net", "AppToken");
 
 //read metadata of a dataset using the resource identifier (Socrata 4x4)
 var metadata = client.GetMetadata("1234-wxyz");
-Console.WriteLine("Dataset '{0}' has {1} views.", metadata.Name, metadata.ViewsCount);
+Console.WriteLine("{0} has {1} views.", metadata.Name, metadata.ViewsCount);
 
 //get a reference to the resource itself
 //the result (a Resouce object) is a generic type
@@ -26,8 +26,11 @@ var dataset = client.GetResource<MyClass>("1234-wxyz");
 var allRows = dataset.GetRows();
 var first10Rows = dataset.GetRows(10);
 
-//collections of an arbitrary type can be returned using SoQL and a fluent query building syntax
-var soql = new SoqlQuery().Select("column1", "column2").Where("something > nothing").Group("column3");
+//collections of an arbitrary type can be returned
+//using SoQL and a fluent query building syntax
+var soql = new SoqlQuery().Select("column1", "column2")
+                          .Where("something > nothing")
+                          .Group("column3");
 var results = dataset.Query<MyOtherClass>(soql);
 ```
 
@@ -35,7 +38,8 @@ var results = dataset.Query<MyOtherClass>(soql);
 
 ```c#
 //make sure to provide auth credentials!
-var client = new SodaClient("data.smgov.net", "AppToken", "testuser@gmail.com", "password");
+var client = 
+    new SodaClient("data.smgov.net", "AppToken", "user@domain.com", "password");
 
 //Upsert some data serialized as CSV
 string csvData = File.ReadAllText("data.csv");
@@ -132,12 +136,18 @@ IEnumerable<DataRow> rows = ExcelOleDbHelper.GetRowsFromDataSheets(connection);
 //initialize a new client targeting Exchange Server 2007 SP1
 IEwsClient ewsClient = new Ews2007Sp1Client("username", "password", "domain.org");
 
-//download an attachment (with filename matching the provided regex) from the first unread email
-//containing a matching attachment
-bool foundAttachment = ewsClient.DownloadAttachment(new Regex("file\\d{6}\\.xlsx"), "C:\\temp");
+//regex to match against attachment filenames
+var regx = new Regex("file\\d{6}\\.xlsx");
+
+//download an attachment
+//from the first unread email containing a matching attachment
+bool foundAttachment = ewsClient.DownloadAttachment(regx, "C:\\temp");
 
 //send an email message to a list of recipients
-ewsClient.SendMessage("Subject Line", "Body text here", "recipient@example.com", "another.recipient@example.com");
+ewsClient.SendMessage("Subject Line",
+                      "Body text here",
+                      "recipient@example.com",
+                      "another.recipient@example.com");
 ```
 
 ## Contributing
