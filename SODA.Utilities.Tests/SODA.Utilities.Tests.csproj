@@ -75,9 +75,6 @@
     </Compile>
     <Compile Include="DataRowExtensionsTests.cs" />
     <Compile Include="ExcelOleDbHelperTests.cs" />
-    <Compile Include="EwsClientTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="FileLoggingTests.cs" />
     <Compile Include="Mocks\DataRowMocks.cs" />
     <Compile Include="Mocks\EntityMock.cs" />
