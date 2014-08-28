@@ -17,6 +17,7 @@ Desktop.ini
 # Build results
 bin/[Dd]ebug/
 bin/[Rr]elease/
+packages
 *_i.c
 *_p.c
 *.ilk
