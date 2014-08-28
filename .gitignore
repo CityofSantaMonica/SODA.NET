@@ -35,6 +35,7 @@ bin/**/*.pdb
 *.tmp
 *.vspscc
 .builds
+*.nupkg
 
 # Visual Studio profiler
 *.psess
