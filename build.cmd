@@ -35,5 +35,4 @@ if %TARGET% == "CreatePackages" (
 	echo Finished NuGet package creation
 )
 
-pause
-exit /B 0
+exit /B %errorlevel%
