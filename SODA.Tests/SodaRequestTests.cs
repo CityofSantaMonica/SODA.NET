@@ -159,7 +159,7 @@ namespace SODA.Tests
         [Category("SodaRequest")]
         public void ParseResponse_Can_GET_Example()
         {
-            var request = new SodaRequest(exampleUri, "GET", null, null, null);
+            var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.XML);
             
             string result = request.ParseResponse<string>().ToLower();
             
