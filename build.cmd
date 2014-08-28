@@ -14,6 +14,10 @@ set NUGETDIR=".\tools\nuget"
 set SODADIR=".\SODA"
 set UTILSDIR=".\SODA.Utilities"
 
+echo Restoring NuGet Packages
+
+call %NUGETDIR%\nuget.exe restore
+
 echo Rebuilding solution with Configuration: %BUILDMODE%
 
 call %MSBUILDDIR%\msbuild.exe SODA.sln /m "/p:Configuration=%BUILDMODE%" "/p:Platform=Any CPU" /t:Clean,Build	
