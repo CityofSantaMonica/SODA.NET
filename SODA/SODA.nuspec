@@ -4,8 +4,8 @@
     <id>CSM.SodaDotNet</id>
     <version>0.1.0</version>
     <title>SODA.NET</title>
-    <authors>"City of Santa Monica, CA"</authors>
-    <owners>"City of Santa Monica, CA"</owners>
+    <authors>City of Santa Monica, CA</authors>
+    <owners>City of Santa Monica, CA</owners>
     <licenseUrl>https://github.com/CityOfSantaMonica/SODA.NET/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/CityOfSantaMonica/SODA.NET</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

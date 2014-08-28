@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SODA")]
-[assembly: AssemblyDescription("Socrata Open Data API client library")]
+[assembly: AssemblyDescription("Socrata Open Data API client library target .NET 4.5 and above.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("City of Santa Monica, CA")]
 [assembly: AssemblyProduct("SODA")]
