@@ -12,7 +12,7 @@ namespace SODA.Utilities
     public abstract class EwsClient : IEwsClient
     {
         /// <summary>
-        /// The underlying <see cref="Microsoft.Exchange.WebServices.ExchangeService"/> that this client uses to talk to EWS.
+        /// The underlying <see cref="Microsoft.Exchange.WebServices.Data.ExchangeService"/> that this client uses to talk to EWS.
         /// </summary>
         protected readonly ExchangeService exchangeService;
         

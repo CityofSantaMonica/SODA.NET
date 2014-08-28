@@ -15,10 +15,11 @@ namespace SODA.Models
         [DataMember(Name="description")]
         public string Description { get; set; }
 
+        private string url;
+
         /// <summary>
         /// Gets or sets the link url of this WebsiteUrlColumn.
         /// </summary>
-        private string url;
         [DataMember(Name="url")]
         public string Url
         {
