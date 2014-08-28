@@ -31,6 +31,7 @@ var first10Rows = dataset.GetRows(10);
 var soql = new SoqlQuery().Select("column1", "column2")
                           .Where("something > nothing")
                           .Group("column3");
+                          
 var results = dataset.Query<MyOtherClass>(soql);
 ```
 
