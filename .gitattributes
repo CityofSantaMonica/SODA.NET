@@ -1,10 +1,9 @@
-# we don't want files with LF - sorry Git
+* text=auto
 
-*.cs  text eol=crlf diff=csharp
+*.cs  text diff=csharp
 *.sln text eol=crlf
-*.config text eol=crlf
-*.csproj text eol=crlf
-*.vspscc text eol=crlf
+*.config text
+*.csproj text
 
 # don't modify these
 
