@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>CSM.SodaDotNet.Utilities</id>
+    <version>0.1.0</version>
+    <title>SODA.Utilities</title>
+    <authors>"City of Santa Monica, CA"</authors>
+    <owners>"City of Santa Monica, CA"</owners>
+    <licenseUrl>https://github.com/CityOfSantaMonica/SODA.NET/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/CityOfSantaMonica/SODA.NET</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright 2014 City of Santa Monica, CA</copyright>
+    <tags>EWS OleDb</tags>
+    <dependencies>
+      <dependency id="CSM.SodaDotNet" version="0.1.0" />
+    </dependencies>
+  </metadata>
+</package>

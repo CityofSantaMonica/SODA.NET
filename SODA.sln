@@ -15,8 +15,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{970C9034-3C0D-47ED-82F5-CCEDD67B7EB0}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		build.cmd = build.cmd
 		CONTRIBUTING.md = CONTRIBUTING.md
 		LICENSE.txt = LICENSE.txt
+		tools\nuget\NuGet.exe = tools\nuget\NuGet.exe
 		README.md = README.md
 	EndProjectSection
 EndProject
