@@ -12,9 +12,10 @@
     <description>$description$</description>
     <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright 2014 City of Santa Monica, CA</copyright>
-    <tags>EWS OleDb</tags>
+    <tags>EWS OleDb SODA</tags>
     <dependencies>
       <dependency id="CSM.SodaDotNet" version="0.1.0" />
+      <dependency id="EWS-Api-2.1" version="1.0.0" />
     </dependencies>
   </metadata>
 </package>
