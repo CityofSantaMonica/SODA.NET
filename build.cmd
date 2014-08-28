@@ -4,7 +4,6 @@ cls
 
 set TARGET="Default"
 if not "%1" == "" (set TARGET="%1")
-echo %TARGET%
 
 set BUILDMODE="Release"
 if not "%2" == "" (set BUILDMODE="%2")
@@ -14,7 +13,7 @@ set NUGETDIR=".\tools\nuget"
 set SODADIR=".\SODA"
 set UTILSDIR=".\SODA.Utilities"
 
-echo Restoring NuGet Packages
+echo Restoring NuGet package dependencies
 
 call %NUGETDIR%\nuget.exe restore
 
