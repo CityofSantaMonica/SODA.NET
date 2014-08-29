@@ -163,3 +163,11 @@ Copyright 2014 City of Santa Monica, CA
 
 Licensed under the 
 [MIT License](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/LICENSE.txt)
+
+## Thank you
+
+A tremendous amount of inspiration for this project came from the following projects. Thank you!
+
+  - [Octokit.net](https://github.com/octokit/octokit.net)
+  - [soda-java](https://github.com/socrata/soda-java/)
+  - [soda-dotnet](https://github.com/socrata/soda-dotnet) (defunct?)
