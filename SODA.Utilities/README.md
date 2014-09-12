@@ -71,7 +71,9 @@ SODA.Utilities has a few dependencies:
   - [Microsoft Exchange WebServices 2.1](https://www.nuget.org/packages/EWS-Api-2.1/1.0.0) 
 (for talking to an Exchange server)
 
-SODA.Utilities is also available as a [NuGet package](https://www.nuget.org/packages/CSM.SodaDotNet.Utilities/).
+## Getting Started
+
+SODA.Utilities is available as a [NuGet package](https://www.nuget.org/packages/CSM.SodaDotNet.Utilities/).
 
     Install-Package CSM.SodaDotNet.Utilities
 
