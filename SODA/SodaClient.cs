@@ -372,8 +372,31 @@ namespace SODA
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
             var request = new SodaRequest(uri, "PUT", AppToken, Username, password, dataFormat, payload);
+            SodaResult result = null;
 
-            return request.ParseResponse<SodaResult>();
+            try
+            {
+                if (dataFormat == SodaDataFormat.JSON)
+                {
+                    result = request.ParseResponse<SodaResult>();
+                }
+                else if (dataFormat == SodaDataFormat.CSV)
+                {
+                    string resultJson = request.ParseResponse<string>();
+                    result = Newtonsoft.Json.JsonConvert.DeserializeObject<SodaResult>(resultJson);
+                }
+            }
+            catch (WebException webEx)
+            {
+                string message = unwrapExceptionMessage(webEx);
+                result = new SodaResult() { Message = webEx.Message, IsError = true, ErrorCode = message, Data = payload };
+            }
+            catch (Exception ex)
+            {
+                result = new SodaResult() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
+            }
+
+            return result;
         }
 
         /// <summary>
