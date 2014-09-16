@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>CSM.SodaDotNet</id>
-    <version>0.1.1</version>
+    <version>$version$</version>
     <title>CSM.SodaDotNet</title>
     <authors>City of Santa Monica, CA</authors>
     <owners>City of Santa Monica, CA</owners>
@@ -11,7 +11,7 @@
     <iconUrl>http://www.smgov.net/uploadedImages/Main/colorstd-R.gif</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Initial release.</releaseNotes>
+    <releaseNotes></releaseNotes>
     <copyright>Copyright 2014 City of Santa Monica, CA</copyright>
     <tags>API OpenData Socrata SODA</tags>
     <dependencies>
