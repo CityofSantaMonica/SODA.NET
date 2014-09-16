@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>SolutionInfo.cs</Link>
+    </Compile>
     <Compile Include="Models\HumanAddress.cs" />
     <Compile Include="Models\LocationColumn.cs" />
     <Compile Include="Models\WebsiteUrlColumn.cs" />
