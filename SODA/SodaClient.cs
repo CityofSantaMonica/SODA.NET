@@ -216,11 +216,19 @@ namespace SODA
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
             var request = new SodaRequest(uri, "POST", AppToken, Username, password, dataFormat, payload);
-            SodaResult result;
+            SodaResult result = null;
 
             try
             {
-                result = request.ParseResponse<SodaResult>();
+                if (dataFormat == SodaDataFormat.JSON)
+                {
+                    result = request.ParseResponse<SodaResult>();
+                }
+                else if (dataFormat == SodaDataFormat.CSV)
+                {
+                    string resultJson = request.ParseResponse<string>();
+                    result = Newtonsoft.Json.JsonConvert.DeserializeObject<SodaResult>(resultJson);
+                }
             }
             catch (WebException webEx)
             {
