@@ -11,7 +11,7 @@ namespace SODA
         /// <summary>
         /// Gets or sets the number of modifications made based on the row identifier.
         /// </summary>
-        [DataMember(Name = "By Row Identifier")]
+        [DataMember(Name = "By RowIdentifier")]
         public int ByRowIdentifier { get; set; }
 
         /// <summary>
