@@ -74,6 +74,7 @@
     <Compile Include="Utilities\FourByFour.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\WebExceptionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
