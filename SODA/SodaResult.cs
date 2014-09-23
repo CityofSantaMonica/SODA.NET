@@ -9,63 +9,63 @@ namespace SODA
     public class SodaResult
     {
         /// <summary>
-        /// Gets or sets the number of modifications made based on the row identifier.
+        /// Gets the number of modifications made based on the row identifier.
         /// </summary>
         [DataMember(Name = "By RowIdentifier")]
-        public int ByRowIdentifier { get; set; }
+        public int ByRowIdentifier { get; private set; }
 
         /// <summary>
-        /// Gets or sets the number of rows updated.
+        /// Gets the number of rows updated.
         /// </summary>
         [DataMember(Name = "Rows Updated")]
-        public int RowsUpdated { get; set; }
+        public int RowsUpdated { get; private set; }
 
         /// <summary>
-        /// Gets or sets the number of rows deleted.
+        /// Gets the number of rows deleted.
         /// </summary>
         [DataMember(Name = "Rows Deleted")]
-        public int RowsDeleted { get; set; }
+        public int RowsDeleted { get; private set; }
 
         /// <summary>
-        /// Gets or sets the number of rows created.
+        /// Gets the number of rows created.
         /// </summary>
         [DataMember(Name = "Rows Created")]
-        public int RowsCreated { get; set; }
+        public int RowsCreated { get; private set; }
 
         /// <summary>
-        /// Gets or sets the number of errors.
+        /// Gets the number of errors.
         /// </summary>
         [DataMember(Name = "Errors")]
-        public int Errors { get; set; }
+        public int Errors { get; private set; }
 
         /// <summary>
-        /// Gets or sets the number of modifications made based on the internal Socrata identifier.
+        /// Gets the number of modifications made based on the internal Socrata identifier.
         /// </summary>
         [DataMember(Name = "By SID")]
-        public int BySID { get; set; }
+        public int BySID { get; private set; }
 
         /// <summary>
-        /// Gets or sets the explanatory text about this result.
+        /// Gets the explanatory text about this result.
         /// </summary>
         [DataMember(Name = "message")]
-        public string Message { get; set; }
+        public string Message { get; internal set; }
 
         /// <summary>
-        /// Gets or sets a flag indicating if one or more errors occured.
+        /// Gets a flag indicating if one or more errors occured.
         /// </summary>
         [DataMember(Name = "error")]
-        public bool IsError { get; set; }
+        public bool IsError { get; internal set; }
 
         /// <summary>
-        /// Gets or sets data about any errors that occured.
+        /// Gets data about any errors that occured.
         /// </summary>
         [DataMember(Name = "code")]
-        public string ErrorCode { get; set; }
+        public string ErrorCode { get; internal set; }
 
         /// <summary>
-        /// Gets or sets any additional data associated with this result.
+        /// Gets any additional data associated with this result.
         /// </summary>
         [DataMember(Name = "data")]
-        public dynamic Data { get; set; }
+        public dynamic Data { get; internal set; }
     }
 }
