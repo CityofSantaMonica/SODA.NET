@@ -63,7 +63,7 @@ in master might cause conflicts down the track.
 If you make focused commits (instead of one monolithic commit) and have descriptive
 commit messages, this will help speed up the review process.
 
-SODA.NET also has a suite of tests (built with [NUnit 2.6.3](http://www.nunit.org/)) 
+SODA.NET also has a suite of tests (built with [NUnit](http://www.nunit.org/)) 
 which you can run to ensure existing behavior is unchanged. If you're adding new features, 
 please add some tests to keep us all sane!
 
@@ -74,7 +74,7 @@ the Git Shell:
 
 `git push origin MY-BRANCH-NAME`
 
-Once your changes are ready to be reviewed, publish the branch to GitHub an
+Once your changes are ready to be reviewed, publish the branch to GitHub and
 [open a pull request](https://help.github.com/articles/using-pull-requests) 
 against it.
 
