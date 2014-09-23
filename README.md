@@ -53,10 +53,10 @@ client.Upsert(payload, "1234-wxyz");
 
 ## Dependencies
 
-SODA.NET uses the popular [Newtonsoft.Json (6.0.4)](https://www.nuget.org/packages/Newtonsoft.Json/) 
+SODA.NET uses the popular [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/) 
 package for JSON (de)serialization.
 
-[NUnit (2.6.3)](https://www.nuget.org/packages/NUnit/) was used to build the test projects.
+[NUnit](https://www.nuget.org/packages/NUnit/) was used to build the test projects.
 
 ## Getting Started
 
