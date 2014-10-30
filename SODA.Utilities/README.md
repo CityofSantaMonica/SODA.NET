@@ -61,6 +61,23 @@ ewsClient.SendMessage("Subject Line",
                       "another.recipient@example.com");
 ```
 
+**SeparatedValuesSerializer**, a utility for serializing a collection to a "separated values" (e.g. CSV) representation
+```c#
+IEnumerable<MyClass> payload = GetPayloadData();
+
+string payloadCSV = 
+    SeparatedValuesSerializer.SerializeToString(
+        payload,
+        SeparatedValuesDelimiter.Comma
+    );
+
+string payloadTSV = 
+    SeparatedValuesSerializer.SerializeToString(
+        payload, 
+        SeparatedValuesDelimiter.Comma
+    );
+```
+
 ## Dependencies
 
 SODA.Utilities has a few dependencies:
