@@ -65,16 +65,18 @@ ewsClient.SendMessage("Subject Line",
 ```c#
 IEnumerable<MyClass> payload = GetPayloadData();
 
+//serialize using a comma to separate fields
 string payloadCSV = 
     SeparatedValuesSerializer.SerializeToString(
         payload,
         SeparatedValuesDelimiter.Comma
     );
 
+//serialize using a tab to separate fields
 string payloadTSV = 
     SeparatedValuesSerializer.SerializeToString(
         payload, 
-        SeparatedValuesDelimiter.Comma
+        SeparatedValuesDelimiter.Tab
     );
 ```
 
