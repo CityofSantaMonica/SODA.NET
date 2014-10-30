@@ -89,7 +89,7 @@ namespace SODA
         /// </summary>
         /// <typeparam name="T">The .NET class that represents the type of the underlying rows in this resultset of this query.</typeparam>
         /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute against this Resource.</param>
-        /// <returns>A collection of entities of type TRow.</returns>
+        /// <returns>A collection of entities of type T.</returns>
         /// <remarks>
         /// By default, Socrata will only return the first 1000 rows unless otherwise specified in SoQL using the Limit and Offset parameters.
         /// This method checks the specified SoqlQuery object for either the Limit or Offset parameter, and honors those parameters if present.
@@ -120,6 +120,20 @@ namespace SODA
 
                 return allResults;
             }
+        }
+
+        /// <summary>
+        /// Query this Resource using the specified <see cref="SoqlQuery"/>.
+        /// </summary>
+        /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute against this Resource.</param>
+        /// <returns>A collection of entities of type TRow.</returns>
+        /// <remarks>
+        /// This is a convenience method for the generic <see cref="Query{T}"/>, and is useful if you want the result of a query 
+        /// to be typed to this Resource's underlying record type.
+        /// </remarks>
+        public IEnumerable<TRow> Query(SoqlQuery soqlQuery)
+        {
+            return Query<TRow>(soqlQuery);
         }
 
         /// <summary>
