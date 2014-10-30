@@ -67,6 +67,8 @@
     </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="IEwsClient.cs" />
+    <Compile Include="SeparatedValuesDelimiter.cs" />
+    <Compile Include="SeparatedValuesSerializer.cs" />
     <Compile Include="SimpleFileLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
