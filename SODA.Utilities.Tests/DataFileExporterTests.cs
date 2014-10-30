@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using SODA.Utilities.Tests.Mocks;
-using SODA.Models;
 
 namespace SODA.Utilities.Tests
 {
@@ -132,63 +131,6 @@ namespace SODA.Utilities.Tests
 
         [Test]
         [Category("DataFileExporter")]
-        public void ExportCSV_Respects_DataContractAttribute()
-        {
-            var dataContractEntities = new[] { new DataContractEntityMock(foo, bar, bup) };
-
-            DataFileExporter.ExportCSV(dataContractEntities);
-
-            string csvData = File.ReadAllText(DataFileExporter.DefaultCSVPath).Trim();
-            Assert.That(csvData, Is.StringStarting(":foo,:bar").And.StringEnding(String.Format("\"{0}\",\"{1}\"", foo, bar)));
-            Assert.That(csvData, Is.Not.StringContaining("bup").And.Not.StringContaining(bup));
-        }
-
-
-        [Test]
-        [Category("DataFileExporter")]
-        public void ExportCSV_Exports_LocationColumn_In_Socrata_Publish_Format()
-        {
-            string latitude = "lat";
-            string longitude = "lng";
-            string expected = String.Format("\"({0},{1})\"", latitude, longitude);
-
-            var entities = new[] { 
-                new { 
-                    location =  new LocationColumn() { Latitude = latitude, Longitude = longitude }
-                } 
-            };
-
-            DataFileExporter.ExportCSV(entities);
-
-            string csvData = File.ReadAllText(DataFileExporter.DefaultCSVPath).Trim();
-            Assert.That(csvData, Is.StringStarting("location").And.StringEnding(expected));
-        }
-
-        [Test]
-        [Category("DataFileExporter")]
-        public void ExportCSV_Exports_Empty_String_For_LocationColumn_With_Missing_Lat_Or_Long()
-        {
-            string latitude = "lat";
-            string longitude = "lng";
-            string unexpected = String.Format("\"({0},{1})\"", latitude, longitude);
-
-            var entities = new[] { 
-                new { 
-                    location =  new LocationColumn() { Latitude = null, Longitude = longitude }
-                },
-                new { 
-                    location =  new LocationColumn() { Latitude = latitude, Longitude = null }
-                }
-            };
-
-            DataFileExporter.ExportCSV(entities);
-
-            string csvData = File.ReadAllText(DataFileExporter.DefaultCSVPath).Trim();
-            Assert.That(csvData, Is.StringStarting("location").And.Not.StringContaining(unexpected));
-        }
-
-        [Test]
-        [Category("DataFileExporter")]
         public void ExportTSV_Parameterless_Uses_DefaultFilePath()
         {
             Assert.False(File.Exists(DataFileExporter.DefaultTSVPath));
@@ -223,113 +165,7 @@ namespace SODA.Utilities.Tests
             DataFileExporter.ExportTSV(simpleEntities, FileMocks.FileThatDoesNotExist(".tsv"));
             Assert.True(File.Exists(FileMocks.FileThatDoesNotExist(".tsv")));
         }
-
-        [Test]
-        [Category("DataFileExporter")]
-        public void ExportTSV_Writes_Empty_Collection_To_File()
-        {
-            var emptyEntities = Enumerable.Empty<SimpleEntityMock>();
-
-            DataFileExporter.ExportTSV(emptyEntities);
-
-            Assert.That(
-                File.ReadAllText(DataFileExporter.DefaultTSVPath).Trim(),
-                Is.EqualTo("foo\tbar")
-            );
-        }
-
-        [Test]
-        [Category("DataFileExporter")]
-        public void ExportTSV_Writes_Simple_Collection_To_File()
-        {
-            DataFileExporter.ExportTSV(simpleEntities);
-
-            Assert.That(
-                File.ReadAllText(DataFileExporter.DefaultTSVPath).Trim(),
-                Is.StringStarting("foo\tbar").And.StringEnding(String.Format("\"{0}\"\t\"{1}\"", foo, bar))
-            );
-        }
-
-        [Test]
-        [Category("DataFileExporter")]
-        public void ExportTSV_Writes_Complex_Collection_To_File()
-        {
-            var complexEntities = new[] {
-                new ComplexEntityMock(
-                    "complexEntity", 
-                    new[] {
-                        new SimpleEntityMock(foo, bar),
-                        new SimpleEntityMock(foo, bar),
-                    }
-                )
-            };
-
-            string serializedSimpleEntities = String.Format("[{{\"foo\":\"{0}\",\"bar\":\"{1}\"}},{{\"foo\":\"{0}\",\"bar\":\"{1}\"}}]", foo, bar);
-
-            DataFileExporter.ExportTSV(complexEntities);
-
-            Assert.That(
-                File.ReadAllText(DataFileExporter.DefaultTSVPath).Trim(),
-                Is.StringStarting("name\tentities").And.StringEnding(String.Format("\"complexEntity\"\t\"{0}\"", serializedSimpleEntities))
-            );
-        }
-
-        [Test]
-        [Category("DataFileExporter")]
-        public void ExportTSV_Respects_DataContractAttribute()
-        {
-            var dataContractEntities = new[] { new DataContractEntityMock(foo, bar, bup) };
-
-            DataFileExporter.ExportTSV(dataContractEntities);
-
-            string csvData = File.ReadAllText(DataFileExporter.DefaultTSVPath).Trim();
-            Assert.That(csvData, Is.StringStarting(":foo\t:bar").And.StringEnding(String.Format("\"{0}\"\t\"{1}\"", foo, bar)));
-            Assert.That(csvData, Is.Not.StringContaining("bup").And.Not.StringContaining(bup));
-        }
-
-        [Test]
-        [Category("DataFileExporter")]
-        public void ExportTSV_Exports_LocationColumn_In_Socrata_Publish_Format()
-        {
-            string latitude = "lat";
-            string longitude = "lng";
-            string expected = String.Format("\"({0},{1})\"", latitude, longitude);
-
-            var entities = new[] { 
-                new { 
-                    location =  new LocationColumn() { Latitude = latitude, Longitude = longitude }
-                } 
-            };
-
-            DataFileExporter.ExportTSV(entities);
-
-            string csvData = File.ReadAllText(DataFileExporter.DefaultTSVPath).Trim();
-            Assert.That(csvData, Is.StringStarting("location").And.StringEnding(expected));
-        }
-
-        [Test]
-        [Category("DataFileExporter")]
-        public void ExportTSV_Exports_Empty_String_For_LocationColumn_With_Missing_Lat_Or_Long()
-        {
-            string latitude = "lat";
-            string longitude = "lng";
-            string unexpected = String.Format("\"({0},{1})\"", latitude, longitude);
-
-            var entities = new[] { 
-                new { 
-                    location =  new LocationColumn() { Latitude = null, Longitude = longitude }
-                },
-                new { 
-                    location =  new LocationColumn() { Latitude = latitude, Longitude = null }
-                }
-            };
-
-            DataFileExporter.ExportTSV(entities);
-
-            string csvData = File.ReadAllText(DataFileExporter.DefaultTSVPath).Trim();
-            Assert.That(csvData, Is.StringStarting("location").And.Not.StringContaining(unexpected));
-        }
-
+        
         [Test]
         [Category("DataFileExporter")]
         public void ExportJSON_Parameterless_Uses_DefaultFilePath()
