@@ -14,6 +14,21 @@ namespace SODA.Utilities
     public class SeparatedValuesSerializer
     {
         /// <summary>
+        /// Gets the corresponding delimiter string for the specified <see cref="SeparatedValuesDelimiter"/>
+        /// </summary>
+        public static string DelimiterString(SeparatedValuesDelimiter delimiter)
+        {
+            string delimiterString = String.Empty;
+
+            if (delimiter == SeparatedValuesDelimiter.Comma)
+                delimiterString = ",";
+            else if (delimiter == SeparatedValuesDelimiter.Tab)
+                delimiterString = "\t";
+
+            return delimiterString;
+        }
+
+        /// <summary>
         /// Serialize the specified entity collection to a string using the specified delimiter character.
         /// </summary>
         /// <typeparam name="T">The type of entities in the collection.</typeparam>
@@ -22,11 +37,14 @@ namespace SODA.Utilities
         /// <returns>A string reperesentation of the entity collection.</returns>
         public static string SerializeToString<T>(IEnumerable<T> entities, SeparatedValuesDelimiter delimiter)
         {
-            StringBuilder serializedData = new StringBuilder();
             Type ttype = typeof(T);
             IEnumerable<PropertyInfo> propertiesToExport = ttype.GetProperties();
-            string delimiterString = delimiter == SeparatedValuesDelimiter.Comma ? "," : "\t";
+            
+            string delimiterString = DelimiterString(delimiter);
+            if(String.IsNullOrEmpty(delimiterString))
+                throw new ArgumentOutOfRangeException("delimiter");
 
+            StringBuilder serializedData = new StringBuilder();
             bool isDataContract = false;
             List<string> header = new List<string>();
 
@@ -105,7 +123,7 @@ namespace SODA.Utilities
                 serializedData.AppendLine(lineBuilder.ToString().TrimEnd(delimiterString.ToCharArray()));
             }
 
-            return serializedData.ToString();
+            return serializedData.ToString().Trim();
         }
 
         // a list of primitive types that *will not* be serialized to JSON during CSV/TSV export
