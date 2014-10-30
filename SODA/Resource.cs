@@ -129,7 +129,7 @@ namespace SODA
         /// <returns>A collection of entities of type TRow.</returns>
         /// <remarks>
         /// This is a convenience method for the generic <see cref="Query{T}"/>, and is useful if you want the result of a query 
-        /// to be typed to this Resource's underlying record type.
+        /// to be typed to <typeparamref name="TRow"/>this Resource's underlying record type</typeparamref>.
         /// </remarks>
         public IEnumerable<TRow> Query(SoqlQuery soqlQuery)
         {
