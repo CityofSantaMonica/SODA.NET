@@ -1,5 +1,9 @@
 ### New in 0.2.0 (Released 2014/11/03)
 
+Dependency Updates
+
+  - `Newtonsoft.Json` upgraded to 6.0.6 [#15](https://github.com/CityofSantaMonica/SODA.NET/issues/15)
+
 New features
 
   - Convenience `Query` method on `Resource<TRow>` for results that are collections of `TRow` [#12](https://github.com/CityofSantaMonica/SODA.NET/issues/12)
