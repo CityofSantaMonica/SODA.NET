@@ -157,7 +157,7 @@ namespace SODA
             else 
             {
                 //evaluate the provided aliases
-                var finalColumns = SelectColumns.Zip(SelectColumnAliases, (c, a) => String.Format("{0} AS {1},", c, a)).ToList();
+                var finalColumns = SelectColumns.Zip(SelectColumnAliases, (c, a) => String.Format("{0} AS {1}", c, a)).ToList();
 
                 if (SelectColumns.Length > SelectColumnAliases.Length)
                 {
