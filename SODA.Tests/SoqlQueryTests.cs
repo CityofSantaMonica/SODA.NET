@@ -170,6 +170,24 @@ namespace SODA.Tests
 
         [Test]
         [Category("SoqlQuery")]
+        public void Select_Clause_With_Aliases_Generates_Valid_SoQL()
+        {
+            string[] columns = new[] { "column1", "column2" };
+            string[] aliases = new[] { "column_a", "column_b" };
+
+            string expected = String.Format(@"{0} AS {1},\s?{2} AS {3}[^,]",
+                                            columns[0],
+                                            aliases[0],
+                                            columns[1],
+                                            aliases[1]);
+
+            string soql = new SoqlQuery().Select(columns).As(aliases).ToString();
+
+            StringAssert.IsMatch(expected, soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
         public void Empty_Where_Ignores_Where_Clause()
         {
             string startOfWhereClause = String.Format("{0}=", SoqlQuery.WhereKey);
