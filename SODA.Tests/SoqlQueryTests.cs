@@ -60,33 +60,39 @@ namespace SODA.Tests
         [Category("SoqlQuery")]
         public void Last_Select_Overwrites_All_Previous()
         {
-            string[] first =  { "first" };
+            string[] first = { "first", "second", "last" };
             string[] second = { "first", "second" };
-            string[] last =  { "first", "second", "last" };
-            
-            string expected = String.Format("{0}={1}", SoqlQuery.SelectKey, String.Join(SoqlQuery.Delimiter, last));
-            
-            SoqlQuery soqlQuery = new SoqlQuery();
+            string[] last =  { "last" };
+            string format = String.Format("{0}={{0}}", SoqlQuery.SelectKey);
 
-            soqlQuery.Select(first)
-                     .Select(second)
-                     .Select(last);
+            string soql = new SoqlQuery().Select(first)
+                                         .Select(second)
+                                         .Select(last)
+                                         .ToString();
 
-            StringAssert.Contains(expected, soqlQuery.ToString());
+            StringAssert.DoesNotContain(String.Format(format, String.Join(SoqlQuery.Delimiter, first)), soql);
+            StringAssert.DoesNotContain(String.Format(format, String.Join(SoqlQuery.Delimiter, second)), soql);
+            StringAssert.Contains(String.Format(format, String.Join(SoqlQuery.Delimiter, last)), soql);
         }
 
         [Test]
         [Category("SoqlQuery")]
         public void Empty_Aliases_Are_Ignored()
         {
-            string column = "column1";
-            string startOfAlias = String.Format("{0} AS ", column);
+            string[] columns = new[] { "column1", "column2" };
+            string[] startOfAliases = columns.Select(c => String.Format("{0} AS ", c)).ToArray();
 
-            string emptyAlias = new SoqlQuery().Select(column).As("").ToString();
-            string nullAlias = new SoqlQuery().Select(column).As(null).ToString();
+            string[] nullAliases = new[] { (string)null, (string)null };
+            string[] emptyAliases = new[] { "", "" };
 
-            StringAssert.DoesNotContain(startOfAlias, emptyAlias);
-            StringAssert.DoesNotContain(startOfAlias, nullAlias);
+            string nullSoql = new SoqlQuery().Select(columns).As(nullAliases).ToString();
+            string emptySoql = new SoqlQuery().Select(columns).As(emptyAliases).ToString();
+
+            foreach (string startOfAlias in startOfAliases)
+            {
+                StringAssert.DoesNotContain(startOfAlias, nullSoql);
+                StringAssert.DoesNotContain(startOfAlias, emptySoql);
+            }
         }
 
         [Test]
@@ -170,6 +176,24 @@ namespace SODA.Tests
 
         [Test]
         [Category("SoqlQuery")]
+        public void Select_Clause_With_Aliases_Generates_Valid_SoQL()
+        {
+            string[] columns = new[] { "column1", "column2" };
+            string[] aliases = new[] { "column_a", "column_b" };
+
+            string expected = String.Format(@"{0} AS {1},\s?{2} AS {3}[^,]",
+                                            columns[0],
+                                            aliases[0],
+                                            columns[1],
+                                            aliases[1]);
+
+            string soql = new SoqlQuery().Select(columns).As(aliases).ToString();
+
+            StringAssert.IsMatch(expected, soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
         public void Empty_Where_Ignores_Where_Clause()
         {
             string startOfWhereClause = String.Format("{0}=", SoqlQuery.WhereKey);
@@ -214,16 +238,18 @@ namespace SODA.Tests
             string first = "first > 0";
             string second = "second > first";
             string last = "last > anything";
+            string format = String.Format("{0}={{0}}", SoqlQuery.WhereKey);
 
-            string expected = String.Format("{0}={1}", SoqlQuery.WhereKey, last);
+            string expected = String.Format(format, last);
 
-            SoqlQuery soqlQuery = new SoqlQuery();
+            string soql = new SoqlQuery().Where(first)
+                                         .Where(second)
+                                         .Where(last)
+                                         .ToString();
 
-            soqlQuery.Where(first)
-                     .Where(second)
-                     .Where(last);
-
-            StringAssert.Contains(expected, soqlQuery.ToString());
+            StringAssert.DoesNotContain(String.Format(format, first), soql);
+            StringAssert.DoesNotContain(String.Format(format, second), soql);
+            StringAssert.Contains(String.Format(format, last), soql);
         }
 
         [Test]
@@ -257,19 +283,19 @@ namespace SODA.Tests
         [Category("SoqlQuery")]
         public void Last_Order_Overwrites_All_Previous()
         {
-            string[] first = { "first" };
+            string[] first = { "first", "second", "last" };
             string[] second = { "first", "second" };
-            string[] last = { "first", "second", "last" };
+            string[] last = { "last" };
+            string format = String.Format("{0}={{0}}", SoqlQuery.OrderKey);
 
-            string expected = String.Format("{0}={1}", SoqlQuery.OrderKey, String.Join(SoqlQuery.Delimiter, last));
+            string soql = new SoqlQuery().Order(first)
+                                         .Order(second)
+                                         .Order(last)
+                                         .ToString();
 
-            SoqlQuery soqlQuery = new SoqlQuery();
-
-            soqlQuery.Order(first)
-                     .Order(second)
-                     .Order(last);
-
-            StringAssert.Contains(expected, soqlQuery.ToString());
+            StringAssert.DoesNotContain(String.Format(format, String.Join(SoqlQuery.Delimiter, first)), soql);
+            StringAssert.DoesNotContain(String.Format(format, String.Join(SoqlQuery.Delimiter, second)), soql);
+            StringAssert.Contains(String.Format(format, String.Join(SoqlQuery.Delimiter, last)), soql);
         }
 
         [Test]
@@ -303,19 +329,19 @@ namespace SODA.Tests
         [Category("SoqlQuery")]
         public void Last_Group_Overwrites_All_Previous()
         {
-            string[] first = { "first" };
+            string[] first = { "first", "second", "last" };
             string[] second = { "first", "second" };
-            string[] last = { "first", "second", "last" };
+            string[] last = { "last" };
+            string format = String.Format("{0}={{0}}", SoqlQuery.GroupKey);
 
-            string expected = String.Format("{0}={1}", SoqlQuery.GroupKey, String.Join(SoqlQuery.Delimiter, last));
+            string soql = new SoqlQuery().Group(first)
+                                         .Group(second)
+                                         .Group(last)
+                                         .ToString();
 
-            SoqlQuery soqlQuery = new SoqlQuery();
-
-            soqlQuery.Group(first)
-                     .Group(second)
-                     .Group(last);
-
-            StringAssert.Contains(expected, soqlQuery.ToString());
+            StringAssert.DoesNotContain(String.Format(format, String.Join(SoqlQuery.Delimiter, first)), soql);
+            StringAssert.DoesNotContain(String.Format(format, String.Join(SoqlQuery.Delimiter, second)), soql);
+            StringAssert.Contains(String.Format(format, String.Join(SoqlQuery.Delimiter, last)), soql);
         }
 
         [TestCase(-1)]
@@ -349,16 +375,16 @@ namespace SODA.Tests
             int first = 1;
             int second = 2;
             int last = 3;
+            string format = String.Format("{0}={{0}}", SoqlQuery.LimitKey);
+            
+            string soql = new SoqlQuery().Limit(first)
+                                         .Limit(second)
+                                         .Limit(last)
+                                         .ToString();
 
-            string expected = String.Format("{0}={1}", SoqlQuery.LimitKey, last);
-
-            SoqlQuery soqlQuery = new SoqlQuery();
-
-            soqlQuery.Limit(first)
-                     .Limit(second)
-                     .Limit(last);
-
-            StringAssert.Contains(expected, soqlQuery.ToString());
+            StringAssert.DoesNotContain(String.Format(format, first), soql);
+            StringAssert.DoesNotContain(String.Format(format, second), soql);
+            StringAssert.Contains(String.Format(format, last), soql);
         }
 
         [TestCase(-1)]
@@ -382,16 +408,16 @@ namespace SODA.Tests
             int first = 1;
             int second = 2;
             int last = 3;
+            string format = String.Format("{0}={{0}}", SoqlQuery.OffsetKey);
 
-            string expected = String.Format("{0}={1}", SoqlQuery.OffsetKey, last);
+            string soql = new SoqlQuery().Offset(first)
+                                         .Offset(second)
+                                         .Offset(last)
+                                         .ToString();
 
-            SoqlQuery soqlQuery = new SoqlQuery();
-
-            soqlQuery.Offset(first)
-                     .Offset(second)
-                     .Offset(last);
-
-            StringAssert.Contains(expected, soqlQuery.ToString());
+            StringAssert.DoesNotContain(String.Format(format, first), soql);
+            StringAssert.DoesNotContain(String.Format(format, second), soql);
+            StringAssert.Contains(String.Format(format, last), soql);
         }
 
         [Test]
@@ -440,16 +466,16 @@ namespace SODA.Tests
             string first = "first text";
             string second = "second text";
             string last = "last text";
+            string format = String.Format("{0}={{0}}", SoqlQuery.SearchKey);
+            
+            string soql = new SoqlQuery().FullTextSearch(first)
+                                         .FullTextSearch(second)
+                                         .FullTextSearch(last)
+                                         .ToString();
 
-            string expected = String.Format("{0}={1}", SoqlQuery.SearchKey, last);
-
-            SoqlQuery soqlQuery = new SoqlQuery();
-
-            soqlQuery.FullTextSearch(first)
-                     .FullTextSearch(second)
-                     .FullTextSearch(last);
-
-            StringAssert.Contains(expected, soqlQuery.ToString());
+            StringAssert.DoesNotContain(String.Format(format, first), soql);
+            StringAssert.DoesNotContain(String.Format(format, second), soql);
+            StringAssert.Contains(String.Format(format, last), soql);
         }
 
         [Test]
