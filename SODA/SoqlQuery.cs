@@ -279,9 +279,8 @@ namespace SODA
         {
             if (limit <= 0)
                 throw new ArgumentOutOfRangeException("limit");
-            
-            limit = Math.Min(limit, MaximumLimit);
-            this.LimitValue = limit;
+
+            this.LimitValue = Math.Min(limit, MaximumLimit);
             return this;
         }
 
@@ -292,8 +291,9 @@ namespace SODA
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Offset(int offset)
         {
-            //offset < 0 makes no sense, take the absolute value
-            offset = Math.Abs(offset);
+            if (offset < 0)
+                throw new ArgumentOutOfRangeException("offset");
+
             this.OffsetValue = offset;
             return this;
         }
