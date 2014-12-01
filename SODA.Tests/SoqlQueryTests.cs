@@ -344,16 +344,14 @@ namespace SODA.Tests
             StringAssert.Contains(String.Format(format, String.Join(SoqlQuery.Delimiter, last)), soql);
         }
 
+        [TestCase(-100)]
         [TestCase(-1)]
         [TestCase(0)]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SoqlQuery")]
-        public void Limit_Clause_Ignores_Limits_Below_One(int limit)
+        public void Limit_Less_Than_One_Throws_ArgumentOutOfRangeException(int limit)
         {
-            string startOfLimitClause = String.Format("{0}=", SoqlQuery.LimitKey);
-            
-            string soql = new SoqlQuery().Limit(limit).ToString();
-
-            StringAssert.DoesNotContain(startOfLimitClause, soql);
+            var soql = new SoqlQuery().Limit(limit);
         }
 
         [TestCase(1001)]
@@ -387,18 +385,13 @@ namespace SODA.Tests
             StringAssert.Contains(String.Format(format, last), soql);
         }
 
-        [TestCase(-1)]
         [TestCase(-999)]
-        [TestCase(1)]
-        [TestCase(999)]
+        [TestCase(-1)]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SoqlQuery")]
-        public void Offset_Clause_Gets_Absolute_Offset(int offset)
+        public void Offset_Less_Than_Zero_Throws_ArgumentOutOfRangeException(int offset)
         {
-            string expected = String.Format("{0}={1}", SoqlQuery.OffsetKey, Math.Abs(offset));
-
-            string soql = new SoqlQuery().Offset(offset).ToString();
-
-            StringAssert.Contains(expected, soql);
+            var soql = new SoqlQuery().Offset(offset);
         }
 
         [Test]
