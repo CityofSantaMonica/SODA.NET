@@ -277,7 +277,9 @@ namespace SODA
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Limit(int limit)
         {
-            limit = Math.Max(limit, 0);
+            if (limit <= 0)
+                throw new ArgumentOutOfRangeException("limit");
+            
             limit = Math.Min(limit, MaximumLimit);
             this.LimitValue = limit;
             return this;
