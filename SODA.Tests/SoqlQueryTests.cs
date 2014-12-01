@@ -344,16 +344,14 @@ namespace SODA.Tests
             StringAssert.Contains(String.Format(format, String.Join(SoqlQuery.Delimiter, last)), soql);
         }
 
+        [TestCase(-100)]
         [TestCase(-1)]
         [TestCase(0)]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SoqlQuery")]
-        public void Limit_Clause_Ignores_Limits_Below_One(int limit)
+        public void Limit_Below_One_Throws_ArgumentOutOfRangeException(int limit)
         {
-            string startOfLimitClause = String.Format("{0}=", SoqlQuery.LimitKey);
-            
-            string soql = new SoqlQuery().Limit(limit).ToString();
-
-            StringAssert.DoesNotContain(startOfLimitClause, soql);
+            var soql = new SoqlQuery().Limit(limit);
         }
 
         [TestCase(1001)]
