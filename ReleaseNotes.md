@@ -1,3 +1,10 @@
+### New in 0.2.1 (Released 2014/12/02)
+
+Bug fixes
+  
+  - Soql Limit and Offset throw exceptions for out of range values [#18](https://github.com/CityofSantaMonica/SODA.NET/issues/18)
+  - Fixed column aliasing bug using Soql As [#17](https://github.com/CityofSantaMonica/SODA.NET/issues/17) 
+
 ### New in 0.2.0 (Released 2014/11/03)
 
 Dependency Updates
