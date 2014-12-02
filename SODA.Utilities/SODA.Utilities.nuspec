@@ -15,7 +15,7 @@
     <copyright>Copyright 2014 City of Santa Monica, CA</copyright>
     <tags>EWS OleDb SODA</tags>
     <dependencies>
-      <dependency id="CSM.SodaDotNet" version="0.2.0" />
+      <dependency id="CSM.SodaDotNet" version="0.2.1" />
       <dependency id="EWS-Api-2.1" version="1.0.0" />
     </dependencies>
   </metadata>
