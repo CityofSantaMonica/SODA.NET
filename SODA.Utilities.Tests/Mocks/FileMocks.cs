@@ -8,7 +8,7 @@ namespace SODA.Utilities.Tests.Mocks
     {
         public static string FileThatDoesNotExist(string extension = ".txt")
         {
-            return String.Format("{0}{1}", "C:\\temp\\not-a-file", extension);
+            return Path.Combine(Path.GetTempPath(), Path.ChangeExtension("not-a-file", extension));
         }
         
         public static string[] ExcelMocks()
