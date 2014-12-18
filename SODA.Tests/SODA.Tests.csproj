@@ -67,6 +67,7 @@
     <Compile Include="Mocks\StringMocks.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="PhoneColumnTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DateTimeConverterTests.cs" />
     <Compile Include="FourByFourTests.cs" />
