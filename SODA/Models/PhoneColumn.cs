@@ -11,39 +11,6 @@ namespace SODA.Models
     public class PhoneColumn
     {
         /// <summary>
-        /// Enumeration of the phone types for a phone column.
-        /// </summary>
-        /// <remarks>
-        /// Discovered by setting a phone column on the web site to each of the available items in the list, then pulling the dataset as JSON.
-        /// </remarks>
-        public enum PhoneTypes {
-            /// <summary>
-            /// Value representing the type of the number is not set or unknown.
-            /// </summary>
-            None,
-            /// <summary>
-            /// Value representing cell number.
-            /// </summary>
-            Cell,
-            /// <summary>
-            /// Value representing home number.
-            /// </summary>
-            Home,
-            /// <summary>
-            /// Value representing a work number.
-            /// </summary>
-            Work,
-            /// <summary>
-            /// Value representing a fax number.
-            /// </summary>
-            Fax,
-            /// <summary>
-            /// Value representing some other type of phone number.
-            /// </summary>
-            Other 
-        }
-
-        /// <summary>
         /// Gets or sets the string representation of the phone_number value for this PhoneColumn.
         /// </summary>
         /// <remarks>
@@ -55,7 +22,7 @@ namespace SODA.Models
         /// <summary>
         /// Gets or sets the string representation of the phone_type value for this PhoneColumn.
         /// </summary>
-        public PhoneTypes PhoneType { get; set; }
+        public PhoneColumnType PhoneType { get; set; }
 
         /// <summary>
         /// The phone type string that will used for serialization
@@ -105,7 +72,7 @@ namespace SODA.Models
         [OnSerializing]
         internal void OnSerializingMethod(StreamingContext context)
         {
-            if (PhoneType == PhoneTypes.None)
+            if (PhoneType == PhoneColumnType.Undefined)
             {
                 PhoneTypeString = null;
             }
@@ -122,14 +89,14 @@ namespace SODA.Models
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext contex)
         {
-            PhoneTypes phoneType;
+            PhoneColumnType phoneType;
             if (Enum.TryParse(PhoneTypeString, out phoneType))
             {
                 PhoneType = phoneType;
             }
             else
             {
-                PhoneType = PhoneTypes.None;
+                PhoneType = PhoneColumnType.Undefined;
             }
         }
     }

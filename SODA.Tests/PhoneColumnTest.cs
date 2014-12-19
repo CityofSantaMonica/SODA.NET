@@ -29,7 +29,7 @@ namespace SODA.Tests
             var phoneColumn = new PhoneColumn()
             {
                 PhoneNumber = phoneNumber,
-                PhoneType = PhoneColumn.PhoneTypes.Work
+                PhoneType = PhoneColumnType.Work
             };
 
             Assert.IsNull(phoneColumn.PhoneTypeString);
@@ -48,7 +48,7 @@ namespace SODA.Tests
                 PhoneNumber = phoneNumber
             };
 
-            Assert.AreEqual(PhoneColumn.PhoneTypes.None, phoneColumn.PhoneType);
+            Assert.AreEqual(PhoneColumnType.Undefined, phoneColumn.PhoneType);
             Assert.IsNull(phoneColumn.PhoneTypeString);
 
             phoneColumn.OnSerializingMethod(new StreamingContext());
@@ -63,7 +63,7 @@ namespace SODA.Tests
             PhoneColumn phone = new PhoneColumn(jsonPhoneCellType);
 
             Assert.AreEqual(phoneNumber, phone.PhoneNumber);
-            Assert.AreEqual(PhoneColumn.PhoneTypes.Cell, phone.PhoneType);
+            Assert.AreEqual(PhoneColumnType.Cell, phone.PhoneType);
         }
         
         [Test]
@@ -73,7 +73,7 @@ namespace SODA.Tests
             PhoneColumn phone = new PhoneColumn(jsonPhoneInvalidType);
 
             Assert.AreEqual(phoneNumber, phone.PhoneNumber);
-            Assert.AreEqual(PhoneColumn.PhoneTypes.None, phone.PhoneType);
+            Assert.AreEqual(PhoneColumnType.Undefined, phone.PhoneType);
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace SODA.Tests
             PhoneColumn phone = new PhoneColumn(jsonPhoneNoType);
 
             Assert.AreEqual(phoneNumber, phone.PhoneNumber);
-            Assert.AreEqual(PhoneColumn.PhoneTypes.None, phone.PhoneType);
+            Assert.AreEqual(PhoneColumnType.Undefined, phone.PhoneType);
         }
     }
 }
