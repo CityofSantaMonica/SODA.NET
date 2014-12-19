@@ -85,5 +85,14 @@ namespace SODA.Tests
             Assert.AreEqual(phoneNumber, phone.PhoneNumber);
             Assert.AreEqual(PhoneColumnType.Undefined, phone.PhoneType);
         }
+
+        [TestCase("not json")]
+        [TestCase(@"{""not"":""a"",""valid"":""phone""}")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [Category("PhoneColumn")]
+        public void New_Throws_ArgumentOutOfRangeException_For_Invalid_PhoneColumn_Json(string input)
+        {
+            new PhoneColumn(input);
+        }
     }
 }
