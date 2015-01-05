@@ -252,6 +252,46 @@ namespace SODA.Tests
         [TestCase(StringMocks.EmptyInput)]
         [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
+        public void ForResourceAPIPage_With_Empty_Host_Throws_ArgumentException(string input)
+        {
+            SodaUri.ForResourceAPIPage(input, StringMocks.ResourceId);
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [TestCase(StringMocks.NonEmptyInput)]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [Category("SodaUri")]
+        public void ForResourceAPIPage_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
+        {
+            SodaUri.ForResourceAPIPage(StringMocks.Host, input);
+        }
+
+        [TestCase("http://")]
+        [TestCase("https://")]
+        [Category("SodaUri")]
+        public void ForResourceAPIPage_With_Host_And_Protocol_Drops_Protocol(string input)
+        {
+            var uri = SodaUri.ForResourceAPIPage(String.Format("{0}data.smgov.net", input), StringMocks.ResourceId);
+
+            StringAssert.DoesNotContain(input, uri.Fragment);
+        }
+
+        [Test]
+        [Category("SodaUri")]
+        public void ForResourceAPIPage_With_Valid_Arguments_Creates_ResourceAPIPage_Uri()
+        {
+            var uri = SodaUri.ForResourceAPIPage(StringMocks.Host, StringMocks.ResourceId);
+
+            StringAssert.AreEqualIgnoringCase("dev.socrata.com", uri.Host);
+            StringAssert.AreEqualIgnoringCase("/foundry/", uri.LocalPath);
+            StringAssert.EndsWith(String.Format("{0}/{1}", StringMocks.Host, StringMocks.ResourceId), uri.Fragment);
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [ExpectedException(typeof(ArgumentException))]
+        [Category("SodaUri")]
         public void ForQuery_With_Empty_Host_Throws_ArgumentException(string input)
         {
             SodaUri.ForQuery(input, StringMocks.ResourceId, new SoqlQuery());

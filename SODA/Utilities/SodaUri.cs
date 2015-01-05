@@ -19,7 +19,7 @@ namespace SODA.Utilities
         private static readonly Regex httpsPrefix = new Regex(@"^https:\/\/", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
-        /// Ensure that the specified socrata host url uses the https protocol.
+        /// Ensure that the specified Socrata host url uses the https protocol.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <returns>A SODA-compatible Url</returns>
@@ -58,7 +58,7 @@ namespace SODA.Utilities
         }
 
         /// <summary>
-        /// Create a Uri for sending a request to the specified resource metadata on the specified domain.
+        /// Create a Uri for sending a request to the specified resource metadata on the specified Socrata host.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -77,7 +77,7 @@ namespace SODA.Utilities
         }
 
         /// <summary>
-        /// Create a Uri for sending a request to a catalog of resource metadata on the specified domain and page of the catalog.
+        /// Create a Uri for sending a request to a catalog of resource metadata on the specified Socrata host and page of the catalog.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="page">The page of the resource metadata catalog on the Socrata host to target.</param>
@@ -96,7 +96,7 @@ namespace SODA.Utilities
         }
 
         /// <summary>
-        /// Create a Uri for sending a request to the specified resource on the specified domain.
+        /// Create a Uri for sending a request to the specified resource on the specified Socrata host.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -125,7 +125,7 @@ namespace SODA.Utilities
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A Uri pointing to the landing page of the specified resource on the specified Socrata doamin.</returns>
+        /// <returns>A Uri pointing to the landing page of the specified resource on the specified Socrata host.</returns>
         public static Uri ForResourcePage(string socrataHost, string resourceId)
         {
             if (String.IsNullOrEmpty(socrataHost))
@@ -144,7 +144,7 @@ namespace SODA.Utilities
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A Uri pointing to the landing page of the specified resource on the specified Socrata doamin.</returns>
+        /// <returns>A Uri pointing to the landing page of the specified resource on the specified Socrata host.</returns>
         public static Uri ForResourceAboutPage(string socrataHost, string resourceId)
         {
             if (String.IsNullOrEmpty(socrataHost))
@@ -154,6 +154,27 @@ namespace SODA.Utilities
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             string url = metadataUrl(socrataHost, resourceId).Replace("views", "-/-") + "/about";
+
+            return new Uri(url);
+        }
+
+        /// <summary>
+        /// Create a Uri to the Foundry-style API documentation page of the specified resource on the specified Socrata host.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A Uri pointing to the Foundry API documentation page of the specified resource on the specified Socrata host.</returns>
+        public static Uri ForResourceAPIPage(string socrataHost, string resourceId)
+        {
+            if (String.IsNullOrEmpty(socrataHost))
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
+
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
+            string hostOnly = httpsPrefix.Replace(httpPrefix.Replace(socrataHost, ""), "");
+
+            string url = String.Format("http://dev.socrata.com/foundry/#/{0}/{1}", hostOnly, resourceId);
 
             return new Uri(url);
         }
