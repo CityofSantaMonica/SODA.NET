@@ -1,3 +1,15 @@
+### New in 0.3.0 (Released 2015/01/08)
+
+Dependency Updates
+
+  - `Newtonsoft.Json` upgraded to 6.0.7
+  - `NUnit` (for test projects) upgraded to 2.6.4
+  
+New features
+
+  - Implementation of SODA [`PhoneColumn`](https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-) [#24](https://github.com/CityofSantaMonica/SODA.NET/pull/24) via @mickmorbitzer
+  - Added a Uri helper for Foundry-style API documentation pages [#22](https://github.com/CityofSantaMonica/SODA.NET/issues/22)
+
 ### New in 0.2.1 (Released 2014/12/02)
 
 Bug fixes

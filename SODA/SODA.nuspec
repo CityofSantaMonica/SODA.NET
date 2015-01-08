@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2014 City of Santa Monica, CA</copyright>
+    <copyright>Copyright 2015 City of Santa Monica, CA</copyright>
     <tags>API OpenData Socrata SODA</tags>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="6.0.7" />
