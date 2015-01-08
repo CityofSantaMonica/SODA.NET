@@ -1,4 +1,4 @@
-### New in 0.3.0 (Released 2015/01/09)
+### New in 0.3.0 (Released 2015/01/08)
 
 Dependency Updates
 
