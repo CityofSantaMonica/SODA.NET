@@ -44,7 +44,7 @@ namespace SODA.Utilities
         }
 
         /// <summary>
-        /// Opens the specified OleDbConnection, collects all data rows in every sheet in the underlying Excel file, and then closes the connection.
+        /// Uses the specified IExcelDataReader object, collects all data rows in every sheet in the underlying Excel file, and then closes the connection.
         /// </summary>
         /// <param name="reader">An IExcelDataReader object to an Excel file with at least one sheet of data.</param>
         /// <param name="isFirstRowColumnNames">Whether or not the first row  of a worksheet is the name of the column; if is, we won't add it in the returned IEnumerable</param>
