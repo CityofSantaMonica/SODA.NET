@@ -43,6 +43,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Excel">
+      <HintPath>..\packages\ExcelDataReader.2.1.2.3\lib\net45\Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Exchange.WebServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\EWS-Api-2.1.1.0.0\lib\net35\Microsoft.Exchange.WebServices.dll</HintPath>
@@ -75,6 +81,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataRowExtensionsTests.cs" />
+    <Compile Include="ExcelDataReaderHelperTests.cs" />
     <Compile Include="ExcelOleDbHelperTests.cs" />
     <Compile Include="FileLoggingTests.cs" />
     <Compile Include="Mocks\DataRowMocks.cs" />

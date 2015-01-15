@@ -40,6 +40,12 @@
     <DocumentationFile>bin\Release\SODA.Utilities.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Excel">
+      <HintPath>..\packages\ExcelDataReader.2.1.2.3\lib\net45\Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Exchange.WebServices">
       <HintPath>..\packages\EWS-Api-2.1.1.0.0\lib\net35\Microsoft.Exchange.WebServices.dll</HintPath>
     </Reference>
@@ -61,6 +67,7 @@
     </Compile>
     <Compile Include="DataFileExporter.cs" />
     <Compile Include="Ews2007Sp1Client.cs" />
+    <Compile Include="ExcelDataReaderHelper.cs" />
     <Compile Include="ExcelOleDbHelper.cs" />
     <Compile Include="EwsClient.cs">
       <SubType>Code</SubType>

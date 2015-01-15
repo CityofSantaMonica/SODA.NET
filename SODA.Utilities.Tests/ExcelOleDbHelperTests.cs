@@ -127,6 +127,7 @@ namespace SODA.Utilities.Tests
         }
 
         [Test]
+        [Ignore("Unique OleDB registry hack and is not part of the SODA.NET project")]
         [Category("ExcelOleDbHelper")]
         public void System_Has_TypeGuessRows_Registry_Setting_To_Maximum_Value()
         {
