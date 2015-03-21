@@ -8,7 +8,9 @@ A [Socrata Open Data API](http://dev.socrata.com) (SODA) client library targetin
 Simple, read-only access
 
 ```c#
-var client = new SodaClient("data.smgov.net", "AppToken");
+//initialize a new client
+//make sure you register for your own app token (http://dev.socrata.com/register)
+var client = new SodaClient("data.smgov.net", "REPLACE_WITH_YOUR_APP_TOKEN");
 
 //read metadata of a dataset using the resource identifier (Socrata 4x4)
 var metadata = client.GetMetadata("1234-wxyz");
