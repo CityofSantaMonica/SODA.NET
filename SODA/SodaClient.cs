@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using SODA.Utilities;
@@ -34,10 +33,16 @@ namespace SODA
         /// See http://dev.socrata.com/docs/authentication.html for more information.
         /// </remarks>
         public readonly string Username;
-        
+
         //not publicly readable, can only be set in a constructor
         private readonly string password;
-        
+
+        /// <summary>
+        /// If set, the number of milliseconds to wait before requests to the <see cref="Host"/> timeout and throw a <see cref="System.Net.WebException"/>.
+        /// If unset, the default value is that of <see cref="System.Net.HttpWebRequest.Timeout"/>.
+        /// </summary>
+        public int? RequestTimeout { get; set; }
+
         /// <summary>
         /// Send an HTTP GET request to the specified URI and intepret the result as TResult.
         /// </summary>
@@ -48,7 +53,7 @@ namespace SODA
         internal TResult read<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
             where TResult : class
         {
-            var request = new SodaRequest(uri, "GET", AppToken, Username, password, dataFormat);
+            var request = new SodaRequest(uri, "GET", AppToken, Username, password, dataFormat, null, RequestTimeout);
 
             return request.ParseResponse<TResult>();
         }
@@ -66,7 +71,7 @@ namespace SODA
             where TPayload : class
             where TResult : class
         {
-            var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString());
+            var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString(), RequestTimeout);
 
             return request.ParseResponse<TResult>();
         }
@@ -92,7 +97,7 @@ namespace SODA
             Username = username;
             this.password = password;
         }
-        
+
         /// <summary>
         /// Initialize a new (anonymous) SodaClient for the specified Socrata host, using the specified application token.
         /// </summary>
@@ -103,7 +108,7 @@ namespace SODA
             : this(host, appToken, null, null)
         {
         }
-        
+
         /// <summary>
         /// Get a ResourceMetadata object using the specified resource identifier.
         /// </summary>
@@ -215,7 +220,7 @@ namespace SODA
 
             return result;
         }
-        
+
         /// <summary>
         /// Update/Insert the specified collection of entities using the specified resource identifier.
         /// </summary>
@@ -236,7 +241,7 @@ namespace SODA
 
             return Upsert(json, SodaDataFormat.JSON, resourceId);
         }
-        
+
         /// <summary>
         /// Update/Insert the specified collection of entities in batches of the specified size, using the specified resource identifier.
         /// </summary>
@@ -295,7 +300,7 @@ namespace SODA
                 yield return result;
             }
         }
-        
+
         /// <summary>
         /// Update/Insert the specified collection of entities in batches of the specified size, using the specified resource identifier.
         /// </summary>
@@ -392,7 +397,7 @@ namespace SODA
 
             return Replace(json, SodaDataFormat.JSON, resourceId);
         }
-               
+
         /// <summary>
         /// Delete a single row using the specified row identifier and the specified resource identifier.
         /// </summary>

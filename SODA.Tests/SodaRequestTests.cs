@@ -156,6 +156,28 @@ namespace SODA.Tests
         }
 
         [Test]
+        [Category("SodaRequest")]
+        public void New_Sets_Timeout_To_HttpWebRequest_Timeout_If_Not_Given()
+        {
+            var newHttpRequest = WebRequest.Create(exampleUri) as HttpWebRequest;
+
+            var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.JSON, null, null);
+
+            Assert.AreEqual(newHttpRequest.Timeout, request.webRequest.Timeout);
+        }
+
+        [Test]
+        [Category("SodaRequest")]
+        public void New_Sets_Timeout_To_Given_Timeout()
+        {
+            int timeout = 100;
+
+            var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.JSON, null, timeout);
+
+            Assert.AreEqual(timeout, request.webRequest.Timeout);
+        }
+
+        [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaRequest")]
         public void ParseResponse_ReThrows_JSON_Parse_Exception_As_InvalidOperationException()
