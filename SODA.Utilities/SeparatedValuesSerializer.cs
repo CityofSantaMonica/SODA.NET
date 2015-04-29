@@ -29,32 +29,59 @@ namespace SODA.Utilities
         }
 
         /// <summary>
-        /// Serialize the specified entity collection to a string using the specified delimiter character.
+        /// Serialize the specified entity collection to a string using the specified delimiter character, optionally generating a header row
         /// </summary>
         /// <typeparam name="T">The type of entities in the collection.</typeparam>
         /// <param name="entities">The collection to serialize.</param>
         /// <param name="delimiter">A <see cref="SeparatedValuesDelimiter"/> indicating how to separate individual fields in the output string.</param>
+        /// <param name="generateHeader">True to generate a header row for the serialized fields, false to skip the header row. The default is true.</param>
         /// <returns>A string reperesentation of the entity collection.</returns>
-        public static string SerializeToString<T>(IEnumerable<T> entities, SeparatedValuesDelimiter delimiter)
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when an invalid <paramref name="delimiter"/> is provided.</exception>
+        public static string SerializeToString<T>(IEnumerable<T> entities, SeparatedValuesDelimiter delimiter, bool generateHeader = true)
+        {
+            string delimiterString = DelimiterString(delimiter);
+            if (String.IsNullOrEmpty(delimiterString))
+                throw new ArgumentOutOfRangeException("delimiter");
+
+            bool isDataContract = false;
+            var propertiesToExport = getExportProperties<T>(out isDataContract);
+
+            StringBuilder serializedData = new StringBuilder();
+
+            if (generateHeader)
+            {
+                string line = generateHeaderLine(propertiesToExport, isDataContract, delimiterString);
+                serializedData.AppendLine(line);
+            }
+
+            foreach (var entity in entities)
+            {
+                var line = generateEntityLine(entity, propertiesToExport, delimiterString);
+                serializedData.AppendLine(line);
+            }
+
+            return serializedData.ToString().Trim();
+        }
+
+        private static IEnumerable<PropertyInfo> getExportProperties<T>(out bool isDataContract)
         {
             Type ttype = typeof(T);
             IEnumerable<PropertyInfo> propertiesToExport = ttype.GetProperties();
-            
-            string delimiterString = DelimiterString(delimiter);
-            if(String.IsNullOrEmpty(delimiterString))
-                throw new ArgumentOutOfRangeException("delimiter");
+            isDataContract = false;
 
-            StringBuilder serializedData = new StringBuilder();
-            bool isDataContract = false;
-            List<string> header = new List<string>();
-
-            //is T a class marked with [DataContract]?
             if (ttype.CustomAttributes.Any(c => c.AttributeType == typeof(DataContractAttribute)))
             {
                 isDataContract = true;
                 //a [DataContract] is supposed to explicitly define which properties are to be exported using the [DataMember] attribute
                 propertiesToExport = propertiesToExport.Where(p => p.CustomAttributes.Any(c => c.AttributeType.Equals(typeof(DataMemberAttribute))));
             }
+
+            return propertiesToExport;
+        }
+
+        private static string generateHeaderLine(IEnumerable<PropertyInfo> propertiesToExport, bool isDataContract, string delimiter)
+        {
+            var header = new List<string>();
 
             //build the header line
             foreach (var property in propertiesToExport)
@@ -75,55 +102,50 @@ namespace SODA.Utilities
                 }
             }
 
-            serializedData.AppendLine(String.Join(delimiterString, header));
+            return String.Join(delimiter, header);
+        }
 
-            //now build a line for each entity
-            var lineBuilder = new StringBuilder();
+        private static string generateEntityLine<T>(T entity, IEnumerable<PropertyInfo> propertiesToExport, string delimiter)
+        {
+            StringBuilder lineBuilder = new StringBuilder();
 
-            foreach (var entity in entities)
+            foreach (var property in propertiesToExport)
             {
-                lineBuilder.Clear();
+                //get the raw value as an object
+                object propertyValue = property.GetValue(entity);
+                //what will eventually be appended to the line for this property
+                string toAppend;
 
-                foreach (var property in propertiesToExport)
+                //the whitelist contains types that can be written directly as strings
+                if (!jsonSerializeWhiteList.Contains(property.PropertyType))
                 {
-                    //get the raw value as an object
-                    object propertyValue = property.GetValue(entity);
-                    //what will eventually be appended to the line for this property
-                    string toAppend;
+                    //this property is not a "simple" type - special consideration should be taken for serialization
 
-                    //the whitelist contains types that can be written directly as strings
-                    if (!jsonSerializeWhiteList.Contains(property.PropertyType))
+                    //locations should be exported in Socrata's desired upload format for *SV: (lat, long)
+                    if (property.PropertyType == typeof(LocationColumn))
                     {
-                        //this property is not a "simple" type - special consideration should be taken for serialization
-
-                        //locations should be exported in Socrata's desired upload format for *SV: (lat, long)
-                        if (property.PropertyType == typeof(LocationColumn))
-                        {
-                            LocationColumn value = property.GetValue(entity) as LocationColumn;
-                            if (String.IsNullOrEmpty(value.Latitude) || String.IsNullOrEmpty(value.Longitude))
-                                toAppend = String.Empty;
-                            else
-                                toAppend = String.Format("({0},{1})", value.Latitude, value.Longitude);
-                        }
+                        LocationColumn value = property.GetValue(entity) as LocationColumn;
+                        if (String.IsNullOrEmpty(value.Latitude) || String.IsNullOrEmpty(value.Longitude))
+                            toAppend = String.Empty;
                         else
-                        {
-                            toAppend = propertyValue.ToJsonString();
-                        }
+                            toAppend = String.Format("({0},{1})", value.Latitude, value.Longitude);
                     }
                     else
                     {
-                        //this property is a "simple" type, get its normalized string representation
-                        toAppend = propertyValue.SafeToString().NormalizeQuotes().EscapeDoubleQuotes();
+                        toAppend = propertyValue.ToJsonString();
                     }
-
-                    //append this property's value to the line and wrap in quotes for safety
-                    lineBuilder.AppendFormat(@"""{0}""{1}", toAppend, delimiterString);
                 }
-                //add this line to the overall collection
-                serializedData.AppendLine(lineBuilder.ToString().TrimEnd(delimiterString.ToCharArray()));
+                else
+                {
+                    //this property is a "simple" type, get its normalized string representation
+                    toAppend = propertyValue.SafeToString().NormalizeQuotes().EscapeDoubleQuotes();
+                }
+
+                //append this property's value to the line and wrap in quotes for safety
+                lineBuilder.AppendFormat(@"""{0}""{1}", toAppend, delimiter);
             }
 
-            return serializedData.ToString().Trim();
+            return lineBuilder.ToString().TrimEnd(delimiter.ToCharArray());
         }
 
         // a list of primitive types that *will not* be serialized to JSON during CSV/TSV export
