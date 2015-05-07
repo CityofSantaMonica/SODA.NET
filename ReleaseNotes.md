@@ -1,3 +1,14 @@
+### New in 0.4.0 (Released 2015/05/07)
+
+Dependency Updates
+
+  - `Newtonsoft.Json` upgraded to 6.0.8
+
+New features
+
+  - Overload to skip header for `SeparatedValuesSerializer` [#31](https://github.com/CityofSantaMonica/SODA.NET/issues/31)
+  - Optional `RequestTimeout` property on `SodaClient` [#28](https://github.com/CityofSantaMonica/SODA.NET/issues/28)
+
 ### New in 0.3.0 (Released 2015/01/08)
 
 Dependency Updates
