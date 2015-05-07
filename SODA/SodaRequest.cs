@@ -32,7 +32,8 @@ namespace SODA
         /// <param name="password">The password for the specified Socrata <paramref name="username"/>.</param>
         /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
         /// <param name="payload">The body of the request.</param>
-        internal SodaRequest(Uri uri, string method, string appToken, string username, string password, SodaDataFormat dataFormat = SodaDataFormat.JSON, string payload = null)
+        /// <param name="timeout">The number of milliseconds to wait for a response before throwing a Timeout WebException.</param>
+        internal SodaRequest(Uri uri, string method, string appToken, string username, string password, SodaDataFormat dataFormat = SodaDataFormat.JSON, string payload = null, int? timeout = null)
         {
             this.dataFormat = dataFormat;
 
@@ -40,7 +41,8 @@ namespace SODA
             request.Method = method.ToUpper();
             request.ProtocolVersion = new System.Version("1.1");
             request.PreAuthenticate = true;
-            
+            request.Timeout = timeout.HasValue ? timeout.Value : request.Timeout;
+
             //http://dev.socrata.com/docs/app-tokens.html
             request.Headers.Add("X-App-Token", appToken);
 
