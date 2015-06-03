@@ -80,9 +80,9 @@ namespace SODA
         /// The maximum number of results a query may return.
         /// </summary>
         /// <remarks>
-        /// The maximum that can be requested with limit is 1000 (http://dev.socrata.com/docs/queries.html#the_limit_parameter)
+        /// The maximum that can be requested with limit is 50,000 (http://dev.socrata.com/docs/paging.html)
         /// </remarks>
-        public static readonly int MaximumLimit = 1000;
+        public static readonly int MaximumLimit = 50000;
 
         /// <summary>
         /// Gets the columns that this SoqlQuery will select.
