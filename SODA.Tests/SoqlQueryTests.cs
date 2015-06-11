@@ -354,8 +354,8 @@ namespace SODA.Tests
             var soql = new SoqlQuery().Limit(limit);
         }
 
-        [TestCase(1001)]
-        [TestCase(9999)]
+        [TestCase(50001)]
+        [TestCase(59999)]
         [Category("SoqlQuery")]
         public void Limit_Clause_Has_A_Ceiling_At_MaximumLimit(int limit)
         {
