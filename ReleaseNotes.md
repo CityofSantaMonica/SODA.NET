@@ -1,3 +1,9 @@
+### New in 0.4.1 (Released 2015/06/11)
+
+Bug fixes
+
+  - `SoqlQuery.MaximumLimit` increased to 50K [#39](https://github.com/CityofSantaMonica/SODA.NET/issues/39) via @chrismetcalf
+
 ### New in 0.4.0 (Released 2015/05/07)
 
 Dependency Updates
