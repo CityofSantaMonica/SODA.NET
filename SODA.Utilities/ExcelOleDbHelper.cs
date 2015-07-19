@@ -9,13 +9,15 @@ namespace SODA.Utilities
     /// <summary>
     /// A helper class for working with Excel over OleDb.
     /// </summary>
+    [Obsolete("Usage of OleDb will be removed in v0.4.0. Use the ExcelDataReaderHelper class instead.")]
     public class ExcelOleDbHelper
     {
-        /// <summary>
+        /// <deprecated type="deprecate">
         /// Creates an OleDbConnection to a specified Excel file.
-        /// </summary>
+        /// </deprecated>
         /// <param name="excelFileName">The path to a readable Excel (.xls or .xlsx) file.</param>
         /// <returns>An OleDbConnection to the specified Excel file.</returns>
+        [Obsolete("This method will be removed in v0.4.0. Use ExcelDataReaderHelper::MakeExcelReader() instead.")]
         public static OleDbConnection MakeConnection(string excelFileName)
         {
             if (!String.IsNullOrEmpty(excelFileName) && (excelFileName.EndsWith(".xls") || excelFileName.EndsWith(".xlsx")))
@@ -35,11 +37,12 @@ namespace SODA.Utilities
             throw new ArgumentException("Not a valid Excel (.xls or .xlsx) file.", "excelFileName");
         }
 
-        /// <summary>
+        /// <deprecated type="deprecate">
         /// Opens the specified OleDbConnection, collects all data rows in every sheet in the underlying Excel file, and then closes the connection.
-        /// </summary>
+        /// </deprecated>
         /// <param name="connection">An OleDbConnection to an Excel file with at least one sheet of data.</param>
         /// <returns>The combined collection of rows from each sheet of data in the underlying Excel file.</returns>
+        [Obsolete("This method will be removed in v0.4.0. Use ExcelDataReaderHelper::GetRowsFromDataSheets() instead.")]
         public static IEnumerable<DataRow> GetRowsFromDataSheets(OleDbConnection connection)
         {
             if (connection == null)
