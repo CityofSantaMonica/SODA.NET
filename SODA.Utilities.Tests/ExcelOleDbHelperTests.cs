@@ -128,6 +128,7 @@ namespace SODA.Utilities.Tests
 
         [Test]
         [Category("ExcelOleDbHelper")]
+        [Ignore("Unique OleDB registry hack and is not part of the SODA.NET project")]
         public void System_Has_TypeGuessRows_Registry_Setting_To_Maximum_Value()
         {
             string key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Office\12.0\Access Connectivity Engine\Engines\Excel";
