@@ -24,17 +24,17 @@ namespace SODA.Utilities
         {
             if (String.IsNullOrEmpty(excelFileName))
             {
-                throw new ArgumentException("A file path cannot be null or empty.", "excelFileName");
+                throw new ArgumentNullException("A file path cannot be null or empty.");
             }
 
             if (!excelFileName.EndsWith(".xls") && !excelFileName.EndsWith(".xlsx"))
             {
-                throw new ArgumentException("Not a valid Excel (.xls or .xlsx) file.", "excelFileName");
+                throw new InvalidOperationException("Not a valid Excel (.xls or .xlsx) file.");
             }
 
             if (!File.Exists(excelFileName))
             {
-                throw new FileNotFoundException("The specified file does not exist.", "excelFileName");
+                throw new FileNotFoundException("The specified file does not exist.");
             }
 
             var allDataRows = new List<DataRow>();

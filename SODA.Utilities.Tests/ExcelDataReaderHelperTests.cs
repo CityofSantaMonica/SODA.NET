@@ -21,12 +21,12 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 () => ExcelDataReaderHelper.GetRowsFromDataSheets(nullInput),
-                Throws.ArgumentException
+                Throws.InstanceOf<ArgumentNullException>()
             );
 
             Assert.That(
                 () => ExcelDataReaderHelper.GetRowsFromDataSheets(emptyInput),
-                Throws.ArgumentException
+                Throws.InstanceOf<ArgumentNullException>()
             );
         }
 
@@ -40,7 +40,7 @@ namespace SODA.Utilities.Tests
         {
             Assert.That(
                 () => ExcelDataReaderHelper.GetRowsFromDataSheets(nonExcelFileName),
-                Throws.ArgumentException
+                Throws.InstanceOf<InvalidOperationException>()
             );
         }
 
