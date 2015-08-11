@@ -20,12 +20,12 @@ namespace SODA.Utilities.Tests
             string emptyInput = String.Empty;
 
             Assert.That(
-                () => ExcelDataReaderHelper.MakeExcelReader(nullInput),
+                () => ExcelDataReaderHelper.GetRowsFromDataSheets(nullInput),
                 Throws.ArgumentException
             );
 
             Assert.That(
-                () => ExcelDataReaderHelper.MakeExcelReader(emptyInput),
+                () => ExcelDataReaderHelper.GetRowsFromDataSheets(emptyInput),
                 Throws.ArgumentException
             );
         }
@@ -39,7 +39,7 @@ namespace SODA.Utilities.Tests
         public void MakeReader_With_NonExcel_Filename_Throws_ArgumentException(string nonExcelFileName)
         {
             Assert.That(
-                () => ExcelDataReaderHelper.MakeExcelReader(nonExcelFileName),
+                () => ExcelDataReaderHelper.GetRowsFromDataSheets(nonExcelFileName),
                 Throws.ArgumentException
             );
         }
@@ -50,52 +50,8 @@ namespace SODA.Utilities.Tests
         public void MakeConnection_With_NonExistent_Excel_File_Throws_FileNotFoundException(string nonExistentExcelFileName)
         {
             Assert.That(
-                () => ExcelDataReaderHelper.MakeExcelReader(nonExistentExcelFileName),
+                () => ExcelDataReaderHelper.GetRowsFromDataSheets(nonExistentExcelFileName),
                 Throws.InstanceOf<FileNotFoundException>()
-            );
-        }
-
-        [Test]
-        [TestCaseSource(typeof(FileMocks), "ExcelMocks")]
-        [Category("ExcelDataReaderHelper")]
-        public void MakeConnection_With_Valid_Excel_Filename_Returns_IExcelDataReader(string excelFileName)
-        {
-            IExcelDataReader reader = null;
-
-            Assert.That(
-                () => reader = ExcelDataReaderHelper.MakeExcelReader(excelFileName),
-                Throws.Nothing
-            );
-
-            Assert.NotNull(reader);
-            Assert.IsTrue(reader.IsValid);
-        }
-
-        [Test]
-        [Category("ExcelDataReaderHelper")]
-        public void GetRowsFromDataSheets_With_Null_Connection_Throws_ArgumentNullException()
-        {
-            IExcelDataReader nullConnection = null;
-
-            Assert.That(
-                () => ExcelDataReaderHelper.GetRowsFromDataSheets(nullConnection),
-                Throws.InstanceOf<ArgumentNullException>()
-            );
-        }
-
-        [Test]
-        [TestCaseSource(typeof(FileMocks), "ExcelMocks")]
-        [Category("ExcelDataReaderHelper")]
-        public void GetRowsFromDataSheets_Close_The_Connection(string excelFileName)
-        {
-            IExcelDataReader reader = ExcelDataReaderHelper.MakeExcelReader(excelFileName);
-
-            reader.Close();
-
-            Assert.IsTrue(reader.IsClosed);
-            Assert.That(
-                () => ExcelDataReaderHelper.GetRowsFromDataSheets(reader),
-                Throws.InstanceOf<ArgumentException>()
             );
         }
 
@@ -104,9 +60,7 @@ namespace SODA.Utilities.Tests
         [Category("ExcelDataReaderHelper")]
         public void GetRowsFromDataSheets_Gets_All_Rows_From_All_Data_Sheets(string excelFileName)
         {
-            IExcelDataReader reader = ExcelDataReaderHelper.MakeExcelReader(excelFileName);
-
-            var rows = ExcelDataReaderHelper.GetRowsFromDataSheets(reader);
+            var rows = ExcelDataReaderHelper.GetRowsFromDataSheets(excelFileName);
 
             Assert.AreEqual(3, rows.Count());
 
@@ -114,6 +68,33 @@ namespace SODA.Utilities.Tests
             {
                 Assert.AreEqual(String.Format("baz{0}", i + 1), rows.ElementAt(i)["foo"]);
                 Assert.AreEqual(String.Format("qux{0}", i + 1), rows.ElementAt(i)["bar"]);
+            }
+        }
+
+        [Test]
+        [TestCaseSource(typeof(FileMocks), "ExcelMocks")]
+        [Category("ExcelDataReaderHelper")]
+        public void GetRowsFromDataSheets_Gets_All_Rows_From_All_Data_Sheets_Without_Column_Names(string excelFileName)
+        {
+            var rows = ExcelDataReaderHelper.GetRowsFromDataSheets(excelFileName, false);
+            int dataCounter = 1;
+
+            Assert.AreEqual(6, rows.Count());
+
+            for (int i = 0; i < rows.Count(); i++)
+            {
+                if (i % 2 == 0)
+                {
+                    Assert.AreEqual(String.Format("foo", i + 1), rows.ElementAt(i)[0]);
+                    Assert.AreEqual(String.Format("bar", i + 1), rows.ElementAt(i)[1]);
+                }
+                else
+                {
+                    Assert.AreEqual(String.Format("baz{0}", dataCounter), rows.ElementAt(i)[0]);
+                    Assert.AreEqual(String.Format("qux{0}", dataCounter), rows.ElementAt(i)[1]);
+
+                    dataCounter++;
+                }
             }
         }
     }
