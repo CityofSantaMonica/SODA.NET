@@ -1,3 +1,18 @@
+### New in 0.5.0 (Released 2015/08/12)
+
+Dependency Updates
+
+  - `Newtonsoft.Json` upgraded to 7.0.1 [#43](https://github.com/CityofSantaMonica/SODA.NET/issues/43)
+
+Deprecation Notices
+
+  - `ExcelOleDbHelper` in `SODA.Utilities` has been deprecated and replaced by `ExcelDataReaderHelper`. `ExcelOleDbHelper` will be removed in `v0.6.0`.
+
+New features
+
+  - `ExcelDataReaderHelper` for reading data from Excel documents [#46](https://github.com/CityofSantaMonica/SODA.NET/pull/46) via @allejo
+  - `Ews2010Sp2Client` for utilizing EWS against Exchange 2010 SP2
+
 ### New in 0.4.1 (Released 2015/06/11)
 
 Bug fixes
