@@ -17,7 +17,7 @@ namespace SODA.Utilities
         /// </deprecated>
         /// <param name="excelFileName">The path to a readable Excel (.xls or .xlsx) file.</param>
         /// <returns>An OleDbConnection to the specified Excel file.</returns>
-        [Obsolete("This method will be removed in v0.6.0. Use ExcelDataReaderHelper::MakeExcelReader() instead.")]
+        [Obsolete("This method will be removed in v0.6.0.")]
         public static OleDbConnection MakeConnection(string excelFileName)
         {
             if (!String.IsNullOrEmpty(excelFileName) && (excelFileName.EndsWith(".xls") || excelFileName.EndsWith(".xlsx")))
@@ -42,7 +42,7 @@ namespace SODA.Utilities
         /// </deprecated>
         /// <param name="connection">An OleDbConnection to an Excel file with at least one sheet of data.</param>
         /// <returns>The combined collection of rows from each sheet of data in the underlying Excel file.</returns>
-        [Obsolete("This method will be removed in v0.6.0. Use ExcelDataReaderHelper::GetRowsFromDataSheets() instead.")]
+        [Obsolete("This method will be removed in v0.6.0.")]
         public static IEnumerable<DataRow> GetRowsFromDataSheets(OleDbConnection connection)
         {
             if (connection == null)

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Data;
 using System.IO;
 using System.Linq;
-using Microsoft.Win32;
 using NUnit.Framework;
 using SODA.Utilities.Tests.Mocks;
-using Excel;
 
 namespace SODA.Utilities.Tests
 {
@@ -14,7 +11,7 @@ namespace SODA.Utilities.Tests
     {
         [Test]
         [Category("ExcelDataReaderHelper")]
-        public void MakeConnection_With_Empty_Filename_Throws_Exception()
+        public void GetRowsFromDataSheets_With_Empty_Filename_Throws_ArgumentNullException()
         {
             string nullInput = null;
             string emptyInput = String.Empty;
@@ -36,7 +33,7 @@ namespace SODA.Utilities.Tests
         [TestCase("something.xls.txt")]
         [TestCase("something.xlsx.txt")]
         [Category("ExcelDataReaderHelper")]
-        public void MakeReader_With_NonExcel_Filename_Throws_ArgumentException(string nonExcelFileName)
+        public void GetRowsFromDataSheets_With_NonExcel_Filename_Throws_InvalidOperationException(string nonExcelFileName)
         {
             Assert.That(
                 () => ExcelDataReaderHelper.GetRowsFromDataSheets(nonExcelFileName),
@@ -47,7 +44,7 @@ namespace SODA.Utilities.Tests
         [TestCase("not-there.xls")]
         [TestCase("not-there.xlsx")]
         [Category("ExcelDataReaderHelper")]
-        public void MakeConnection_With_NonExistent_Excel_File_Throws_FileNotFoundException(string nonExistentExcelFileName)
+        public void GetRowsFromDataSheets_With_NonExistent_Excel_File_Throws_FileNotFoundException(string nonExistentExcelFileName)
         {
             Assert.That(
                 () => ExcelDataReaderHelper.GetRowsFromDataSheets(nonExistentExcelFileName),
@@ -58,7 +55,7 @@ namespace SODA.Utilities.Tests
         [Test]
         [TestCaseSource(typeof(FileMocks), "ExcelMocks")]
         [Category("ExcelDataReaderHelper")]
-        public void GetRowsFromDataSheets_Gets_All_Rows_From_All_Data_Sheets(string excelFileName)
+        public void GetRowsFromDataSheets_Get_All_Rows_From_All_Data_Sheets(string excelFileName)
         {
             var rows = ExcelDataReaderHelper.GetRowsFromDataSheets(excelFileName);
 
@@ -74,7 +71,7 @@ namespace SODA.Utilities.Tests
         [Test]
         [TestCaseSource(typeof(FileMocks), "ExcelMocks")]
         [Category("ExcelDataReaderHelper")]
-        public void GetRowsFromDataSheets_Gets_All_Rows_From_All_Data_Sheets_Without_Column_Names(string excelFileName)
+        public void GetRowsFromDataSheets_Get_All_Rows_From_All_Data_Sheets_Without_Column_Names(string excelFileName)
         {
             var rows = ExcelDataReaderHelper.GetRowsFromDataSheets(excelFileName, false);
             int dataCounter = 1;
