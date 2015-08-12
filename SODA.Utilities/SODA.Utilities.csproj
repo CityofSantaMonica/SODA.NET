@@ -60,6 +60,7 @@
       <Link>SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="DataFileExporter.cs" />
+    <Compile Include="Ews2010Sp2Client.cs" />
     <Compile Include="Ews2007Sp1Client.cs" />
     <Compile Include="ExcelOleDbHelper.cs" />
     <Compile Include="EwsClient.cs">
