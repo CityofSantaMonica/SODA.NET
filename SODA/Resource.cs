@@ -142,7 +142,7 @@ namespace SODA
         /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute against this Resource.</param>
         /// <returns>A collection of entities of type <typeparamref name="TRow"/>.</returns>
         /// <remarks>
-        /// This is a convenience method for the generic <see cref="Query{T}"/>, and is useful if you want the result of a query 
+        /// This is a convenience method for the generic <see cref="QueryAsync{T}"/>, and is useful if you want the result of a query 
         /// to be typed to <typeparamref name="TRow"/>this Resource's underlying record type</typeparamref>.
         /// </remarks>
         public async Task<IEnumerable<TRow>> QueryAsync(SoqlQuery soqlQuery)
@@ -156,7 +156,7 @@ namespace SODA
         /// <returns>A collection of type <typeparamref name="TRow"/>.</returns>
         /// <remarks>
         /// GetRows will attempt to return *all rows* in the Resource, beyond the 1000 rows per request limit that Socrata imposes.
-        /// See <see cref="Query{T}"/>
+        /// See <see cref="QueryAsync{T}"/>
         /// </remarks>
         public async Task<IEnumerable<TRow>> GetRowsAsync()
         {
