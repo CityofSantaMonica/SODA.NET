@@ -3,6 +3,7 @@ using SODA.Tests.Mocks;
 using System;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SODA.Tests
 {
@@ -180,22 +181,22 @@ namespace SODA.Tests
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaRequest")]
-        public void ParseResponse_ReThrows_JSON_Parse_Exception_As_InvalidOperationException()
+        public async Task ParseResponse_ReThrows_JSON_Parse_Exception_As_InvalidOperationException()
         {
             //expect a response of JSON data
             var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.JSON);
             //we get html5 back from example.com
             //it can't be parsed to a json string
-            request.ParseResponse<string>().ToLower();
+            (await request.ParseResponseAsync<string>()).ToLower();
         }
 
         [Test]
         [Category("SodaRequest")]
-        public void ParseResponse_Can_GET_Example()
+        public async Task ParseResponse_Can_GET_Example()
         {
             var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.XML);
             
-            string result = request.ParseResponse<string>().ToLower();
+            string result = (await request.ParseResponseAsync<string>()).ToLower();
             
             StringAssert.Contains("<!doctype", result);
             StringAssert.Contains("<html>", result);
@@ -210,14 +211,14 @@ namespace SODA.Tests
         [TestCase("PUT")]
         [TestCase("DELETE")]
         [Category("SodaRequest")]
-        public void ParseResponse_Non_GET_Sends_Request_To_Example_Using_Method(string input)
+        public async Task ParseResponse_Non_GET_Sends_Request_To_Example_Using_Method(string input)
         {
             var request = new SodaRequest(exampleUri, input, null, null, null);
             string result;
 
             try
             {
-                result = request.ParseResponse<string>();
+                result = await request.ParseResponseAsync<string>().ConfigureAwait(false);
             }
             catch (WebException webException)
             {

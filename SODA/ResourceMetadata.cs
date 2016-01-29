@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using SODA.Utilities;
+using System.Threading.Tasks;
 
 namespace SODA
 {
@@ -320,7 +321,7 @@ namespace SODA
         /// Updates this ResourceMetadata on the Socrata Host.
         /// </summary>
         /// <returns>A SodaResult, indicating success or failure.</returns>
-        public SodaResult Update()
+        public async Task<SodaResult> UpdateAsync()
         {
             var metadataUri = SodaUri.ForMetadata(Host, Identifier);
             SodaResult result = new SodaResult();
@@ -328,7 +329,7 @@ namespace SODA
             try
             {
                 //use PUT to replace all existing metadata with the new values
-                result = Client.write<ResourceMetadata, SodaResult>(metadataUri, "PUT", this);
+                result = await Client.writeAsync<ResourceMetadata, SodaResult>(metadataUri, "PUT", this).ConfigureAwait(false);
                 //no exception thrown => success!
                 result.IsError = false;
                 result.Message = String.Format("Metadata for {0} updated successfully.", Identifier);
