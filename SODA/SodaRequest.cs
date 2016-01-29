@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -98,13 +99,14 @@ namespace SODA
         /// </summary>
         /// <typeparam name="TResult">The target type during response deserialization.</typeparam>
         /// <exception cref="System.InvalidOperationException">Thrown if response deserialization into the requested type fails.</exception>
-        internal TResult ParseResponse<TResult>() where TResult : class
+        internal async Task<TResult> ParseResponseAsync<TResult>() where TResult : class
         {
             TResult result = default(TResult);
             Exception inner = null;
             bool exception = false;
 
-            using (var responseStream = webRequest.GetResponse().GetResponseStream())
+            var webResponse = await webRequest.GetResponseAsync().ConfigureAwait(false);
+            using (var responseStream = webResponse.GetResponseStream())
             {
                 string response = new StreamReader(responseStream).ReadToEnd();
 

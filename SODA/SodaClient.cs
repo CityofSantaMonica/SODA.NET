@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using SODA.Utilities;
+using System.Threading.Tasks;
 
 namespace SODA
 {
@@ -50,12 +51,12 @@ namespace SODA
         /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
         /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
         /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
-        internal TResult read<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
+        internal async Task<TResult> readAsync<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
             where TResult : class
         {
             var request = new SodaRequest(uri, "GET", AppToken, Username, password, dataFormat, null, RequestTimeout);
 
-            return request.ParseResponse<TResult>();
+            return await request.ParseResponseAsync<TResult>().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -67,13 +68,13 @@ namespace SODA
         /// <param name="method">One of POST, PUT, or DELETE</param>
         /// <param name="payload">An object graph to serialize and send with the request.</param>
         /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
-        internal TResult write<TPayload, TResult>(Uri uri, string method, TPayload payload)
+        internal async Task<TResult> writeAsync<TPayload, TResult>(Uri uri, string method, TPayload payload)
             where TPayload : class
             where TResult : class
         {
             var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString(), RequestTimeout);
 
-            return request.ParseResponse<TResult>();
+            return await request.ParseResponseAsync<TResult>().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -117,14 +118,14 @@ namespace SODA
         /// A ResourceMetadata object for the specified resource identifier.
         /// </returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
-        public ResourceMetadata GetMetadata(string resourceId)
+        public async Task<ResourceMetadata> GetMetadataAsync(string resourceId)
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
             var uri = SodaUri.ForMetadata(Host, resourceId);
 
-            var metadata = read<ResourceMetadata>(uri);
+            var metadata = await readAsync<ResourceMetadata>(uri).ConfigureAwait(false);
             metadata.Client = this;
 
             return metadata;
@@ -144,11 +145,11 @@ namespace SODA
             var catalogUri = SodaUri.ForMetadataList(Host, page);
 
             //an entry of raw data contains some, but not all, of the fields required to populate a ResourceMetadata
-            IEnumerable<dynamic> rawDataList = read<IEnumerable<dynamic>>(catalogUri).ToArray();
+            IEnumerable<dynamic> rawDataList = readAsync<IEnumerable<dynamic>>(catalogUri).Result.ToArray();
             //so loop over the collection, using the identifier to make another call for the "real" metadata
             foreach (var rawData in rawDataList)
             {
-                var metadata = GetMetadata((string)rawData.id);
+                var metadata = GetMetadataAsync((string)rawData.id).Result;
                 //yield return here creates an interator - results aren't returned until explicitly requested via foreach
                 //or similar interation on the result of the call to GetMetadataPage.
                 yield return metadata;
@@ -180,7 +181,7 @@ namespace SODA
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="dataFormat"/> is equal to <see cref="SodaDataFormat.XML"/>.</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public SodaResult Upsert(string payload, SodaDataFormat dataFormat, string resourceId)
+        public async Task<SodaResult> UpsertAsync(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (dataFormat == SodaDataFormat.XML)
                 throw new ArgumentOutOfRangeException("dataFormat", "XML is not a valid format for write operations.");
@@ -200,11 +201,11 @@ namespace SODA
             {
                 if (dataFormat == SodaDataFormat.JSON)
                 {
-                    result = request.ParseResponse<SodaResult>();
+                    result = await request.ParseResponseAsync<SodaResult>().ConfigureAwait(false);
                 }
                 else if (dataFormat == SodaDataFormat.CSV)
                 {
-                    string resultJson = request.ParseResponse<string>();
+                    string resultJson = await request.ParseResponseAsync<string>().ConfigureAwait(false);
                     result = Newtonsoft.Json.JsonConvert.DeserializeObject<SodaResult>(resultJson);
                 }
             }
@@ -229,7 +230,7 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public SodaResult Upsert<T>(IEnumerable<T> payload, string resourceId) where T : class
+        public async Task<SodaResult> UpsertAsync<T>(IEnumerable<T> payload, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
@@ -239,7 +240,7 @@ namespace SODA
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
 
-            return Upsert(json, SodaDataFormat.JSON, resourceId);
+            return await UpsertAsync(json, SodaDataFormat.JSON, resourceId).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -283,7 +284,7 @@ namespace SODA
 
                 try
                 {
-                    result = Upsert<T>(batch, resourceId);
+                    result = UpsertAsync<T>(batch, resourceId).Result;
                 }
                 catch (WebException webException)
                 {
@@ -336,7 +337,7 @@ namespace SODA
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="dataFormat"/> is equal to <see cref="SodaDataFormat.XML"/>.</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public SodaResult Replace(string payload, SodaDataFormat dataFormat, string resourceId)
+        public async Task<SodaResult> ReplaceAsync(string payload, SodaDataFormat dataFormat, string resourceId)
         {
             if (dataFormat == SodaDataFormat.XML)
                 throw new ArgumentOutOfRangeException("dataFormat", "XML is not a valid format for write operations.");
@@ -356,11 +357,11 @@ namespace SODA
             {
                 if (dataFormat == SodaDataFormat.JSON)
                 {
-                    result = request.ParseResponse<SodaResult>();
+                    result = await request.ParseResponseAsync<SodaResult>().ConfigureAwait(false);
                 }
                 else if (dataFormat == SodaDataFormat.CSV)
                 {
-                    string resultJson = request.ParseResponse<string>();
+                    string resultJson = await request.ParseResponseAsync<string>().ConfigureAwait(false);
                     result = Newtonsoft.Json.JsonConvert.DeserializeObject<SodaResult>(resultJson);
                 }
             }
@@ -385,7 +386,7 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public SodaResult Replace<T>(IEnumerable<T> payload, string resourceId) where T : class
+        public async Task<SodaResult> ReplaceAsync<T>(IEnumerable<T> payload, string resourceId) where T : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
@@ -395,7 +396,7 @@ namespace SODA
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
 
-            return Replace(json, SodaDataFormat.JSON, resourceId);
+            return await ReplaceAsync(json, SodaDataFormat.JSON, resourceId).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -407,7 +408,7 @@ namespace SODA
         /// <exception cref="System.ArgumentException">Thrown if the specified <paramref name="rowId"/> is null or empty.</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public SodaResult DeleteRow(string rowId, string resourceId)
+        public async Task<SodaResult> DeleteRowAsync(string rowId, string resourceId)
         {
             if (String.IsNullOrEmpty(rowId))
                 throw new ArgumentException("Must specify the row to be deleted using its row identifier.", "rowId");
@@ -422,7 +423,7 @@ namespace SODA
 
             var request = new SodaRequest(uri, "DELETE", AppToken, Username, password);
 
-            return request.ParseResponse<SodaResult>();
+            return await request.ParseResponseAsync<SodaResult>().ConfigureAwait(false);
         }
     }
 }
