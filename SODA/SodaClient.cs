@@ -20,8 +20,8 @@ namespace SODA
         /// The Socrata application token that this client uses for all requests.
         /// </summary>
         /// <remarks>
-        /// Since SodaClient uses Basic Authentication, the application token is only used as a means to reduce API throttling on the part of Socrata.
-        /// See http://dev.socrata.com/docs/app-tokens.html for more information.
+        /// Socrata Application Tokens are not required, but are recommended for expanded API quotas.
+        /// See https://dev.socrata.com/docs/app-tokens.html for more information.
         /// </remarks>
         public readonly string AppToken;
 
@@ -44,54 +44,18 @@ namespace SODA
         public int? RequestTimeout { get; set; }
 
         /// <summary>
-        /// Send an HTTP GET request to the specified URI and intepret the result as TResult.
-        /// </summary>
-        /// <typeparam name="TResult">The .NET class to use for response deserialization.</typeparam>
-        /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
-        /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
-        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
-        internal TResult read<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
-            where TResult : class
-        {
-            var request = new SodaRequest(uri, "GET", AppToken, Username, password, dataFormat, null, RequestTimeout);
-
-            return request.ParseResponse<TResult>();
-        }
-
-        /// <summary>
-        /// Send an HTTP request of the specified method and interpret the result.
-        /// </summary>
-        /// <typeparam name="TPayload">The .NET class that represents the request payload.</typeparam>
-        /// <typeparam name="TResult">The .NET class to use for response deserialization.</typeparam>
-        /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
-        /// <param name="method">One of POST, PUT, or DELETE</param>
-        /// <param name="payload">An object graph to serialize and send with the request.</param>
-        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
-        internal TResult write<TPayload, TResult>(Uri uri, string method, TPayload payload)
-            where TPayload : class
-            where TResult : class
-        {
-            var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString(), RequestTimeout);
-
-            return request.ParseResponse<TResult>();
-        }
-
-        /// <summary>
-        /// Initialize a new SodaClient for the specified Socrata host, using the specified application token and the specified Authentication credentials.
+        /// Initialize a new SodaClient for the specified Socrata host, using the specified application token and Authentication credentials.
         /// </summary>
         /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
         /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
         /// <param name="username">The user account that this client will use for Authentication during each request.</param>
         /// <param name="password">The password for the specified <paramref name="username"/> that this client will use for Authentication during each request.</param>
-        /// <exception cref="System.ArgumentException">Thrown if either of <paramref name="host"/> or <paramref name="appToken"/> is null or empty.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if no <paramref name="host"/> is provided.</exception>
         public SodaClient(string host, string appToken, string username, string password)
         {
             if (String.IsNullOrEmpty(host))
                 throw new ArgumentException("host", "A host is required");
 
-            if (String.IsNullOrEmpty(appToken))
-                throw new ArgumentException("appToken", "An app token is required");
-            
             Host = SodaUri.enforceHttps(host);
             AppToken = appToken;
             Username = username;
@@ -99,12 +63,24 @@ namespace SODA
         }
 
         /// <summary>
+        /// Initialize a new SodaClient for the specified Socrata host, using the specified Authentication credentials.
+        /// </summary>
+        /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
+        /// <param name="username">The user account that this client will use for Authentication during each request.</param>
+        /// <param name="password">The password for the specified <paramref name="username"/> that this client will use for Authentication during each request.</param>
+        /// <exception cref="System.ArgumentException">Thrown if no <paramref name="host"/> is provided.</exception>
+        public SodaClient(string host, string username, string password) 
+            : this(host, null, username, password)
+        {
+        }
+
+        /// <summary>
         /// Initialize a new (anonymous) SodaClient for the specified Socrata host, using the specified application token.
         /// </summary>
         /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
         /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
-        /// <exception cref="System.ArgumentException">Thrown if either of <paramref name="host"/> or <paramref name="appToken"/> is null or empty.</exception>
-        public SodaClient(string host, string appToken)
+        /// <exception cref="System.ArgumentException">Thrown if no <paramref name="host"/> is provided.</exception>
+        public SodaClient(string host, string appToken = null)
             : this(host, appToken, null, null)
         {
         }
@@ -423,6 +399,39 @@ namespace SODA
             var request = new SodaRequest(uri, "DELETE", AppToken, Username, password);
 
             return request.ParseResponse<SodaResult>();
+        }
+
+        /// <summary>
+        /// Send an HTTP GET request to the specified URI and intepret the result as TResult.
+        /// </summary>
+        /// <typeparam name="TResult">The .NET class to use for response deserialization.</typeparam>
+        /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
+        /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
+        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
+        internal TResult read<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
+            where TResult : class
+        {
+            var request = new SodaRequest(uri, "GET", AppToken, Username, password, dataFormat, null, RequestTimeout);
+
+            return request.ParseResponse<TResult>();
+        }
+
+        /// <summary>
+        /// Send an HTTP request of the specified method and interpret the result.
+        /// </summary>
+        /// <typeparam name="TPayload">The .NET class that represents the request payload.</typeparam>
+        /// <typeparam name="TResult">The .NET class to use for response deserialization.</typeparam>
+        /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
+        /// <param name="method">One of POST, PUT, or DELETE</param>
+        /// <param name="payload">An object graph to serialize and send with the request.</param>
+        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
+        internal TResult write<TPayload, TResult>(Uri uri, string method, TPayload payload)
+            where TPayload : class
+            where TResult : class
+        {
+            var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString(), RequestTimeout);
+
+            return request.ParseResponse<TResult>();
         }
     }
 }

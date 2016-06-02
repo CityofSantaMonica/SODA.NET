@@ -32,15 +32,6 @@ namespace SODA.Tests
             new SodaClient(input, StringMocks.Host);
         }
 
-        [TestCase(StringMocks.NullInput)]
-        [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
-        [Category("SodaClient")]
-        public void New_With_Empty_AppToken_Throws_ArgumentException(string input)
-        {
-            new SodaClient(StringMocks.NonEmptyInput, input);
-        }
-
         [TestCase("host.com")]
         [TestCase("http://host.com")]
         [Category("SodaClient")]

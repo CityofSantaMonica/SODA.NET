@@ -43,8 +43,11 @@ namespace SODA
             request.PreAuthenticate = true;
             request.Timeout = timeout.HasValue ? timeout.Value : request.Timeout;
 
-            //http://dev.socrata.com/docs/app-tokens.html
-            request.Headers.Add("X-App-Token", appToken);
+            if (!String.IsNullOrEmpty(appToken))
+            {
+                //http://dev.socrata.com/docs/app-tokens.html
+                request.Headers.Add("X-App-Token", appToken);
+            }
 
             if (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password))
             {
