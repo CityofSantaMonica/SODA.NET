@@ -109,6 +109,8 @@ namespace SODA
             {
                 List<T> allResults = new List<T>();
                 int offset = 0;
+
+                soqlQuery = soqlQuery.Limit(SoqlQuery.MaximumLimit).Offset(offset);
                 IEnumerable<T> offsetResults = Client.read<IEnumerable<T>>(SodaUri.ForQuery(Host, Identifier, soqlQuery));
 
                 while (offsetResults.Any())
