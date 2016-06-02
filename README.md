@@ -3,6 +3,12 @@
 A [Socrata Open Data API](http://dev.socrata.com) (SODA) client library targeting 
 .NET 4.5 and above.
 
+## Getting Started
+
+SODA.NET is available as a [NuGet package](https://www.nuget.org/packages/CSM.SodaDotNet/).
+
+    Install-Package CSM.SodaDotNet
+
 ## Usage examples
 
 Simple, read-only access
@@ -53,24 +59,12 @@ IEnumerable<MyClass> payload = GetPayloadData();
 client.Upsert(payload, "1234-wxyz");
 ```
 
-## Dependencies
+## Build
 
-SODA.NET uses the popular [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/) 
-package for JSON (de)serialization.
+If you'd like to compile SODA.NET yourself, you will need 
+[Visual Studio 2015](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx)
 
-[NUnit](https://www.nuget.org/packages/NUnit/) was used to build the test projects.
-
-## Getting Started
-
-SODA.NET is available as a [NuGet package](https://www.nuget.org/packages/CSM.SodaDotNet/).
-
-    Install-Package CSM.SodaDotNet
-
-### Build
-
-If you'd like to compile SODA.NET yourself, you will need:
-
-  - Visual Studio 2013
+[NUnit](http://nunit.org/) was used to build and run the test projects.
 
 To clone it locally, click the "Clone in Windows" button above or run the follow git commands
 
@@ -86,7 +80,7 @@ for more details.
 
 ## Copyright and License
 
-Copyright 2014 City of Santa Monica, CA
+Copyright 2016 City of Santa Monica, CA
 
 Licensed under the 
 [MIT License](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/LICENSE.txt)
