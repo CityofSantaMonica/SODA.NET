@@ -9,13 +9,12 @@ set BUILDMODE="Release"
 if not "%2" == "" (set BUILDMODE="%2")
 
 set MSBUILDDIR="%WINDIR%\Microsoft.NET\Framework\v4.0.30319"
-set NUGETDIR=".\tools\nuget"
 set SODADIR=".\SODA"
 set UTILSDIR=".\SODA.Utilities"
 
 echo Restoring NuGet package dependencies
 
-call %NUGETDIR%\nuget.exe restore
+call nuget restore
 
 echo Rebuilding solution with Configuration: %BUILDMODE%
 

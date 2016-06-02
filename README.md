@@ -39,7 +39,7 @@ var first10Rows = dataset.GetRows(10);
 var soql = new SoqlQuery().Select("column1", "column2")
                           .Where("something > nothing")
                           .Group("column3");
-                          
+
 var results = dataset.Query<MyOtherClass>(soql);
 ```
 
@@ -61,16 +61,22 @@ client.Upsert(payload, "1234-wxyz");
 
 ## Build
 
-If you'd like to compile SODA.NET yourself, you will need 
-[Visual Studio 2015](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx)
+Compilation can be done using
+[Visual Studio Community Edition](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx).
 
-[NUnit](http://nunit.org/) was used to build and run the test projects.
+[NUnit](http://nunit.org/) was used to build and run the test projects. Check out the
+[NUnit Test Adapter](https://visualstudiogallery.msdn.microsoft.com/6ab922d0-21c0-4f06-ab5f-4ecd1fe7175d)
+to run tests from within Visual Studio.
 
-To clone it locally, click the "Clone in Windows" button above or run the follow git commands
+You can also use the `build.cmd` script, which assumes `msbuild` and `nuget` are available:
 
     git clone git@github.com:CityofSantaMonica/SODA.NET.git SODA.NET
     cd SODA.NET
     .\build.cmd
+
+To create the Nuget package artifacts, pass an extra parameter:
+
+    .\build.cmd CreatePackages
 
 ## Contributing
 
