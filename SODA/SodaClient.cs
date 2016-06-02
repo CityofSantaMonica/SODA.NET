@@ -147,6 +147,51 @@ namespace SODA
         }
 
         /// <summary>
+        /// Query using the specified <see cref="SoqlQuery"/> against the specified resource identifier.
+        /// </summary>
+        /// <typeparam name="TRow">The .NET class that represents the type of the underlying rows in the result set of this query.</typeparam>
+        /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute against the Resource.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A collection of entities of type <typeparamref name="TRow"/>.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        /// <remarks>
+        /// By default, Socrata will only return the first 1000 rows unless otherwise specified in SoQL using the Limit and Offset parameters.
+        /// This method checks the specified SoqlQuery object for either the Limit or Offset parameter, and honors those parameters if present.
+        /// If both Limit and Offset are not part of the SoqlQuery, this method attempts to retrieve all rows in the dataset across all pages.
+        /// In other words, this method hides the fact that Socrata will only return 1000 rows at a time, unless explicity told not to via the SoqlQuery argument.
+        /// </remarks>
+        public IEnumerable<TRow> Query<TRow>(SoqlQuery soqlQuery, string resourceId) where TRow : class
+        {
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
+            //if the query explicitly asks for a limit/offset, honor the ask
+            if (soqlQuery.LimitValue > 0 || soqlQuery.OffsetValue > 0)
+            {
+                var queryUri = SodaUri.ForQuery(Host, resourceId, soqlQuery);
+                return read<IEnumerable<TRow>>(queryUri);
+            }
+            //otherwise, go nuts and get EVERYTHING
+            else
+            {
+                List<TRow> allResults = new List<TRow>();
+                int offset = 0;
+
+                soqlQuery = soqlQuery.Limit(SoqlQuery.MaximumLimit).Offset(offset);
+                IEnumerable<TRow> offsetResults = read<IEnumerable<TRow>>(SodaUri.ForQuery(Host, resourceId, soqlQuery));
+
+                while (offsetResults.Any())
+                {
+                    allResults.AddRange(offsetResults);
+                    soqlQuery = soqlQuery.Offset(++offset * SoqlQuery.MaximumLimit);
+                    offsetResults = read<IEnumerable<TRow>>(SodaUri.ForQuery(Host, resourceId, soqlQuery));
+                }
+
+                return allResults;
+            }
+        }
+
+        /// <summary>
         /// Update/Insert the specified payload string using the specified resource identifier.
         /// </summary>
         /// <param name="payload">A string of serialized data.</param>
@@ -205,7 +250,7 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public SodaResult Upsert<T>(IEnumerable<T> payload, string resourceId) where T : class
+        public SodaResult Upsert<TRow>(IEnumerable<TRow> payload, string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
@@ -228,7 +273,7 @@ namespace SODA
         /// <returns>A collection of <see cref="SodaResult"/>, one for each batched Upsert.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction, string resourceId) where T : class
+        public IEnumerable<SodaResult> BatchUpsert<TRow>(IEnumerable<TRow> payload, int batchSize, Func<IEnumerable<TRow>, TRow, bool> breakFunction, string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
@@ -236,13 +281,13 @@ namespace SODA
             if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
-            Queue<T> queue = new Queue<T>(payload);
+            Queue<TRow> queue = new Queue<TRow>(payload);
 
             while (queue.Any())
             {
                 //make the next batch to send
 
-                var batch = new List<T>();
+                var batch = new List<TRow>();
 
                 for (var index = 0; index < batchSize && queue.Count > 0; index++)
                 {
@@ -259,7 +304,7 @@ namespace SODA
 
                 try
                 {
-                    result = Upsert<T>(batch, resourceId);
+                    result = Upsert<TRow>(batch, resourceId);
                 }
                 catch (WebException webException)
                 {
@@ -286,7 +331,7 @@ namespace SODA
         /// <returns>A collection of <see cref="SodaResult"/>, one for each batch processed.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, string resourceId) where T : class
+        public IEnumerable<SodaResult> BatchUpsert<TRow>(IEnumerable<TRow> payload, int batchSize, string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
@@ -297,9 +342,9 @@ namespace SODA
             //we create a no-op function that returns false for all inputs
             //in other words, the size of a batch will never be affected by this break function
             //and will always be the minimum of (batchSize, remaining items in total collection)
-            Func<IEnumerable<T>, T, bool> neverBreak = (a, b) => false;
+            Func<IEnumerable<TRow>, TRow, bool> neverBreak = (a, b) => false;
 
-            return BatchUpsert<T>(payload, batchSize, neverBreak, resourceId);
+            return BatchUpsert<TRow>(payload, batchSize, neverBreak, resourceId);
         }
 
         /// <summary>
@@ -361,7 +406,7 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public SodaResult Replace<T>(IEnumerable<T> payload, string resourceId) where T : class
+        public SodaResult Replace<TRow>(IEnumerable<TRow> payload, string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");

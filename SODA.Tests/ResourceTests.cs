@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using SODA.Tests.Mocks;
 using System;
-using System.Net;
 
 namespace SODA.Tests
 {
@@ -16,7 +15,6 @@ namespace SODA.Tests
         {
             mockClient = new SodaClient(StringMocks.Host, StringMocks.NonEmptyInput);
             mockMetadata = new ResourceMetadata(mockClient);
-            mockMetadata.Identifier = "1234-abcd";
         }
 
         [Test]
@@ -77,28 +75,6 @@ namespace SODA.Tests
         public void GetRow_With_Invalid_RowId_Throws_ArugmentException(string input)
         {
             new Resource<object>(mockMetadata).GetRow(input);
-        }
-
-        [Test]
-        [Category("Resource")]
-        public void Query_With_UndefinedLimit_UsesMaximum()
-        {
-            var resource = new Resource<object>(mockMetadata);
-            var query = new SoqlQuery();
-
-            var initialValue = query.LimitValue;
-
-            try
-            {
-                resource.Query(query);
-            }
-            catch (WebException ex)
-            {
-                //pass
-            }
-
-            Assert.Greater(query.LimitValue, initialValue);
-            Assert.AreEqual(SoqlQuery.MaximumLimit, query.LimitValue);
         }
     }
 }

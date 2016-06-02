@@ -97,6 +97,36 @@ namespace SODA.Tests
             mockClient.GetResource<object>(input);
         }
 
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [TestCase(StringMocks.NonEmptyInput)]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [Category("SodaClient")]
+        public void Query_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
+        {
+            mockClient.Query<object>(new SoqlQuery(), input);
+        }
+
+        [Test]
+        [Category("SodaClient")]
+        public void Query_With_UndefinedLimit_UsesMaximum()
+        {
+            var query = new SoqlQuery();
+            var initialValue = query.LimitValue;
+
+            try
+            {
+                mockClient.Query<object>(query, StringMocks.ResourceId);
+            }
+            catch (WebException ex)
+            {
+                //pass
+            }
+
+            Assert.Greater(query.LimitValue, initialValue);
+            Assert.AreEqual(SoqlQuery.MaximumLimit, query.LimitValue);
+        }
+
         [Test]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
