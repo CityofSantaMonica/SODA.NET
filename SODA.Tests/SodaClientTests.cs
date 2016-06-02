@@ -118,7 +118,7 @@ namespace SODA.Tests
             {
                 mockClient.Query<object>(query, StringMocks.ResourceId);
             }
-            catch (WebException ex)
+            catch (WebException)
             {
                 //pass
             }
