@@ -84,7 +84,6 @@
     </Compile>
     <Compile Include="DataRowExtensionsTests.cs" />
     <Compile Include="ExcelDataReaderHelperTests.cs" />
-    <Compile Include="ExcelOleDbHelperTests.cs" />
     <Compile Include="FileLoggingTests.cs" />
     <Compile Include="Mocks\DataRowMocks.cs" />
     <Compile Include="Mocks\EntityMock.cs" />

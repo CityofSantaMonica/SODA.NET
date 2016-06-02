@@ -5,7 +5,13 @@
     /// </summary>
     public enum SeparatedValuesDelimiter
     {
+        /// <summary>
+        /// Represents using the comma character "," as a delimiter
+        /// </summary>
         Comma,
+        /// <summary>
+        /// Represents using the tab character "\t" as a delimiter
+        /// </summary>
         Tab
     }
 }

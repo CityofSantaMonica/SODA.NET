@@ -49,7 +49,6 @@ namespace SODA.Tests
             Assert.AreEqual(new Version("1.1"), request.webRequest.ProtocolVersion);
         }
 
-        [TestCase("")]
         [TestCase("appToken1234")]
         [Category("SodaRequest")]
         public void New_Returns_Request_With_Specified_X_App_Token_Header(string input)

@@ -29,7 +29,7 @@ namespace SODA
         /// </summary>
         public SodaClient Client
         {
-            get { return Metadata.Client; }    
+            get { return Metadata.Client; }
         }
 
         /// <summary>
@@ -98,28 +98,7 @@ namespace SODA
         /// </remarks>
         public IEnumerable<T> Query<T>(SoqlQuery soqlQuery) where T : class
         {
-            //if the query explicitly asks for a limit/offset, honor the ask
-            if (soqlQuery.LimitValue > 0 || soqlQuery.OffsetValue > 0)
-            {
-                var queryUri = SodaUri.ForQuery(Host, Identifier, soqlQuery);
-                return Client.read<IEnumerable<T>>(queryUri);
-            }
-            //otherwise, go nuts and get EVERYTHING
-            else
-            {
-                List<T> allResults = new List<T>();
-                int offset = 0;
-                IEnumerable<T> offsetResults = Client.read<IEnumerable<T>>(SodaUri.ForQuery(Host, Identifier, soqlQuery));
-
-                while (offsetResults.Any())
-                {
-                    allResults.AddRange(offsetResults);
-                    soqlQuery = soqlQuery.Offset(++offset * SoqlQuery.MaximumLimit);
-                    offsetResults = Client.read<IEnumerable<T>>(SodaUri.ForQuery(Host, Identifier, soqlQuery));
-                }
-
-                return allResults;
-            }
+            return Client.Query<T>(soqlQuery, Identifier);
         }
 
         /// <summary>
@@ -129,7 +108,7 @@ namespace SODA
         /// <returns>A collection of entities of type <typeparamref name="TRow"/>.</returns>
         /// <remarks>
         /// This is a convenience method for the generic <see cref="Query{T}"/>, and is useful if you want the result of a query 
-        /// to be typed to <typeparamref name="TRow"/>this Resource's underlying record type</typeparamref>.
+        /// to be typed to <typeparamref name="TRow"/> (this Resource's underlying record type).
         /// </remarks>
         public IEnumerable<TRow> Query(SoqlQuery soqlQuery)
         {

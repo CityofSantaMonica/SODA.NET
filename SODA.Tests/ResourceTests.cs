@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SODA.Tests.Mocks;
+using System;
 
 namespace SODA.Tests
 {
@@ -69,7 +67,7 @@ namespace SODA.Tests
 
             Assert.AreSame(metadata.Identifier, resource.Identifier);
         }
-        
+
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NullInput)]
         [ExpectedException(typeof(ArgumentException))]

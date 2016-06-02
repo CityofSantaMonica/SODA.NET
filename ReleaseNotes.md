@@ -1,3 +1,18 @@
+### New in 0.6.0 (Released 2016/06/02)
+
+Bug fixes
+
+  - `SodaClient` no longer requires an AppToken [#49](https://github.com/CityofSantaMonica/SODA.NET/issues/49)
+  - `Query` methods behave as advertised and return full result sets [#56](https://github.com/CityofSantaMonica/SODA.NET/issues/56)
+
+Deprecation Notices
+
+  - `ExcelOleDbHelper` in `SODA.Utilities` was deprecated in `v0.5.0` and has now been removed.
+
+New features
+
+  - `SodaClient` can issue queries directly [#54](https://github.com/CityofSantaMonica/SODA.NET/issues/54)
+
 ### New in 0.5.0 (Released 2015/08/12)
 
 Dependency Updates

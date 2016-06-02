@@ -1,7 +1,13 @@
-# SODA.NET
+# SODA.NET [![Build status](https://ci.appveyor.com/api/projects/status/yub6lyl79573lufv?svg=true)](https://ci.appveyor.com/project/thekaveman/soda-net)
 
 A [Socrata Open Data API](http://dev.socrata.com) (SODA) client library targeting 
 .NET 4.5 and above.
+
+## Getting Started
+
+SODA.NET is available as a [NuGet package](https://www.nuget.org/packages/CSM.SodaDotNet/).
+
+    Install-Package CSM.SodaDotNet
 
 ## Usage examples
 
@@ -33,7 +39,7 @@ var first10Rows = dataset.GetRows(10);
 var soql = new SoqlQuery().Select("column1", "column2")
                           .Where("something > nothing")
                           .Group("column3");
-                          
+
 var results = dataset.Query<MyOtherClass>(soql);
 ```
 
@@ -53,30 +59,24 @@ IEnumerable<MyClass> payload = GetPayloadData();
 client.Upsert(payload, "1234-wxyz");
 ```
 
-## Dependencies
+## Build
 
-SODA.NET uses the popular [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/) 
-package for JSON (de)serialization.
+Compilation can be done using
+[Visual Studio Community Edition](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx).
 
-[NUnit](https://www.nuget.org/packages/NUnit/) was used to build the test projects.
+[NUnit](http://nunit.org/) was used to build and run the test projects. Check out the
+[NUnit Test Adapter](https://visualstudiogallery.msdn.microsoft.com/6ab922d0-21c0-4f06-ab5f-4ecd1fe7175d)
+to run tests from within Visual Studio.
 
-## Getting Started
-
-SODA.NET is available as a [NuGet package](https://www.nuget.org/packages/CSM.SodaDotNet/).
-
-    Install-Package CSM.SodaDotNet
-
-### Build
-
-If you'd like to compile SODA.NET yourself, you will need:
-
-  - Visual Studio 2013
-
-To clone it locally, click the "Clone in Windows" button above or run the follow git commands
+You can also use the `build.cmd` script, which assumes `msbuild` and `nuget` are available:
 
     git clone git@github.com:CityofSantaMonica/SODA.NET.git SODA.NET
     cd SODA.NET
     .\build.cmd
+
+To create the Nuget package artifacts, pass an extra parameter:
+
+    .\build.cmd CreatePackages
 
 ## Contributing
 
@@ -86,7 +86,7 @@ for more details.
 
 ## Copyright and License
 
-Copyright 2014 City of Santa Monica, CA
+Copyright 2016 City of Santa Monica, CA
 
 Licensed under the 
 [MIT License](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/LICENSE.txt)

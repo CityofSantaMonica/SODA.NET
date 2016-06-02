@@ -20,8 +20,8 @@ namespace SODA
         /// The Socrata application token that this client uses for all requests.
         /// </summary>
         /// <remarks>
-        /// Since SodaClient uses Basic Authentication, the application token is only used as a means to reduce API throttling on the part of Socrata.
-        /// See http://dev.socrata.com/docs/app-tokens.html for more information.
+        /// Socrata Application Tokens are not required, but are recommended for expanded API quotas.
+        /// See https://dev.socrata.com/docs/app-tokens.html for more information.
         /// </remarks>
         public readonly string AppToken;
 
@@ -44,54 +44,18 @@ namespace SODA
         public int? RequestTimeout { get; set; }
 
         /// <summary>
-        /// Send an HTTP GET request to the specified URI and intepret the result as TResult.
-        /// </summary>
-        /// <typeparam name="TResult">The .NET class to use for response deserialization.</typeparam>
-        /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
-        /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
-        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
-        internal TResult read<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
-            where TResult : class
-        {
-            var request = new SodaRequest(uri, "GET", AppToken, Username, password, dataFormat, null, RequestTimeout);
-
-            return request.ParseResponse<TResult>();
-        }
-
-        /// <summary>
-        /// Send an HTTP request of the specified method and interpret the result.
-        /// </summary>
-        /// <typeparam name="TPayload">The .NET class that represents the request payload.</typeparam>
-        /// <typeparam name="TResult">The .NET class to use for response deserialization.</typeparam>
-        /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
-        /// <param name="method">One of POST, PUT, or DELETE</param>
-        /// <param name="payload">An object graph to serialize and send with the request.</param>
-        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
-        internal TResult write<TPayload, TResult>(Uri uri, string method, TPayload payload)
-            where TPayload : class
-            where TResult : class
-        {
-            var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString(), RequestTimeout);
-
-            return request.ParseResponse<TResult>();
-        }
-
-        /// <summary>
-        /// Initialize a new SodaClient for the specified Socrata host, using the specified application token and the specified Authentication credentials.
+        /// Initialize a new SodaClient for the specified Socrata host, using the specified application token and Authentication credentials.
         /// </summary>
         /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
         /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
         /// <param name="username">The user account that this client will use for Authentication during each request.</param>
         /// <param name="password">The password for the specified <paramref name="username"/> that this client will use for Authentication during each request.</param>
-        /// <exception cref="System.ArgumentException">Thrown if either of <paramref name="host"/> or <paramref name="appToken"/> is null or empty.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if no <paramref name="host"/> is provided.</exception>
         public SodaClient(string host, string appToken, string username, string password)
         {
             if (String.IsNullOrEmpty(host))
                 throw new ArgumentException("host", "A host is required");
 
-            if (String.IsNullOrEmpty(appToken))
-                throw new ArgumentException("appToken", "An app token is required");
-            
             Host = SodaUri.enforceHttps(host);
             AppToken = appToken;
             Username = username;
@@ -99,12 +63,24 @@ namespace SODA
         }
 
         /// <summary>
+        /// Initialize a new SodaClient for the specified Socrata host, using the specified Authentication credentials.
+        /// </summary>
+        /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
+        /// <param name="username">The user account that this client will use for Authentication during each request.</param>
+        /// <param name="password">The password for the specified <paramref name="username"/> that this client will use for Authentication during each request.</param>
+        /// <exception cref="System.ArgumentException">Thrown if no <paramref name="host"/> is provided.</exception>
+        public SodaClient(string host, string username, string password) 
+            : this(host, null, username, password)
+        {
+        }
+
+        /// <summary>
         /// Initialize a new (anonymous) SodaClient for the specified Socrata host, using the specified application token.
         /// </summary>
         /// <param name="host">The Socrata Open Data Portal that this client will target.</param>
         /// <param name="appToken">The Socrata application token that this client will use for all requests.</param>
-        /// <exception cref="System.ArgumentException">Thrown if either of <paramref name="host"/> or <paramref name="appToken"/> is null or empty.</exception>
-        public SodaClient(string host, string appToken)
+        /// <exception cref="System.ArgumentException">Thrown if no <paramref name="host"/> is provided.</exception>
+        public SodaClient(string host, string appToken = null)
             : this(host, appToken, null, null)
         {
         }
@@ -171,6 +147,51 @@ namespace SODA
         }
 
         /// <summary>
+        /// Query using the specified <see cref="SoqlQuery"/> against the specified resource identifier.
+        /// </summary>
+        /// <typeparam name="TRow">The .NET class that represents the type of the underlying rows in the result set of this query.</typeparam>
+        /// <param name="soqlQuery">A <see cref="SoqlQuery"/> to execute against the Resource.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A collection of entities of type <typeparamref name="TRow"/>.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        /// <remarks>
+        /// By default, Socrata will only return the first 1000 rows unless otherwise specified in SoQL using the Limit and Offset parameters.
+        /// This method checks the specified SoqlQuery object for either the Limit or Offset parameter, and honors those parameters if present.
+        /// If both Limit and Offset are not part of the SoqlQuery, this method attempts to retrieve all rows in the dataset across all pages.
+        /// In other words, this method hides the fact that Socrata will only return 1000 rows at a time, unless explicity told not to via the SoqlQuery argument.
+        /// </remarks>
+        public IEnumerable<TRow> Query<TRow>(SoqlQuery soqlQuery, string resourceId) where TRow : class
+        {
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
+            //if the query explicitly asks for a limit/offset, honor the ask
+            if (soqlQuery.LimitValue > 0 || soqlQuery.OffsetValue > 0)
+            {
+                var queryUri = SodaUri.ForQuery(Host, resourceId, soqlQuery);
+                return read<IEnumerable<TRow>>(queryUri);
+            }
+            //otherwise, go nuts and get EVERYTHING
+            else
+            {
+                List<TRow> allResults = new List<TRow>();
+                int offset = 0;
+
+                soqlQuery = soqlQuery.Limit(SoqlQuery.MaximumLimit).Offset(offset);
+                IEnumerable<TRow> offsetResults = read<IEnumerable<TRow>>(SodaUri.ForQuery(Host, resourceId, soqlQuery));
+
+                while (offsetResults.Any())
+                {
+                    allResults.AddRange(offsetResults);
+                    soqlQuery = soqlQuery.Offset(++offset * SoqlQuery.MaximumLimit);
+                    offsetResults = read<IEnumerable<TRow>>(SodaUri.ForQuery(Host, resourceId, soqlQuery));
+                }
+
+                return allResults;
+            }
+        }
+
+        /// <summary>
         /// Update/Insert the specified payload string using the specified resource identifier.
         /// </summary>
         /// <param name="payload">A string of serialized data.</param>
@@ -229,7 +250,7 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public SodaResult Upsert<T>(IEnumerable<T> payload, string resourceId) where T : class
+        public SodaResult Upsert<TRow>(IEnumerable<TRow> payload, string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
@@ -252,7 +273,7 @@ namespace SODA
         /// <returns>A collection of <see cref="SodaResult"/>, one for each batched Upsert.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, Func<IEnumerable<T>, T, bool> breakFunction, string resourceId) where T : class
+        public IEnumerable<SodaResult> BatchUpsert<TRow>(IEnumerable<TRow> payload, int batchSize, Func<IEnumerable<TRow>, TRow, bool> breakFunction, string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
@@ -260,13 +281,13 @@ namespace SODA
             if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
-            Queue<T> queue = new Queue<T>(payload);
+            Queue<TRow> queue = new Queue<TRow>(payload);
 
             while (queue.Any())
             {
                 //make the next batch to send
 
-                var batch = new List<T>();
+                var batch = new List<TRow>();
 
                 for (var index = 0; index < batchSize && queue.Count > 0; index++)
                 {
@@ -283,7 +304,7 @@ namespace SODA
 
                 try
                 {
-                    result = Upsert<T>(batch, resourceId);
+                    result = Upsert<TRow>(batch, resourceId);
                 }
                 catch (WebException webException)
                 {
@@ -310,7 +331,7 @@ namespace SODA
         /// <returns>A collection of <see cref="SodaResult"/>, one for each batch processed.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public IEnumerable<SodaResult> BatchUpsert<T>(IEnumerable<T> payload, int batchSize, string resourceId) where T : class
+        public IEnumerable<SodaResult> BatchUpsert<TRow>(IEnumerable<TRow> payload, int batchSize, string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
@@ -321,9 +342,9 @@ namespace SODA
             //we create a no-op function that returns false for all inputs
             //in other words, the size of a batch will never be affected by this break function
             //and will always be the minimum of (batchSize, remaining items in total collection)
-            Func<IEnumerable<T>, T, bool> neverBreak = (a, b) => false;
+            Func<IEnumerable<TRow>, TRow, bool> neverBreak = (a, b) => false;
 
-            return BatchUpsert<T>(payload, batchSize, neverBreak, resourceId);
+            return BatchUpsert<TRow>(payload, batchSize, neverBreak, resourceId);
         }
 
         /// <summary>
@@ -385,7 +406,7 @@ namespace SODA
         /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
-        public SodaResult Replace<T>(IEnumerable<T> payload, string resourceId) where T : class
+        public SodaResult Replace<TRow>(IEnumerable<TRow> payload, string resourceId) where TRow : class
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
@@ -423,6 +444,39 @@ namespace SODA
             var request = new SodaRequest(uri, "DELETE", AppToken, Username, password);
 
             return request.ParseResponse<SodaResult>();
+        }
+
+        /// <summary>
+        /// Send an HTTP GET request to the specified URI and intepret the result as TResult.
+        /// </summary>
+        /// <typeparam name="TResult">The .NET class to use for response deserialization.</typeparam>
+        /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
+        /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
+        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
+        internal TResult read<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
+            where TResult : class
+        {
+            var request = new SodaRequest(uri, "GET", AppToken, Username, password, dataFormat, null, RequestTimeout);
+
+            return request.ParseResponse<TResult>();
+        }
+
+        /// <summary>
+        /// Send an HTTP request of the specified method and interpret the result.
+        /// </summary>
+        /// <typeparam name="TPayload">The .NET class that represents the request payload.</typeparam>
+        /// <typeparam name="TResult">The .NET class to use for response deserialization.</typeparam>
+        /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
+        /// <param name="method">One of POST, PUT, or DELETE</param>
+        /// <param name="payload">An object graph to serialize and send with the request.</param>
+        /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
+        internal TResult write<TPayload, TResult>(Uri uri, string method, TPayload payload)
+            where TPayload : class
+            where TResult : class
+        {
+            var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString(), RequestTimeout);
+
+            return request.ParseResponse<TResult>();
         }
     }
 }
