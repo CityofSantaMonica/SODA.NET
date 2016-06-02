@@ -8,7 +8,7 @@ are passing, and you're happy with the state of things...
 
 1. Create a branch named `release`
 2. Update [`ReleaseNotes.md`](ReleaseNotes.md), following the existing format
-3. Bump the (assembly & file) version number in [`SolutionInfo.cs`](SolutionInfo.cs) and the `.nuspec` files (if required)
+3. Bump the version number in [`SolutionInfo.cs`](SolutionInfo.cs) and the `.nuspec` and `appveyor.yml` files (if required)
 4. Push the branch to GitHub and create a pull request
 5. Run `.\build CreatePackages` to create the NuGet packages (locally) for the new version
 6. Test the NuGet packages! [How to install NuGet package locally](http://stackoverflow.com/questions/10240029/how-to-install-a-nuget-package-nupkg-file-locally)
