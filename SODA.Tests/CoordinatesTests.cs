@@ -12,10 +12,14 @@ namespace SODA.Tests
         public void New_Initializes_CoordinatesArray()
         {
             int expectedLength = 2;
+            double expectedValue = 0.0;
+
             var coordinates = new Coordinates();
 
             Assert.NotNull(coordinates.CoordinatesArray);
             Assert.AreEqual(expectedLength, coordinates.CoordinatesArray.Length);
+            Assert.AreEqual(expectedValue, coordinates.CoordinatesArray[0]);
+            Assert.AreEqual(expectedValue, coordinates.CoordinatesArray[1]);
         }
 
         [Test]
@@ -33,13 +37,16 @@ namespace SODA.Tests
         public void EmptyJsonArray_Deserializes_ToNewCoordinates()
         {
             string json = "[]";
-            int expectedLength = 0;
+            int expectedLength = 2;
+            double expectedValue = 0.0;
 
             var coordinates = JsonConvert.DeserializeObject<Coordinates>(json);
 
             Assert.NotNull(coordinates);
             Assert.NotNull(coordinates.CoordinatesArray);
             Assert.AreEqual(expectedLength, coordinates.CoordinatesArray.Length);
+            Assert.AreEqual(expectedValue, coordinates.CoordinatesArray[0]);
+            Assert.AreEqual(expectedValue, coordinates.CoordinatesArray[1]);
         }
     }
 }
