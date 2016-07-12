@@ -1,37 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using SODA.Utilities;
-
-namespace SODA.Models
+﻿namespace SODA.Models
 {
     /// <summary>
     /// Describes the Geographic Position - Longtitude and Latitude.
     /// </summary>
-    [DataContract]
     public class Coordinates
     {
-        /// <summary>
-        /// Describes the Geographic Position For Longitude.
-        /// </summary>
-        [DataMember]
-        public readonly double x;
+        internal double[] CoordinatesArray { get; set; }
 
         /// <summary>
-        /// Describes the Geographic Position for Latitude.
+        /// Initialize a new instance of the Coordinates class.
         /// </summary>
-        [DataMember]
-        public readonly double y;       
-
-        /// <summary>
-        /// Constructor. Initializes a new instance of the Coordinates class.
-        /// </summary>        
-        public Coordinates(double x, double y)
+        public Coordinates()
         {
-            this.x = x;
-            this.y = y;
         }
-        
     }
 }
 
