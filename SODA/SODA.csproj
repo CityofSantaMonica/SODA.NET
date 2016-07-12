@@ -72,6 +72,7 @@
     <Compile Include="SoqlQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SodaClient.cs" />
+    <Compile Include="Utilities\CoordinatesJsonConverter.cs" />
     <Compile Include="Utilities\JsonSerializationExtensions.cs" />
     <Compile Include="Utilities\SodaUri.cs" />
     <Compile Include="Utilities\DateTimeConverter.cs" />

@@ -1,11 +1,20 @@
-﻿namespace SODA.Models
+﻿using Newtonsoft.Json;
+using SODA.Utilities;
+
+namespace SODA.Models
 {
     /// <summary>
-    /// Describes the Geographic Position - Longtitude and Latitude.
+    /// Describes a Geographic position with Latitude and Longtitude.
     /// </summary>
+    [JsonConverter(typeof(CoordinatesJsonConverter))]
     public class Coordinates
     {
         internal double[] CoordinatesArray { get; set; }
+
+        internal Coordinates(double[] coordinates) : this()
+        {
+            CoordinatesArray = coordinates;
+        }
 
         /// <summary>
         /// Initialize a new instance of the Coordinates class.
