@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using SODA.Models;
 using Newtonsoft.Json;
+using System;
 
 namespace SODA.Tests
 {
@@ -11,15 +12,9 @@ namespace SODA.Tests
         [Test]
         public void New_Initializes_CoordinatesArray()
         {
-            int expectedLength = 2;
-            double expectedValue = 0.0;
-
             var coordinates = new Coordinates();
 
-            Assert.NotNull(coordinates.CoordinatesArray);
-            Assert.AreEqual(expectedLength, coordinates.CoordinatesArray.Length);
-            Assert.AreEqual(expectedValue, coordinates.CoordinatesArray[0]);
-            Assert.AreEqual(expectedValue, coordinates.CoordinatesArray[1]);
+            AssertCoordinatesInvariants(coordinates);
         }
 
         [Test]
@@ -37,16 +32,32 @@ namespace SODA.Tests
         public void EmptyJsonArray_Deserializes_ToNewCoordinates()
         {
             string json = "[]";
-            int expectedLength = 2;
-            double expectedValue = 0.0;
 
             var coordinates = JsonConvert.DeserializeObject<Coordinates>(json);
 
-            Assert.NotNull(coordinates);
+            AssertCoordinatesInvariants(coordinates);
+        }
+
+        [TestCase(0, 1)]
+        [TestCase(2, 12)]
+        [TestCase(10.11, 11.12)]
+        [TestCase(100.001, 111.112)]
+        public void JsonArray_Deserializes_ToCoordinates(double first, double second)
+        {
+            string json = String.Format("[{0},{1}]", first, second);
+
+            var coordinates = JsonConvert.DeserializeObject<Coordinates>(json);
+
+            AssertCoordinatesInvariants(coordinates, first, second);
+        }
+
+        // asserts each of the properties that we wish to remain invariant for any Coordinates instance.
+        private void AssertCoordinatesInvariants(Coordinates coordinates, double firstValue = 0, double secondValue = 0)
+        {
             Assert.NotNull(coordinates.CoordinatesArray);
-            Assert.AreEqual(expectedLength, coordinates.CoordinatesArray.Length);
-            Assert.AreEqual(expectedValue, coordinates.CoordinatesArray[0]);
-            Assert.AreEqual(expectedValue, coordinates.CoordinatesArray[1]);
+            Assert.AreEqual(2, coordinates.CoordinatesArray.Length);
+            Assert.AreEqual(firstValue, coordinates.CoordinatesArray[0]);
+            Assert.AreEqual(secondValue, coordinates.CoordinatesArray[1]);
         }
     }
 }
