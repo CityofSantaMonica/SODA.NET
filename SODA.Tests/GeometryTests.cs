@@ -7,11 +7,26 @@ namespace SODA.Tests
     [TestFixture]
     class GeometryTests
     {
+        Point[] firstpoints = new Point[]
+        {
+            new Point(10, 20),
+            new Point(30, 40),
+            new Point(50, 20),
+            new Point(10, 20)
+        };
+        Point[] secondpoints = new Point[]
+        {
+            new Point(1, 2),
+            new Point(3, 4),
+            new Point(5, 2),
+            new Point(1, 2)
+        };
+
         [Test]
         [Category("Geometry")]
         public void GeometryPointToWKT()
         {
-            var geometry = new Point { type = "Point", coordinates = new double[] { 10, 20 } };
+            var geometry = firstpoints[0];
             var wkt = geometry.toWKT();
             Assert.AreEqual(wkt, "POINT (10 20)");
         }
@@ -19,41 +34,50 @@ namespace SODA.Tests
         [Category("Geometry")]
         public void GeometryMultiPointToWKT()
         {
-            var geometry = new MultiPoint { type = "MultiPoint", coordinates = new double[][] { new double[] { 10, 20 }, new double[] { 30, 40 } } };
+            var geometry = new MultiPoint(firstpoints);
             var wkt = geometry.toWKT();
-            Assert.AreEqual(wkt, "MULTIPOINT ((10 20), (30 40))");
+            Assert.AreEqual(wkt, "MULTIPOINT ((10 20), (30 40), (50 20), (10 20))");
+        }
+        [Test]
+        [Category("Geometry")]
+        public void GeometryMultiPointPointAt()
+        {
+            var geometry = new MultiPoint(firstpoints);
+            var point = geometry.pointAt(0);
+            var wkt = point.toWKT();
+            Assert.AreEqual(wkt, "POINT (10 20)");
         }
         [Test]
         [Category("Geometry")]
         public void GeometryLineStringToWKT()
         {
-            var geometry = new LineString { type = "LineString", coordinates = new double[][] { new double[] { 10, 20 }, new double[] { 30, 40 } } };
+            var geometry = new LineString(firstpoints);
             var wkt = geometry.toWKT();
-            Assert.AreEqual(wkt, "LINESTRING (10 20, 30 40)");
+            Assert.AreEqual(wkt, "LINESTRING (10 20, 30 40, 50 20, 10 20)");
         }
         [Test]
         [Category("Geometry")]
         public void GeometryMultiLineStringToWKT()
         {
-            var geometry = new MultiLineString { type = "MultiLineString", coordinates = new double[][][] { new double[][] { new double[] { 10, 20 }, new double[] { 30, 40 } }, new double[][] { new double[] { 50, 60 }, new double[] { 70, 80 } } } };
+            var geometry = new MultiLineString(new LineString(firstpoints), new LineString(secondpoints));
             var wkt = geometry.toWKT();
-            Assert.AreEqual(wkt, "MULTILINESTRING ((10 20, 30 40), (50 60, 70 80))");
+            Assert.AreEqual(wkt, "MULTILINESTRING ((10 20, 30 40, 50 20, 10 20), (1 2, 3 4, 5 2, 1 2))");
         }
         [Test]
         [Category("Geometry")]
         public void GeometryPolygonToWKT()
         {
-            var geometry = new Polygon { type = "Polygon", coordinates = new double[][][] { new double[][] { new double[] { 10, 20 }, new double[] { 30, 40 }, new double[] { 50, 20 } } } };
+            var geometry = new Polygon(new LineString(firstpoints));
             var wkt = geometry.toWKT();
-            Assert.AreEqual(wkt, "POLYGON ((10 20, 30 40, 50 20))");
+            Assert.AreEqual(wkt, "POLYGON ((10 20, 30 40, 50 20, 10 20))");
         }
         [Test]
         [Category("Geometry")]
         public void GeometryMultiPolygonToWKT()
         {
-            var geometry = new MultiPolygon { type = "MultiPolygon", coordinates = new double[][][][] { new double[][][] { new double[][] { new double[] { 10, 20 }, new double[] { 30, 40 }, new double[] { 50, 20 } } }, new double[][][] { new double[][] { new double[] { 1, 2 }, new double[] { 3, 4 }, new double[] { 5, 2 } } } } };
+            var geometry = new MultiPolygon(new Polygon(new LineString(firstpoints)), new Polygon(new LineString(secondpoints)));
             var wkt = geometry.toWKT();
-            Assert.AreEqual(wkt, "MULTIPOLYGON (((10 20, 30 40, 50 20)), ((1 2, 3 4, 5 2)))");
+            Assert.AreEqual(wkt, "MULTIPOLYGON (((10 20, 30 40, 50 20, 10 20)), ((1 2, 3 4, 5 2, 1 2)))");
         }
     }
 }

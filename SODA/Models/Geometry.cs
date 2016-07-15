@@ -31,5 +31,10 @@ namespace SODA.Models
         {
             return string.Format("{0} {1}", type.ToUpper(), coordinates);
         }
+        protected Point pointAt(double[][]coordinates, int index)
+        {
+            return new Point { type = "Point", coordinates = coordinates[index] };
+        }
+
     }
 }

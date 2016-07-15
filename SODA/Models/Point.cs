@@ -9,6 +9,11 @@ namespace SODA.Models
         public string type { get; set; }
         [DataMember]
         public double[] coordinates { get; set; }
+        public Point(params double[] position)
+        {
+            type = "Point";
+            coordinates = position;
+        }
         public string toWKT()
         {
             return base.toWKT(type, coordinatesToWKT(coordinates));
