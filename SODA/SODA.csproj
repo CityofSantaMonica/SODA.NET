@@ -56,10 +56,12 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Models\Geometry.cs" />
     <Compile Include="Models\HumanAddress.cs" />
     <Compile Include="Models\LocationColumn.cs" />
     <Compile Include="Models\PhoneColumn.cs" />
     <Compile Include="Models\PhoneColumnType.cs" />
+    <Compile Include="Models\Point.cs" />
     <Compile Include="Models\WebsiteUrlColumn.cs" />
     <Compile Include="SodaRequest.cs" />
     <Compile Include="SoqlOrderDirection.cs" />
