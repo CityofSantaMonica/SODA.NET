@@ -10,7 +10,7 @@ namespace SODA.Tests
     {
         [Test]
         [Category("Geometry")]
-        public void GeometryPointDeserialize()
+        public void GeometryPoint()
         {
             string source = "{\"type\":\"Point\",\"coordinates\":[10.0,20.0]}";
             var geometry = JsonConvert.DeserializeObject<Point>(source);
@@ -24,7 +24,7 @@ namespace SODA.Tests
         }
         [Test]
         [Category("Geometry")]
-        public void GeometryMultiPointDeserialize()
+        public void GeometryMultiPoint()
         {
             string source = "{\"type\":\"MultiPoint\",\"coordinates\":[[10.0,20.0],[30.0,40.0]]}";
             var geometry = JsonConvert.DeserializeObject<MultiPoint>(source);
@@ -43,7 +43,7 @@ namespace SODA.Tests
         }
         [Test]
         [Category("Geometry")]
-        public void GeometryLineStringDeserialize()
+        public void GeometryLineString()
         {
             string source = "{\"type\":\"LineString\",\"coordinates\":[[10.0,20.0],[30.0,40.0],[50.0,20.0]]}";
             var geometry = JsonConvert.DeserializeObject<LineString>(source);
@@ -65,7 +65,7 @@ namespace SODA.Tests
         }
         [Test]
         [Category("Geometry")]
-        public void GeometryMultiLineStringDeserialize()
+        public void GeometryMultiLineString()
         {
             string source = "{\"type\":\"MultiLineString\",\"coordinates\":[[[10.0,20.0],[30.0,40.0],[50.0,20.0]],[[1.0,2.0],[3.0,4.0],[5.0,2.0]]]}";
             var geometry = JsonConvert.DeserializeObject<MultiLineString>(source);
@@ -98,7 +98,7 @@ namespace SODA.Tests
         }
         [Test]
         [Category("Geometry")]
-        public void GeometryPolygonDeserialize()
+        public void GeometryPolygon()
         {
             string source = "{\"type\":\"Polygon\",\"coordinates\":[[[10.0,20.0],[30.0,40.0],[50.0,20.0],[10.0,20.0]]]}";
             var geometry = JsonConvert.DeserializeObject<Polygon>(source);
@@ -124,7 +124,7 @@ namespace SODA.Tests
         }
         [Test]
         [Category("Geometry")]
-        public void GeometryMultiPolygonDeserialize()
+        public void GeometryMultiPolygon()
         {
             string source = "{\"type\":\"MultiPolygon\",\"coordinates\":[[[[10.0,20.0],[30.0,40.0],[50.0,20.0],[10.0,20.0]]],[[[1.0,2.0],[3.0,4.0],[5.0,2.0],[1.0,2.0]]]]}";
             var geometry = JsonConvert.DeserializeObject<MultiPolygon>(source);
