@@ -8,6 +8,8 @@ namespace SODA.Tests
     [TestFixture]
     class GeometryTests
     {
+        [Test]
+        [Category("Geometry")]
         public void GeometryPointDeserialize()
         {
             string source = "{\"type\":\"Point\",\"coordinates\":[10.0,20.0]}";
@@ -18,6 +20,7 @@ namespace SODA.Tests
             Assert.AreEqual(geometry, new Point(10, 20));
             string destination = JsonConvert.SerializeObject(geometry);
             Assert.AreEqual(source, destination);
+            Assert.AreEqual(geometry.WKT, "POINT (10 20)");
         }
         [Test]
         [Category("Geometry")]
@@ -36,6 +39,7 @@ namespace SODA.Tests
                     new Point(30, 40)));
             string destination = JsonConvert.SerializeObject(geometry);
             Assert.AreEqual(source, destination);
+            Assert.AreEqual(geometry.WKT, "MULTIPOINT (10 20, 30 40)");
         }
         [Test]
         [Category("Geometry")]
@@ -57,6 +61,7 @@ namespace SODA.Tests
                     new Point(50, 20)));
             string destination = JsonConvert.SerializeObject(geometry);
             Assert.AreEqual(source, destination);
+            Assert.AreEqual(geometry.WKT, "LINESTRING (10 20, 30 40, 50 20)");
         }
         [Test]
         [Category("Geometry")]
@@ -89,6 +94,7 @@ namespace SODA.Tests
                         new Point(5, 2))));
             string destination = JsonConvert.SerializeObject(geometry);
             Assert.AreEqual(source, destination);
+            Assert.AreEqual(geometry.WKT, "MULTILINESTRING ((10 20, 30 40, 50 20), (1 2, 3 4, 5 2))");
         }
         [Test]
         [Category("Geometry")]
@@ -114,6 +120,7 @@ namespace SODA.Tests
                         new Point(10, 20))));
             string destination = JsonConvert.SerializeObject(geometry);
             Assert.AreEqual(source, destination);
+            Assert.AreEqual(geometry.WKT, "POLYGON ((10 20, 30 40, 50 20, 10 20))");
         }
         [Test]
         [Category("Geometry")]
@@ -155,6 +162,7 @@ namespace SODA.Tests
                             new Point(1, 2)))));
             string destination = JsonConvert.SerializeObject(geometry);
             Assert.AreEqual(source, destination);
+            Assert.AreEqual(geometry.WKT, "MULTIPOLYGON (((10 20, 30 40, 50 20, 10 20)), ((1 2, 3 4, 5 2, 1 2)))");
         }
     }
 }

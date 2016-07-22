@@ -24,5 +24,21 @@ namespace SODA.Models
         [DataMember(Order = 1)]
         [JsonConverter(typeof(StringEnumConverter))]
         public geotype type { get; set; }
+        protected string coordinatesText(double[] coordinates)
+        {
+            return string.Join(" ", coordinates.Select(item => item.ToString()));
+        }
+        protected string coordinatesText(double[][] coordinates)
+        {
+            return string.Join(", ", coordinates.Select(item => coordinatesText(item)));
+        }
+        protected string coordinatesText(double[][][] coordinates)
+        {
+            return string.Join(", ", coordinates.Select(item => string.Format("({0})", coordinatesText(item))));
+        }
+        protected string coordinatesText(double[][][][] coordinates)
+        {
+            return string.Join(", ", coordinates.Select(item => string.Format("({0})", coordinatesText(item))));
+        }
     }
 }

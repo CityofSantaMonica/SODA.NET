@@ -44,5 +44,12 @@ namespace SODA.Models
             var coordinatesEqual = this.LinearRings.SequenceEqual(other.LinearRings);
             return typeEquals && coordinatesEqual;
         }
+        public string WKT
+        {
+            get
+            {
+                return string.Format("{0} ({1})", this.type.ToString().ToUpper(), coordinatesText(coordinates));
+            }
+        }
     }
 }

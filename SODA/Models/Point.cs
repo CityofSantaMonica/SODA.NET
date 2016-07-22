@@ -28,5 +28,12 @@ namespace SODA.Models
             var coordinatesEqual = this.coordinates.SequenceEqual(other.coordinates);
             return typeEquals && coordinatesEqual;
         }
+        public string WKT
+        {
+            get
+            {
+                return string.Format("{0} ({1})", this.type.ToString().ToUpper(), coordinatesText(coordinates));
+            }
+        }
     }
 }

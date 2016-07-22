@@ -55,5 +55,12 @@ namespace SODA.Models
             var coordinatesEqual = this.LineStrings.SequenceEqual(other.LineStrings);
             return typeEquals && coordinatesEqual;
         }
+        public string WKT
+        {
+            get
+            {
+                return string.Format("{0} ({1})", this.type.ToString().ToUpper(), coordinatesText(coordinates));
+            }
+        }
     }
 }
