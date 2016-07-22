@@ -8,11 +8,25 @@ using System.Threading.Tasks;
 namespace SODA.Models
 {
     [DataContract]
-    class Point:Geometry
+    class Point : Geometry, IEquatable<Point>
     {
-        [DataMember]
-        public new type type { get; set; }
-        [DataMember]
+        [DataMember(Order = 2)]
         public double[] coordinates { get; set; }
+        public Point()
+        {
+            this.type = geotype.Point;
+        }
+        public Point(params double[] position)
+        {
+            this.type = geotype.Point;
+            this.coordinates = position;
+        }
+
+        public bool Equals(Point other)
+        {
+            var typeEquals = this.type.Equals(other.type);
+            var coordinatesEqual = this.coordinates.SequenceEqual(other.coordinates);
+            return typeEquals && coordinatesEqual;
+        }
     }
 }

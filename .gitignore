@@ -58,3 +58,4 @@ ClientBin
 nunit-*.xml
 *.userprefs
 packaging/
+/LiveTest

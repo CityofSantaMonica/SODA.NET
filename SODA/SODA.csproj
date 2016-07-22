@@ -58,7 +58,13 @@
     </Compile>
     <Compile Include="Models\Geometry.cs" />
     <Compile Include="Models\HumanAddress.cs" />
+    <Compile Include="Models\LinearRing.cs" />
+    <Compile Include="Models\MultiPolygon.cs" />
+    <Compile Include="Models\Polygon.cs" />
+    <Compile Include="Models\MultiLineString.cs" />
     <Compile Include="Models\LocationColumn.cs" />
+    <Compile Include="Models\LineString.cs" />
+    <Compile Include="Models\MultiPoint.cs" />
     <Compile Include="Models\PhoneColumn.cs" />
     <Compile Include="Models\PhoneColumnType.cs" />
     <Compile Include="Models\Point.cs" />
