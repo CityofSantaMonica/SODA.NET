@@ -130,6 +130,19 @@ namespace SODA.Utilities
                         else
                             toAppend = String.Format("({0},{1})", value.Latitude, value.Longitude);
                     }
+                    //geometry types should be exported as WKT
+                    else if (new List<Type>() {
+                        typeof(Point),
+                        typeof(MultiPoint),
+                        typeof(LineString),
+                        typeof(MultiLineString),
+                        typeof(Polygon),
+                        typeof(MultiPolygon)
+                    }.Contains(property.PropertyType))
+                    {
+                        var geometry = property.GetValue(entity) as Geometry;
+                        toAppend = geometry.WKT;
+                    }
                     else
                     {
                         toAppend = propertyValue.ToJsonString();

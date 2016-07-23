@@ -190,5 +190,25 @@ namespace SODA.Utilities.Tests
                 .And.Not.StringContaining(longitude)
             );
         }
+
+        [TestCase(SeparatedValuesDelimiter.Comma)]
+        [TestCase(SeparatedValuesDelimiter.Tab)]
+        [Category("SeparatedValuesSerializer")]
+        public void SerializeToString_Serializes_Point_In_Socrata_Publish_Format(SeparatedValuesDelimiter delimiter)
+        {
+            double latitude = 34;
+            double longitude = -118;
+
+            var entities = new[] { 
+                new { 
+                    location =  new Point(longitude, latitude)
+                } 
+            };
+
+            Assert.That(
+                SeparatedValuesSerializer.SerializeToString(entities, delimiter),
+                Is.StringEnding(String.Format("\"POINT ({0} {1})\"", longitude, latitude))
+            );
+        }
     }
 }
