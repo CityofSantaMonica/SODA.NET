@@ -44,7 +44,7 @@ namespace SODA.Models
             var coordinatesEqual = this.LinearRings.SequenceEqual(other.LinearRings);
             return typeEquals && coordinatesEqual;
         }
-        public string WKT
+        public override string WKT
         {
             get
             {

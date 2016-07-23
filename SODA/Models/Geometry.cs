@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SODA.Models
 {
     [DataContract]
-    public class Geometry
+    public abstract class Geometry
     {
         public enum geotype
         {
@@ -24,6 +24,7 @@ namespace SODA.Models
         [DataMember(Order = 1)]
         [JsonConverter(typeof(StringEnumConverter))]
         public geotype type { get; set; }
+        public abstract string WKT { get; }
         protected string coordinatesText(double[] coordinates)
         {
             return string.Join(" ", coordinates.Select(item => item.ToString()));

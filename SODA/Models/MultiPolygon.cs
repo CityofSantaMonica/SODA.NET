@@ -44,7 +44,7 @@ namespace SODA.Models
             var coordinatesEqual = this.Polygons.SequenceEqual(other.Polygons);
             return typeEquals && coordinatesEqual;
         }
-        public string WKT
+        public override string WKT
         {
             get
             {

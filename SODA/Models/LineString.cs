@@ -55,7 +55,7 @@ namespace SODA.Models
             var coordinatesEqual = this.Points.SequenceEqual(other.Points);
             return typeEquals && coordinatesEqual;
         }
-        public string WKT
+        public override string WKT
         {
             get
             {
