@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SODA.Models
 {
     [DataContract]
-    class Polygon : Geometry, IEquatable<Polygon>
+    public class Polygon : Geometry, IEquatable<Polygon>
     {
         [DataMember(Order = 2)]
         public double[][][] coordinates { get; set; }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SODA.Models
 {
     [DataContract]
-    class MultiLineString : Geometry, IEquatable<MultiLineString>
+    public class MultiLineString : Geometry, IEquatable<MultiLineString>
     {
         [DataMember(Order = 2)]
         public double[][][] coordinates { get; set; }

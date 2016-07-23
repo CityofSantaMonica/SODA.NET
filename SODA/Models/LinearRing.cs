@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SODA.Models
 {
     [DataContract]
-    class LinearRing : LineString, IEquatable<LinearRing>
+    public class LinearRing : LineString, IEquatable<LinearRing>
     {
         public LinearRing(double[][] coordinates) : base(coordinates)
         {

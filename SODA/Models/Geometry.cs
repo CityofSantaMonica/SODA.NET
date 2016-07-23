@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SODA.Models
 {
     [DataContract]
-    class Geometry
+    public class Geometry
     {
         public enum geotype
         {
