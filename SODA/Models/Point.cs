@@ -12,6 +12,7 @@ namespace SODA.Models
     {
         [DataMember(Order = 2)]
         public double[] coordinates { get; set; }
+        public Point() { }
         public Point(params double[] coordinates)
         {
             if (coordinates.Length < 2)
