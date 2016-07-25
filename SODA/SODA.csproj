@@ -56,7 +56,7 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="Models\Coordinates.cs" />
+    <Compile Include="Models\Positions.cs" />
     <Compile Include="Models\HumanAddress.cs" />
     <Compile Include="Models\LocationColumn.cs" />
     <Compile Include="Models\PhoneColumn.cs" />
@@ -72,7 +72,7 @@
     <Compile Include="SoqlQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SodaClient.cs" />
-    <Compile Include="Utilities\CoordinatesJsonConverter.cs" />
+    <Compile Include="Utilities\PositionsJsonConverter.cs" />
     <Compile Include="Utilities\JsonSerializationExtensions.cs" />
     <Compile Include="Utilities\SodaUri.cs" />
     <Compile Include="Utilities\DateTimeConverter.cs" />
