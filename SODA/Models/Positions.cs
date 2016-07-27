@@ -15,17 +15,9 @@ namespace SODA.Models
         /// Initializes a new instance of the Positions class.
         /// </summary>
         /// <param name="positions"></param>
-        public Positions(double[] positions) : this()
+        public Positions(double[] positions)
         {
             PositionsArray = positions;
-        }
-        
-        /// <summary>
-        /// Initialize a new instance of the Positions class.
-        /// </summary>
-        public Positions()
-        {           
-            PositionsArray = new double[2];
         }
     }
 }
