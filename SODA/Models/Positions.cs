@@ -9,7 +9,7 @@ namespace SODA.Models
     [JsonConverter(typeof(PositionsJsonConverter))]
     public class Positions
     {
-        internal double[] PositionsArray { get; set; }
+        internal double[] PositionsArray { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the Positions class.

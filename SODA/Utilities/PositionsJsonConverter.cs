@@ -2,42 +2,42 @@
 using Newtonsoft.Json.Linq;
 using SODA.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SODA.Utilities
 {
     class PositionsJsonConverter : JsonConverter
-    {        
+    {
         public override bool CanConvert(Type objectType)
         {
             return typeof(Positions).IsAssignableFrom(objectType);
         }
 
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) 
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            Positions positions = new Positions();
-            if (reader.TokenType == JsonToken.StartArray)
+            var arrayValues = JArray.Load(reader).Values<double>().ToArray();
+
+            if (arrayValues.Length == 2 || arrayValues.Length == 3)
             {
-                var arrayValues = JArray.Load(reader);
-
-                double arrayIndexOne = (double)arrayValues[0];
-                double arrayIndexTwo = (double)arrayValues[1];
-
-                positions.PositionsArray = new double[] { arrayIndexOne, arrayIndexTwo };
-            }            
-            return positions;
+                return new Positions(arrayValues);
+            }
+            throw new Exception("Value should be 2 or 3");
         }
 
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            Positions positions = (Positions)value;
+            var positions = (Positions)value;
 
             writer.WriteStartArray();
-            writer.WriteValue(positions.PositionsArray[0]);
-            writer.WriteValue(positions.PositionsArray[1]);
+            foreach (var item in positions.PositionsArray)
+            {
+                writer.WriteValue(item);
+            }
             writer.WriteEndArray();
         }
-    }  
+    }
 }
 
