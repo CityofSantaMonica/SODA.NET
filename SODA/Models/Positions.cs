@@ -24,7 +24,7 @@ namespace SODA.Models
                 throw new ArgumentOutOfRangeException("positions", "Positions must have at least 2 components");
             }
 
-            PositionsArray = positions.Take(3).ToArray();
+            PositionsArray = positions;
         }
     }
 }
