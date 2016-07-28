@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Linq;
+using Newtonsoft.Json;
 using SODA.Utilities;
 
 namespace SODA.Models
@@ -17,7 +19,12 @@ namespace SODA.Models
         /// <param name="positions"></param>
         public Positions(double[] positions)
         {
-            PositionsArray = positions;
+            if (positions.Length < 2)
+            {
+                throw new ArgumentOutOfRangeException("positions", "Positions must have at least 2 components");
+            }
+
+            PositionsArray = positions.Take(3).ToArray();
         }
     }
 }
