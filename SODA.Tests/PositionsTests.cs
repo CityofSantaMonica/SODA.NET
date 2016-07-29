@@ -15,7 +15,7 @@ namespace SODA.Tests
         public void New_LessThan2Values_ThrowsException(double[] values)
         {
             new Positions(values);
-        }       
+        }
 
         [TestCase(new double[] { 10.11, 11.12 })]
         [TestCase(new double[] { 100.001, 111.112, 122.223 })]
@@ -38,16 +38,13 @@ namespace SODA.Tests
 
             var positions = JsonConvert.DeserializeObject<Positions>(json);
 
-            AssertPositionsInvariants(positions, values[0], values[1]);
-        }
-
-        // asserts each of the properties that we wish to remain invariant for any Positions instance.
-        private void AssertPositionsInvariants(Positions positions, double firstValue, double secondValue)
-        {
             Assert.NotNull(positions.PositionsArray);
-            Assert.That(positions.PositionsArray.Length, Is.AtLeast(2));
-            Assert.AreEqual(firstValue, positions.PositionsArray[0]);
-            Assert.AreEqual(secondValue, positions.PositionsArray[1]);         
+            Assert.AreEqual(values.Length, positions.PositionsArray.Length);
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                Assert.AreEqual(values[i], positions.PositionsArray[i]);
+            }
         }
     }
 }
