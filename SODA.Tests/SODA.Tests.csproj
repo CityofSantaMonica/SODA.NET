@@ -66,6 +66,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="PointColumnTests.cs" />
     <Compile Include="PositionsTests.cs" />
     <Compile Include="HumanAddressTests.cs" />
     <Compile Include="JsonSerializationExtensionTests.cs" />
