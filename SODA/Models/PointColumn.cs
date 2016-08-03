@@ -23,13 +23,21 @@ namespace SODA.Models
         }
 
         /// <summary>
-        /// Gets or sets the string representation of the type value for this PointColumn.
+        /// Initializes a new instance of the <see cref="PointColumn"/> class.
+        /// </summary>
+        /// <param name="coordinates">The coordinates.</param>
+        public PointColumn(double[] coordinates) : this(new Positions(coordinates))
+        {
+        }
+
+        /// <summary>
+        /// Gets the type value for this PointColumn.
         /// </summary>
         [DataMember(Name = "type")]
         public string Type { get; private set; }
 
         /// <summary>
-        /// Gets or sets the string representation of the coordinates value for this PointColumn.
+        /// Gets the <see cref="Positions"/> for this PointColumn.
         /// </summary>
         [DataMember(Name = "coordinates")]
         public Positions Coordinates { get; private set; }

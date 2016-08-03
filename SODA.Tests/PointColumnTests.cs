@@ -1,13 +1,10 @@
-﻿
-using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using NUnit.Framework;
 using SODA.Models;
-
 namespace SODA.Tests
 {
     [TestFixture]
-    [Category("Positions")]
+    [Category("PointColumn")]
     public class PointColumnTests
     {
         [Test]
@@ -19,10 +16,19 @@ namespace SODA.Tests
 
             string actualJSON = JsonConvert.SerializeObject(point);
 
-            Assert.AreEqual(actualJSON, expectedJSON);
-            Assert.IsNotNull(actualJSON);
+            Assert.AreEqual(expectedJSON, actualJSON);
         }
 
+        [Test]
+        public void Coordinates_In_PositionsClass_And_PointColumnClass_Are_Equal()
+        {
+            var array = new[] {-87.653274, 41.936172};
+            var positionFromConstructor = new PointColumn(array);
+            var positionFromPositionsClass = new PointColumn(new Positions(array));
+
+            Assert.AreEqual(positionFromConstructor.Coordinates.PositionsArray[0], positionFromPositionsClass.Coordinates.PositionsArray[0]);
+            Assert.AreEqual(positionFromConstructor.Coordinates.PositionsArray[1], positionFromPositionsClass.Coordinates.PositionsArray[1]);
+        }
 
         [Test]
         public void Can_Deserialize_Point_Feature()
@@ -31,10 +37,8 @@ namespace SODA.Tests
 
             var actualPointColumn = JsonConvert.DeserializeObject<PointColumn>(json);
 
-            Assert.IsNotNull(actualPointColumn);
-            Assert.AreEqual(actualPointColumn.Coordinates.PositionsArray[0], -87.653274);
-            Assert.AreEqual(actualPointColumn.Coordinates.PositionsArray[1], 41.936172);                
-        }        
+            Assert.AreEqual(-87.653274, actualPointColumn.Coordinates.PositionsArray[0]);
+            Assert.AreEqual(41.936172, actualPointColumn.Coordinates.PositionsArray[1]);
+        }
     }
 }
-
