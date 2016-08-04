@@ -16,14 +16,12 @@ namespace SODA.Models
         {
             this.type = geotype.MultiPoint;
         }
-        public MultiPoint(double[][] coordinates)
+        public MultiPoint(double[][] coordinates) : this()
         {
-            this.type = geotype.MultiPoint;
             this.coordinates = coordinates;
         }
-        public MultiPoint(params Point[] points)
+        public MultiPoint(params Point[] points) : this()
         {
-            this.type = geotype.MultiPoint;
             this.Points = points;
         }
         public Point this[int index]

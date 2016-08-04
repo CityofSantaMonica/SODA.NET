@@ -16,14 +16,12 @@ namespace SODA.Models
         {
             this.type = geotype.MultiLineString;
         }
-        public MultiLineString(double[][][] coordinates)
+        public MultiLineString(double[][][] coordinates) : this()
         {
-            this.type = geotype.MultiLineString;
             this.coordinates = coordinates;
         }
-        public MultiLineString(params LineString[] lineStrings)
+        public MultiLineString(params LineString[] lineStrings) : this()
         {
-            this.type = geotype.MultiLineString;
             this.LineStrings = lineStrings;
         }
         public LineString this[int index]

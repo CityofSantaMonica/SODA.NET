@@ -16,14 +16,12 @@ namespace SODA.Models
         {
             this.type = geotype.MultiPolygon;
         }
-        public MultiPolygon(double[][][][] coordinates)
+        public MultiPolygon(double[][][][] coordinates) : this()
         {
-            this.type = geotype.MultiPolygon;
             this.coordinates = coordinates;
         }
-        public MultiPolygon(params Polygon[] polygons)
+        public MultiPolygon(params Polygon[] polygons) : this()
         {
-            this.type = geotype.MultiPolygon;
             this.Polygons = polygons;
         }
         public Polygon[] Polygons

@@ -12,22 +12,23 @@ namespace SODA.Models
     {
         [DataMember(Order = 2)]
         public double[] coordinates { get; set; }
-        public Point() { }
-        public Point(params double[] coordinates)
+        public Point()
+        {
+            this.type = geotype.Point;
+            this.coordinates = new double[0];
+        }
+        public Point(params double[] coordinates) : this()
         {
             if (coordinates.Length < 2)
                 throw new ArgumentOutOfRangeException("coordinates", "A Point coordinates array must contain at least an X and a Y value.");
-            this.type = geotype.Point;
             this.coordinates = coordinates;
         }
-        public Point(double X, double Y)
+        public Point(double X, double Y) : this()
         {
-            this.type = geotype.Point;
             this.coordinates = new double[] { X, Y };
         }
-        public Point(double X, double Y, double Z)
+        public Point(double X, double Y, double Z) : this()
         {
-            this.type = geotype.Point;
             this.coordinates = new double[] { X, Y, Z };
         }
         public bool Equals(Point other)

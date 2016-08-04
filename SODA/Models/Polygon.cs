@@ -16,14 +16,12 @@ namespace SODA.Models
         {
             this.type = geotype.Polygon;
         }
-        public Polygon(double[][][] coordinates)
+        public Polygon(double[][][] coordinates) : this()
         {
-            this.type = geotype.Polygon;
             this.coordinates = coordinates;
         }
-        public Polygon(params LinearRing[] lineStrings)
+        public Polygon(params LinearRing[] lineStrings) : this()
         {
-            this.type = geotype.Polygon;
             this.LinearRings = lineStrings;
         }
         public LinearRing[] LinearRings
