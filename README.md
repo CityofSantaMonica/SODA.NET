@@ -1,4 +1,4 @@
-# SODA.NET [![Build status](https://ci.appveyor.com/api/projects/status/yub6lyl79573lufv?svg=true)](https://ci.appveyor.com/project/thekaveman/soda-net)
+# SODA.NET [![Build status](https://ci.appveyor.com/api/projects/status/yub6lyl79573lufv/branch/master?svg=true)](https://ci.appveyor.com/project/thekaveman/soda-net/branch/master)
 
 A [Socrata Open Data API](http://dev.socrata.com) (SODA) client library targeting 
 .NET 4.5 and above.
