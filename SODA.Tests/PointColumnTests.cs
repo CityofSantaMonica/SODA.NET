@@ -12,9 +12,9 @@ namespace SODA.Tests
         {
             var point = new PointColumn(new Positions(new[] {-87.653274,41.936172}));
 
-            string expectedJSON = "{\"type\":\"Point\",\"coordinates\":[-87.653274,41.936172]}";
+            var expectedJSON = "{\"type\":\"Point\",\"coordinates\":[-87.653274,41.936172]}";
 
-            string actualJSON = JsonConvert.SerializeObject(point);
+            var actualJSON = JsonConvert.SerializeObject(point);
 
             Assert.AreEqual(expectedJSON, actualJSON);
         }
