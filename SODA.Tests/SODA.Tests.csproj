@@ -87,6 +87,7 @@
     <Compile Include="SodaRequestTests.cs" />
     <Compile Include="SodaUriTests.cs" />
     <Compile Include="SoqlQueryTests.cs" />
+    <Compile Include="LineColumnTests.cs" />
     <Compile Include="WebExceptionExtensionTests.cs" />
     <Compile Include="WebsiteUrlColumnTests.cs" />
   </ItemGroup>
