@@ -56,6 +56,7 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Models\MultiLineColumn.cs" />
     <Compile Include="Models\LineColumn.cs" />
     <Compile Include="Models\MultiPointColumn.cs" />
     <Compile Include="Models\PointColumn.cs" />
