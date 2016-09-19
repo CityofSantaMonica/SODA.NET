@@ -60,6 +60,7 @@
     <Compile Include="Models\LineColumn.cs" />
     <Compile Include="Models\MultiPointColumn.cs" />
     <Compile Include="Models\PointColumn.cs" />
+    <Compile Include="Models\PolygonColumn.cs" />
     <Compile Include="Models\Positions.cs" />
     <Compile Include="Models\HumanAddress.cs" />
     <Compile Include="Models\LocationColumn.cs" />
