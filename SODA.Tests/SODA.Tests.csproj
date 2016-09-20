@@ -66,6 +66,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="MultiPolygonColumnTests.cs" />
     <Compile Include="PolygonColumnTests.cs" />
     <Compile Include="MultiLineColumnTests.cs" />
     <Compile Include="MultiPointColumnTests.cs" />
