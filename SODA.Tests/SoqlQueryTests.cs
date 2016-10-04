@@ -7,49 +7,13 @@ namespace SODA.Tests
     [TestFixture]
     public class SoqlQueryTests
     {
-        [Test]
-        [Category("SoqlQuery")]
-        public void Default_Ctor_Selects_Default()
-        {
-            string defaultSelectClause = String.Format("{0}={1}", SoqlQuery.SelectKey, String.Join(SoqlQuery.Delimiter, SoqlQuery.DefaultSelect));
-
-            string soql = new SoqlQuery().ToString();
-
-            StringAssert.Contains(defaultSelectClause, soql);
-        }
-
-        [Test]
-        [Category("SoqlQuery")]
-        public void Default_Ctor_Orders_By_DefaultOrder_In_DefaultOrderDirection()
-        {
-            string defaultOrderClause = String.Format("{0}={1} {2}", SoqlQuery.OrderKey, String.Join(SoqlQuery.Delimiter, SoqlQuery.DefaultOrder), SoqlQuery.DefaultOrderDirection);
-
-            string soql = new SoqlQuery().ToString();
-
-            StringAssert.Contains(defaultOrderClause, soql);
-        }
-                
-        [Test]
-        [Category("SoqlQuery")]
-        public void Empty_Select_Selects_Default()
-        {
-            string defaultSelectClause = String.Format("{0}={1}", SoqlQuery.SelectKey, String.Join(SoqlQuery.Delimiter, SoqlQuery.DefaultSelect));
-
-            string emptySelect = new SoqlQuery().Select("").ToString();
-            string manyEmptySelect = new SoqlQuery().Select("", "", "").ToString();
-            string nullSelect = new SoqlQuery().Select(null).ToString();
-
-            StringAssert.Contains(defaultSelectClause, emptySelect);
-            StringAssert.Contains(defaultSelectClause, manyEmptySelect);
-            StringAssert.Contains(defaultSelectClause, nullSelect);
-        }
-
         [TestCase("column1", "")]
         [TestCase("column1", "", "column2")]
         [Category("SoqlQuery")]
         public void Select_Clause_Only_Gets_Valid_Columns(params string[] columns)
         {
-            string expected = String.Format("{0}={1}", SoqlQuery.SelectKey, String.Join(SoqlQuery.Delimiter, columns.Where(c => !String.IsNullOrEmpty(c))));
+            string selectKey = "$select";
+            string expected = String.Format("{0}={1}", selectKey, String.Join(SoqlQuery.Delimiter, columns.Where(c => !String.IsNullOrEmpty(c))));
 
             string soql = new SoqlQuery().Select(columns).ToString();
 
@@ -60,10 +24,11 @@ namespace SODA.Tests
         [Category("SoqlQuery")]
         public void Last_Select_Overwrites_All_Previous()
         {
+            string selectKey = "$select";
             string[] first = { "first", "second", "last" };
             string[] second = { "first", "second" };
             string[] last =  { "last" };
-            string format = String.Format("{0}={{0}}", SoqlQuery.SelectKey);
+            string format = String.Format("{0}={{0}}", selectKey);
 
             string soql = new SoqlQuery().Select(first)
                                          .Select(second)
@@ -256,7 +221,7 @@ namespace SODA.Tests
         [Category("SoqlQuery")]
         public void Empty_Order_Orders_By_DefaultOrder_In_DefaultOrderDirection()
         {
-            string defaultOrderClause = String.Format("{0}={1} {2}", SoqlQuery.OrderKey, String.Join(SoqlQuery.Delimiter, SoqlQuery.DefaultOrder), SoqlQuery.DefaultOrderDirection);
+            string defaultOrderClause = String.Format("{0} {1}={2} {3}", SoqlQuery.DefaultSelect,  SoqlQuery.OrderKey, String.Join(SoqlQuery.Delimiter, SoqlQuery.DefaultOrder), SoqlQuery.DefaultOrderDirection);
 
             string emptyGroup = new SoqlQuery().Order("").ToString();
             string manyEmptyGroup = new SoqlQuery().Order("", "", "").ToString();
@@ -266,7 +231,7 @@ namespace SODA.Tests
             StringAssert.Contains(defaultOrderClause, manyEmptyGroup);
             StringAssert.Contains(defaultOrderClause, nullGroup);
         }
-        
+
         [TestCase(SoqlOrderDirection.DESC, "column1", "")]
         [TestCase(SoqlOrderDirection.ASC, "column1", "", "column2")]
         [Category("SoqlQuery")]

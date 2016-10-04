@@ -16,11 +16,6 @@ namespace SODA
         public static readonly string Delimiter = ",";
 
         /// <summary>
-        /// The querystring key for the SoQL Select clause.
-        /// </summary>
-        public static readonly string SelectKey = "$select";
-
-        /// <summary>
         /// The querystring key for the SoQL Where clause.
         /// </summary>
         public static readonly string WhereKey = "$where";
@@ -130,14 +125,10 @@ namespace SODA
         public string SearchText { get; private set; }
 
         /// <summary>
-        /// Construct a new SoqlQuery using the defaults.
+        /// Initialize a new SoqlQuery object.
         /// </summary>
         public SoqlQuery()
         {
-            SelectColumns = DefaultSelect;
-            SelectColumnAliases = new string[0];
-            OrderByColumns = DefaultOrder;
-            OrderDirection = DefaultOrderDirection;
         }
         
         /// <summary>
@@ -147,30 +138,21 @@ namespace SODA
         public override string ToString()
         {
             var sb = new StringBuilder();
+            //evaluate the provided aliases
+            var finalColumns = SelectColumns.Zip(SelectColumnAliases, (c, a) => String.Format("{0} AS {1}", c, a)).ToList();
 
-            sb.AppendFormat("{0}=", SelectKey);
-
-            if (SelectColumns.Length == 1 && SelectColumns[0] == "*")
+            if (SelectColumns.Length > SelectColumnAliases.Length)
             {
-                sb.Append(SelectColumns[0]);
-            }
-            else 
-            {
-                //evaluate the provided aliases
-                var finalColumns = SelectColumns.Zip(SelectColumnAliases, (c, a) => String.Format("{0} AS {1}", c, a)).ToList();
-
-                if (SelectColumns.Length > SelectColumnAliases.Length)
-                {
-                    //some columns were left un-aliased
-                    finalColumns.AddRange(SelectColumns.Skip(SelectColumnAliases.Length));
-                }
-
-                //form the select clause
-                sb.Append(String.Join(Delimiter, finalColumns));
+                //some columns were left un-aliased
+                finalColumns.AddRange(SelectColumns.Skip(SelectColumnAliases.Length));
             }
 
-            sb.AppendFormat("&{0}={1} {2}", OrderKey, String.Join(Delimiter, OrderByColumns), OrderDirection);
-                        
+            //form the select clause
+            sb.Append(String.Join(Delimiter, finalColumns));
+
+            if (OrderByColumns != null)
+                sb.AppendFormat("&{0}={1} {2}", OrderKey, String.Join(Delimiter, OrderByColumns), OrderDirection);
+
             if (!String.IsNullOrEmpty(WhereClause))
                 sb.AppendFormat("&{0}={1}", WhereKey, WhereClause);
 
