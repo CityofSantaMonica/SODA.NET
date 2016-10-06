@@ -16,6 +16,11 @@ namespace SODA
         public static readonly string Delimiter = ",";
 
         /// <summary>
+        /// The querystring key for the SoQL Select clause.
+        /// </summary>
+        public static readonly string SelectKey = "$select";
+
+        /// <summary>
         /// The querystring key for the SoQL Where clause.
         /// </summary>
         public static readonly string WhereKey = "$where";
@@ -45,14 +50,6 @@ namespace SODA
         /// </summary>
         public static readonly string SearchKey = "$q";
 
-        /// <summary>
-        /// The default values for a Select clause.
-        /// </summary>
-        /// <remarks>
-        /// The default is to select all columns (http://dev.socrata.com/docs/queries.html)
-        /// </remarks>
-        public static readonly string[] DefaultSelect = new[] { "*" };
-        
         /// <summary>
         /// The default sort direction for an Order clause.
         /// </summary>
@@ -129,8 +126,10 @@ namespace SODA
         /// </summary>
         public SoqlQuery()
         {
+            SelectColumns = new string[0];
+            SelectColumnAliases = new string[0];
         }
-        
+
         /// <summary>
         /// Converts this SoqlQuery into a string format suitable for use in a SODA call.
         /// </summary>
@@ -138,17 +137,23 @@ namespace SODA
         public override string ToString()
         {
             var sb = new StringBuilder();
-            //evaluate the provided aliases
-            var finalColumns = SelectColumns.Zip(SelectColumnAliases, (c, a) => String.Format("{0} AS {1}", c, a)).ToList();
 
-            if (SelectColumns.Length > SelectColumnAliases.Length)
+            if (SelectColumns.Length > 0)
             {
-                //some columns were left un-aliased
-                finalColumns.AddRange(SelectColumns.Skip(SelectColumnAliases.Length));
-            }
+                sb.AppendFormat("{0}=", SelectKey);
 
-            //form the select clause
-            sb.Append(String.Join(Delimiter, finalColumns));
+                //evaluate the provided aliases
+                var finalColumns =
+                    SelectColumns.Zip(SelectColumnAliases, (c, a) => String.Format("{0} AS {1}", c, a)).ToList();
+
+                if (SelectColumns.Length > SelectColumnAliases.Length)
+                {
+                    //some columns were left un-aliased
+                    finalColumns.AddRange(SelectColumns.Skip(SelectColumnAliases.Length));
+                }
+                //form the select clause
+                sb.Append(String.Join(Delimiter, finalColumns));
+            }
 
             if (OrderByColumns != null)
                 sb.AppendFormat("&{0}={1} {2}", OrderKey, String.Join(Delimiter, OrderByColumns), OrderDirection);
@@ -158,7 +163,7 @@ namespace SODA
 
             if (GroupByColumns != null && GroupByColumns.Any())
                 sb.AppendFormat("&{0}={1}", GroupKey, String.Join(Delimiter, GroupByColumns));
-            
+
             if (OffsetValue > 0)
                 sb.AppendFormat("&{0}={1}", OffsetKey, OffsetValue);
 
@@ -178,7 +183,7 @@ namespace SODA
         /// <returns>This SoqlQuery.</returns>
         public SoqlQuery Select(params string[] columns)
         {
-            SelectColumns = getNonEmptyValues(columns) ?? DefaultSelect;
+            SelectColumns = getNonEmptyValues(columns) ?? new string[0];
             return this;
         }
 
