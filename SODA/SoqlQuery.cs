@@ -51,6 +51,15 @@ namespace SODA
         public static readonly string SearchKey = "$q";
 
         /// <summary>
+        /// The default values for a Select clause.
+        /// </summary>
+        /// <remarks>
+        /// The default is to select all columns (http://dev.socrata.com/docs/queries.html)
+        /// </remarks>
+        [Obsolete("Socrata provides $select = * by default, so this is field is no longer needed and will be removed in the next release.")]
+        public static readonly string[] DefaultSelect = new[] { "*" };
+
+        /// <summary>
         /// The default sort direction for an Order clause.
         /// </summary>
         /// <remarks>
@@ -128,6 +137,7 @@ namespace SODA
         {
             SelectColumns = new string[0];
             SelectColumnAliases = new string[0];
+            OrderDirection = DefaultOrderDirection;
         }
 
         /// <summary>
@@ -256,7 +266,7 @@ namespace SODA
             GroupByColumns = getNonEmptyValues(columns);
             return this;
         }
-        
+
         /// <summary>
         /// Sets this SoqlQuery's limit clause using the specified integral limit.
         /// </summary>

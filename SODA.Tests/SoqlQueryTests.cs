@@ -7,16 +7,12 @@ namespace SODA.Tests
     [TestFixture]
     public class SoqlQueryTests
     {
-        [TestCase("column1", "")]
-        [TestCase("column1", "", "column2")]
         [Category("SoqlQuery")]
-        public void Select_Clause_Only_Gets_Valid_Columns(params string[] columns)
+        public void Default_Ctor_Selects_Nothing()
         {
-            string expected = String.Format("{0}={1}", SoqlQuery.SelectKey, String.Join(SoqlQuery.Delimiter, columns.Where(c => !String.IsNullOrEmpty(c))));
+            var noSelectStar = new SoqlQuery().ToString();
 
-            string soql = new SoqlQuery().Select(columns).ToString();
-
-            StringAssert.Contains(expected, soql);
+            StringAssert.DoesNotContain(SoqlQuery.SelectKey, noSelectStar);
         }
 
         [Test]
