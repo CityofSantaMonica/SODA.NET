@@ -7,12 +7,22 @@ namespace SODA.Tests
     [TestFixture]
     public class SoqlQueryTests
     {
+        [Test]
         [Category("SoqlQuery")]
         public void Default_Ctor_Selects_Nothing()
         {
             var noSelectStar = new SoqlQuery().ToString();
 
             StringAssert.DoesNotContain(SoqlQuery.SelectKey, noSelectStar);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Default_Ctor_Orders_Nothing()
+        {
+            var noOrder = new SoqlQuery().ToString();
+
+            StringAssert.DoesNotContain(SoqlQuery.OrderKey, noOrder);
         }
 
         [Test]
