@@ -9,11 +9,13 @@ namespace SODA.Tests
     {
         [Test]
         [Category("SoqlQuery")]
-        public void Default_Ctor_Selects_Nothing()
+        public void Default_Ctor_Selects_Nothing_And_SelectColumns_IsNotNull()
         {
-            var noSelectStar = new SoqlQuery().ToString();
+            var noSelect = new SoqlQuery().ToString();
+            var soql = new SoqlQuery();
 
-            StringAssert.DoesNotContain(SoqlQuery.SelectKey, noSelectStar);
+            StringAssert.DoesNotContain(SoqlQuery.SelectKey, noSelect);
+            Assert.AreEqual(soql.SelectColumns, new string[0]);
         }
 
         [Test]
@@ -23,6 +25,17 @@ namespace SODA.Tests
             var noOrder = new SoqlQuery().ToString();
 
             StringAssert.DoesNotContain(SoqlQuery.OrderKey, noOrder);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Default_Ctor_Orders_By_DefaultOrder_In_DefaultOrderDirection()
+        {
+            var soql = new SoqlQuery();
+            var defaultOrderDirection = SoqlQuery.DefaultOrderDirection;
+
+            Assert.AreEqual(soql.OrderDirection, SoqlOrderDirection.ASC);
+            Assert.AreEqual(defaultOrderDirection, SoqlOrderDirection.ASC);
         }
 
         [Test]
