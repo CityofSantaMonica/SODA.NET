@@ -1,3 +1,20 @@
+### New in 0.7.0 (Released 2017/01/12)
+
+*It is highly recommended to update to this version, as it features improved security following Socrata's deprecation of TLS 1.0*
+
+Security enhancements
+
+  - Disable security protocols lower than TLS 1.1 [#65](https://github.com/CityofSantaMonica/SODA.NET/issues/65)
+
+Bug fixes
+
+  - `SoqlQuery` no longer inserts default query arguments [#59](https://github.com/CityofSantaMonica/SODA.NET/issues/59)
+
+New features
+
+  - `SoqlQuery` supports the `$having` clause [#60](https://github.com/CityofSantaMonica/SODA.NET/issues/60)
+  - `SoqlQuery` supports the `$query` clause [#63](https://github.com/CityofSantaMonica/SODA.NET/issues/63)
+
 ### New in 0.6.0 (Released 2016/06/02)
 
 Bug fixes
