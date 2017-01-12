@@ -86,7 +86,7 @@ for more details.
 
 ## Copyright and License
 
-Copyright 2016 City of Santa Monica, CA
+Copyright 2017 City of Santa Monica, CA
 
 Licensed under the 
 [MIT License](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/LICENSE.txt)
