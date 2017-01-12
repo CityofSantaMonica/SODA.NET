@@ -9,53 +9,69 @@ namespace SODA.Tests
     {
         [Test]
         [Category("SoqlQuery")]
-        public void Default_Ctor_Selects_Default()
+        public void Default_Ctor_Selects_Nothing_And_SelectColumns_IsNotNull()
         {
-            string defaultSelectClause = String.Format("{0}={1}", SoqlQuery.SelectKey, String.Join(SoqlQuery.Delimiter, SoqlQuery.DefaultSelect));
+            var soql = new SoqlQuery();
 
-            string soql = new SoqlQuery().ToString();
-
-            StringAssert.Contains(defaultSelectClause, soql);
+            StringAssert.DoesNotContain(SoqlQuery.SelectKey, soql.ToString());
+            Assert.IsNotNull(soql.SelectColumns);
         }
 
         [Test]
         [Category("SoqlQuery")]
-        public void Default_Ctor_Orders_By_DefaultOrder_In_DefaultOrderDirection()
+        public void Default_Ctor_Orders_Nothing()
         {
-            string defaultOrderClause = String.Format("{0}={1} {2}", SoqlQuery.OrderKey, String.Join(SoqlQuery.Delimiter, SoqlQuery.DefaultOrder), SoqlQuery.DefaultOrderDirection);
-
-            string soql = new SoqlQuery().ToString();
-
-            StringAssert.Contains(defaultOrderClause, soql);
+            StringAssert.DoesNotContain(SoqlQuery.OrderKey, new SoqlQuery().ToString());
         }
-                
+
         [Test]
         [Category("SoqlQuery")]
-        public void Empty_Select_Selects_Default()
+        public void Default_Ctor_Has_No_Limit()
         {
-            string defaultSelectClause = String.Format("{0}={1}", SoqlQuery.SelectKey, String.Join(SoqlQuery.Delimiter, SoqlQuery.DefaultSelect));
-
-            string emptySelect = new SoqlQuery().Select("").ToString();
-            string manyEmptySelect = new SoqlQuery().Select("", "", "").ToString();
-            string nullSelect = new SoqlQuery().Select(null).ToString();
-
-            StringAssert.Contains(defaultSelectClause, emptySelect);
-            StringAssert.Contains(defaultSelectClause, manyEmptySelect);
-            StringAssert.Contains(defaultSelectClause, nullSelect);
+            StringAssert.DoesNotContain(SoqlQuery.LimitKey, new SoqlQuery().ToString());
         }
 
-        [TestCase("column1", "")]
-        [TestCase("column1", "", "column2")]
+        [TestCase(null)]
+        [TestCase("")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SoqlQuery")]
-        public void Select_Clause_Only_Gets_Valid_Columns(params string[] columns)
+        public void Query_Ctor_Requires_Query(string query)
         {
-            string expected = String.Format("{0}={1}", SoqlQuery.SelectKey, String.Join(SoqlQuery.Delimiter, columns.Where(c => !String.IsNullOrEmpty(c))));
-
-            string soql = new SoqlQuery().Select(columns).ToString();
-
-            StringAssert.Contains(expected, soql);
+            var soql = new SoqlQuery(query);
         }
-        
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Query_Ctor_Sets_RawQuery()
+        {
+            var query = "SELECT something WHERE this > that ORDER BY another";
+
+            var expected = String.Format("{0}={1}", SoqlQuery.QueryKey, query);
+
+            var soql = new SoqlQuery(query).ToString();
+
+            Assert.AreEqual(expected, soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Query_Ctor_Takes_Precidence()
+        {
+            var query = "SELECT something WHERE this > that ORDER BY another";
+
+            var expected = String.Format("{0}={1}", SoqlQuery.QueryKey, query);
+
+            var soql = new SoqlQuery(query);
+
+            var select = soql.Select("column1", "column2").ToString();
+            var where = soql.Where("that > this").ToString();
+            var order = soql.Order("yetanother").ToString();
+
+            Assert.AreEqual(expected, select);
+            Assert.AreEqual(expected, where);
+            Assert.AreEqual(expected, order);
+        }
+
         [Test]
         [Category("SoqlQuery")]
         public void Last_Select_Overwrites_All_Previous()
@@ -181,7 +197,7 @@ namespace SODA.Tests
             string[] columns = new[] { "column1", "column2" };
             string[] aliases = new[] { "column_a", "column_b" };
 
-            string expected = String.Format(@"{0} AS {1},\s?{2} AS {3}[^,]",
+            string expected = String.Format(@"{0} AS {1},{2} AS {3}",
                                             columns[0],
                                             aliases[0],
                                             columns[1],
@@ -254,19 +270,16 @@ namespace SODA.Tests
 
         [Test]
         [Category("SoqlQuery")]
-        public void Empty_Order_Orders_By_DefaultOrder_In_DefaultOrderDirection()
+        public void Order_Clause_Gets_Default_Order_Direction()
         {
-            string defaultOrderClause = String.Format("{0}={1} {2}", SoqlQuery.OrderKey, String.Join(SoqlQuery.Delimiter, SoqlQuery.DefaultOrder), SoqlQuery.DefaultOrderDirection);
+            string orderby = "column";
+            string expected = String.Format("{0}={1} {2}", SoqlQuery.OrderKey, orderby, SoqlQuery.DefaultOrderDirection);
 
-            string emptyGroup = new SoqlQuery().Order("").ToString();
-            string manyEmptyGroup = new SoqlQuery().Order("", "", "").ToString();
-            string nullGroup = new SoqlQuery().Order(null).ToString();
+            string soql = new SoqlQuery().Order(orderby).ToString();
 
-            StringAssert.Contains(defaultOrderClause, emptyGroup);
-            StringAssert.Contains(defaultOrderClause, manyEmptyGroup);
-            StringAssert.Contains(defaultOrderClause, nullGroup);
+            StringAssert.Contains(expected, soql);
         }
-        
+
         [TestCase(SoqlOrderDirection.DESC, "column1", "")]
         [TestCase(SoqlOrderDirection.ASC, "column1", "", "column2")]
         [Category("SoqlQuery")]
@@ -342,6 +355,66 @@ namespace SODA.Tests
             StringAssert.DoesNotContain(String.Format(format, String.Join(SoqlQuery.Delimiter, first)), soql);
             StringAssert.DoesNotContain(String.Format(format, String.Join(SoqlQuery.Delimiter, second)), soql);
             StringAssert.Contains(String.Format(format, String.Join(SoqlQuery.Delimiter, last)), soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Empty_Having_Ignores_Having_Clause()
+        {
+            string startOfHavingClause = String.Format("{0}=", SoqlQuery.HavingKey);
+
+            string emptyHaving = new SoqlQuery().Having("").ToString();
+            string nullHaving = new SoqlQuery().Having(null).ToString();
+
+            StringAssert.DoesNotContain(startOfHavingClause, emptyHaving);
+            StringAssert.DoesNotContain(startOfHavingClause, nullHaving);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Having_Clause_Gets_Valid_Predicate()
+        {
+            string predicate = "something > nothing";
+
+            string expected = String.Format("{0}={1}", SoqlQuery.HavingKey, predicate);
+
+            string soql = new SoqlQuery().Having(predicate).ToString();
+
+            StringAssert.Contains(expected, soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Having_Clause_Gets_Formatted_Input()
+        {
+            string format = "something > {0}";
+
+            string expected = String.Format("{0}={1}", SoqlQuery.HavingKey, String.Format(format, "nothing"));
+
+            string soql = new SoqlQuery().Having(format, "nothing").ToString();
+
+            StringAssert.Contains(expected, soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Last_Having_Overwrites_All_Previous()
+        {
+            string first = "first > 0";
+            string second = "second > first";
+            string last = "last > anything";
+            string format = String.Format("{0}={{0}}", SoqlQuery.HavingKey);
+
+            string expected = String.Format(format, last);
+
+            string soql = new SoqlQuery().Having(first)
+                                         .Having(second)
+                                         .Having(last)
+                                         .ToString();
+
+            StringAssert.DoesNotContain(String.Format(format, first), soql);
+            StringAssert.DoesNotContain(String.Format(format, second), soql);
+            StringAssert.Contains(String.Format(format, last), soql);
         }
 
         [TestCase(-100)]
@@ -480,6 +553,7 @@ namespace SODA.Tests
             var where = original.Where("something");
             var order = original.Order(SoqlOrderDirection.DESC, "something");
             var group = original.Group("something");
+            var having = original.Having("something");
             var limit = original.Limit(10);
             var offset = original.Offset(10);
             var search = original.FullTextSearch("something");
@@ -488,6 +562,7 @@ namespace SODA.Tests
             Assert.AreSame(original, where);
             Assert.AreSame(original, order);
             Assert.AreSame(original, group);
+            Assert.AreSame(original, having);
             Assert.AreSame(original, limit);
             Assert.AreSame(original, offset);
             Assert.AreSame(original, search);
