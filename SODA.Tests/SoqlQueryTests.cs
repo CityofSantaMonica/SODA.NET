@@ -38,6 +38,47 @@ namespace SODA.Tests
             Assert.AreEqual(defaultOrderDirection, SoqlOrderDirection.ASC);
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [Category("SoqlQuery")]
+        public void Query_Ctor_Requires_Query(string query)
+        {
+            var soql = new SoqlQuery(query);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Query_Ctor_Sets_RawQuery()
+        {
+            var query = "SELECT something WHERE this > that ORDER BY another";
+
+            var expected = String.Format("{0}={1}", SoqlQuery.QueryKey, query);
+
+            var soql = new SoqlQuery(query).ToString();
+
+            Assert.AreEqual(expected, soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Query_Ctor_Takes_Precidence()
+        {
+            var query = "SELECT something WHERE this > that ORDER BY another";
+
+            var expected = String.Format("{0}={1}", SoqlQuery.QueryKey, query);
+
+            var soql = new SoqlQuery(query);
+
+            var select = soql.Select("column1", "column2").ToString();
+            var where = soql.Where("that > this").ToString();
+            var order = soql.Order("yetanother").ToString();
+
+            Assert.AreEqual(expected, select);
+            Assert.AreEqual(expected, where);
+            Assert.AreEqual(expected, order);
+        }
+
         [Test]
         [Category("SoqlQuery")]
         public void Last_Select_Overwrites_All_Previous()
@@ -507,6 +548,7 @@ namespace SODA.Tests
             var where = original.Where("something");
             var order = original.Order(SoqlOrderDirection.DESC, "something");
             var group = original.Group("something");
+            var having = original.Having("something");
             var limit = original.Limit(10);
             var offset = original.Offset(10);
             var search = original.FullTextSearch("something");
@@ -515,6 +557,7 @@ namespace SODA.Tests
             Assert.AreSame(original, where);
             Assert.AreSame(original, order);
             Assert.AreSame(original, group);
+            Assert.AreSame(original, having);
             Assert.AreSame(original, limit);
             Assert.AreSame(original, offset);
             Assert.AreSame(original, search);

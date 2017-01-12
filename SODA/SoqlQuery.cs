@@ -56,6 +56,11 @@ namespace SODA
         public static readonly string SearchKey = "$q";
 
         /// <summary>
+        /// The querystring key for a raw SoQL query.
+        /// </summary>
+        public static readonly string QueryKey = "$query";
+
+        /// <summary>
         /// The default values for a Select clause.
         /// </summary>
         /// <remarks>
@@ -141,6 +146,11 @@ namespace SODA
         public string SearchText { get; private set; }
 
         /// <summary>
+        /// Gets the raw SoQL query, combining one or more SoQL clauses and/or sub-queries, that this SoqlQuery will execute.
+        /// </summary>
+        public string RawQuery { get; private set; }
+
+        /// <summary>
         /// Initialize a new SoqlQuery object.
         /// </summary>
         public SoqlQuery()
@@ -151,6 +161,18 @@ namespace SODA
         }
 
         /// <summary>
+        /// Initialize a new SoqlQuery object with the given query string. Individual SoQL clauses cannot be overridden using the fluent syntax.
+        /// </summary>
+        /// <param name="query">One or more SoQL clauses and/or sub-queries.</param>
+        public SoqlQuery(string query)
+        {
+            if (String.IsNullOrWhiteSpace(query))
+                throw new ArgumentOutOfRangeException("query", "A SoQL query is required");
+
+            RawQuery = query;
+        }
+
+        /// <summary>
         /// Converts this SoqlQuery into a string format suitable for use in a SODA call.
         /// </summary>
         /// <returns>The string representation of this SoqlQuery.</returns>
@@ -158,43 +180,50 @@ namespace SODA
         {
             var sb = new StringBuilder();
 
-            if (SelectColumns.Length > 0)
+            if (!String.IsNullOrEmpty(RawQuery))
             {
-                sb.AppendFormat("{0}=", SelectKey);
-
-                //evaluate the provided aliases
-                var finalColumns =
-                    SelectColumns.Zip(SelectColumnAliases, (c, a) => String.Format("{0} AS {1}", c, a)).ToList();
-
-                if (SelectColumns.Length > SelectColumnAliases.Length)
-                {
-                    //some columns were left un-aliased
-                    finalColumns.AddRange(SelectColumns.Skip(SelectColumnAliases.Length));
-                }
-                //form the select clause
-                sb.Append(String.Join(Delimiter, finalColumns));
+                sb.AppendFormat("{0}={1}", QueryKey, RawQuery);
             }
+            else
+            {
+                if (SelectColumns.Length > 0)
+                {
+                    sb.AppendFormat("{0}=", SelectKey);
 
-            if (OrderByColumns != null)
-                sb.AppendFormat("&{0}={1} {2}", OrderKey, String.Join(Delimiter, OrderByColumns), OrderDirection);
+                    //evaluate the provided aliases
+                    var finalColumns =
+                        SelectColumns.Zip(SelectColumnAliases, (c, a) => String.Format("{0} AS {1}", c, a)).ToList();
 
-            if (!String.IsNullOrEmpty(WhereClause))
-                sb.AppendFormat("&{0}={1}", WhereKey, WhereClause);
+                    if (SelectColumns.Length > SelectColumnAliases.Length)
+                    {
+                        //some columns were left un-aliased
+                        finalColumns.AddRange(SelectColumns.Skip(SelectColumnAliases.Length));
+                    }
+                    //form the select clause
+                    sb.Append(String.Join(Delimiter, finalColumns));
+                }
 
-            if (GroupByColumns != null && GroupByColumns.Any())
-                sb.AppendFormat("&{0}={1}", GroupKey, String.Join(Delimiter, GroupByColumns));
+                if (OrderByColumns != null)
+                    sb.AppendFormat("&{0}={1} {2}", OrderKey, String.Join(Delimiter, OrderByColumns), OrderDirection);
 
-            if (!String.IsNullOrEmpty(HavingClause))
-                sb.AppendFormat("&{0}={1}", HavingKey, HavingClause);
+                if (!String.IsNullOrEmpty(WhereClause))
+                    sb.AppendFormat("&{0}={1}", WhereKey, WhereClause);
 
-            if (OffsetValue > 0)
-                sb.AppendFormat("&{0}={1}", OffsetKey, OffsetValue);
+                if (GroupByColumns != null && GroupByColumns.Any())
+                    sb.AppendFormat("&{0}={1}", GroupKey, String.Join(Delimiter, GroupByColumns));
 
-            if (LimitValue > 0)
-                sb.AppendFormat("&{0}={1}", LimitKey, LimitValue);
+                if (!String.IsNullOrEmpty(HavingClause))
+                    sb.AppendFormat("&{0}={1}", HavingKey, HavingClause);
 
-            if (!String.IsNullOrEmpty(SearchText))
-                sb.AppendFormat("&{0}={1}", SearchKey, SearchText);
+                if (OffsetValue > 0)
+                    sb.AppendFormat("&{0}={1}", OffsetKey, OffsetValue);
+
+                if (LimitValue > 0)
+                    sb.AppendFormat("&{0}={1}", LimitKey, LimitValue);
+
+                if (!String.IsNullOrEmpty(SearchText))
+                    sb.AppendFormat("&{0}={1}", SearchKey, SearchText);
+            }
 
             return sb.ToString();
         }
