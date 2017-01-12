@@ -11,31 +11,17 @@ namespace SODA.Tests
         [Category("SoqlQuery")]
         public void Default_Ctor_Selects_Nothing_And_SelectColumns_IsNotNull()
         {
-            var noSelect = new SoqlQuery().ToString();
             var soql = new SoqlQuery();
 
-            StringAssert.DoesNotContain(SoqlQuery.SelectKey, noSelect);
-            Assert.AreEqual(soql.SelectColumns, new string[0]);
+            StringAssert.DoesNotContain(SoqlQuery.SelectKey, soql.ToString());
+            Assert.IsNotNull(soql.SelectColumns);
         }
 
         [Test]
         [Category("SoqlQuery")]
         public void Default_Ctor_Orders_Nothing()
         {
-            var noOrder = new SoqlQuery().ToString();
-
-            StringAssert.DoesNotContain(SoqlQuery.OrderKey, noOrder);
-        }
-
-        [Test]
-        [Category("SoqlQuery")]
-        public void Default_Ctor_Orders_By_DefaultOrder_In_DefaultOrderDirection()
-        {
-            var soql = new SoqlQuery();
-            var defaultOrderDirection = SoqlQuery.DefaultOrderDirection;
-
-            Assert.AreEqual(soql.OrderDirection, SoqlOrderDirection.ASC);
-            Assert.AreEqual(defaultOrderDirection, SoqlOrderDirection.ASC);
+            StringAssert.DoesNotContain(SoqlQuery.OrderKey, new SoqlQuery().ToString());
         }
 
         [TestCase(null)]
@@ -273,6 +259,18 @@ namespace SODA.Tests
             StringAssert.DoesNotContain(String.Format(format, first), soql);
             StringAssert.DoesNotContain(String.Format(format, second), soql);
             StringAssert.Contains(String.Format(format, last), soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Order_Clause_Gets_Default_Order_Direction()
+        {
+            string orderby = "column";
+            string expected = String.Format("{0}={1} {2}", SoqlQuery.OrderKey, orderby, SoqlQuery.DefaultOrderDirection);
+
+            string soql = new SoqlQuery().Order(orderby).ToString();
+
+            StringAssert.Contains(expected, soql);
         }
 
         [TestCase(SoqlOrderDirection.DESC, "column1", "")]
