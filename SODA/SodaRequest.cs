@@ -163,5 +163,15 @@ namespace SODA
 
             return result;
         }
+
+        /// <summary>
+        /// Disable unsupported security protocols for all requests.
+        /// See https://support.socrata.com/hc/en-us/articles/235267087 for more information.
+        /// </summary>
+        static SodaRequest()
+        {
+            System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Ssl3;
+            System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+        }
     }
 }

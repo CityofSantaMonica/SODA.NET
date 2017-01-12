@@ -21,6 +21,16 @@ namespace SODA.Tests
 
         [Test]
         [Category("SodaRequest")]
+        public void New_Disables_Unsupported_Protocols()
+        {
+            var request = new SodaRequest(exampleUri, "GET", null, null, null);
+
+            Assert.False((ServicePointManager.SecurityProtocol & SecurityProtocolType.Ssl3) == SecurityProtocolType.Ssl3);
+            Assert.False((ServicePointManager.SecurityProtocol & SecurityProtocolType.Tls) == SecurityProtocolType.Tls);
+        }
+
+        [Test]
+        [Category("SodaRequest")]
         public void New_Returns_Request_With_Specified_Uri()
         {
             var request = new SodaRequest(exampleUri, "GET", null, null, null);
