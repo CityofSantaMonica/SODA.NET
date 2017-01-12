@@ -21,6 +21,39 @@ namespace SODA.Tests
 
         [Test]
         [Category("SodaRequest")]
+        public void New_Disables_Unsupported_Protocols()
+        {
+            var request = new SodaRequest(exampleUri, "GET", null, null, null);
+
+            Assert.False((ServicePointManager.SecurityProtocol & SecurityProtocolType.Ssl3) == SecurityProtocolType.Ssl3);
+            Assert.False((ServicePointManager.SecurityProtocol & SecurityProtocolType.Tls) == SecurityProtocolType.Tls);
+        }
+
+        [Test]
+        [Category("SodaRequest")]
+        public void New_Enables_Minimum_Protocol()
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls;
+
+            var request = new SodaRequest(exampleUri, "GET", null, null, null);
+
+            Assert.True((ServicePointManager.SecurityProtocol & SecurityProtocolType.Tls11) == SecurityProtocolType.Tls11);
+        }
+
+        [Test]
+        [Category("SodaRequest")]
+        public void New_Maintains_Higher_Protocol()
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            var request = new SodaRequest(exampleUri, "GET", null, null, null);
+
+            Assert.False((ServicePointManager.SecurityProtocol & SecurityProtocolType.Tls11) == SecurityProtocolType.Tls11);
+            Assert.True((ServicePointManager.SecurityProtocol & SecurityProtocolType.Tls12) == SecurityProtocolType.Tls12);
+        }
+
+        [Test]
+        [Category("SodaRequest")]
         public void New_Returns_Request_With_Specified_Uri()
         {
             var request = new SodaRequest(exampleUri, "GET", null, null, null);

@@ -34,6 +34,7 @@ namespace SODA
         /// <param name="payload">The body of the request.</param>
         /// <param name="timeout">The number of milliseconds to wait for a response before throwing a Timeout WebException.</param>
         internal SodaRequest(Uri uri, string method, string appToken, string username, string password, SodaDataFormat dataFormat = SodaDataFormat.JSON, string payload = null, int? timeout = null)
+            : this()
         {
             this.dataFormat = dataFormat;
 
@@ -162,6 +163,18 @@ namespace SODA
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Disable unsupported security protocols for all requests.
+        /// See https://support.socrata.com/hc/en-us/articles/235267087 for more information.
+        /// </summary>
+        private SodaRequest()
+        {
+            System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Ssl3;
+            System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+            if (System.Net.ServicePointManager.SecurityProtocol == 0)
+                System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls11;
         }
     }
 }
