@@ -28,8 +28,8 @@ if %TARGET% == "CreatePackages" (
 	call xcopy %SODADIR%\bin\%BUILDMODE%\*.* %SODADIR%\lib\ /y
 	call xcopy %UTILSDIR%\bin\%BUILDMODE%\*.* %UTILSDIR%\lib\ /y
 
-	call %NUGETDIR%\nuget.exe pack %SODADIR%\SODA.csproj -Properties "Configuration=%BUILDMODE%;Platform=AnyCPU"
-	call %NUGETDIR%\nuget.exe pack %UTILSDIR%\SODA.Utilities.csproj -IncludeReferencedProjects -Properties "Configuration=%BUILDMODE%;Platform=AnyCPU"
+	call nuget pack %SODADIR%\SODA.csproj -Properties "Configuration=%BUILDMODE%;Platform=AnyCPU"
+	call nuget pack %UTILSDIR%\SODA.Utilities.csproj -IncludeReferencedProjects -Properties "Configuration=%BUILDMODE%;Platform=AnyCPU"
 	
 	rd /S /Q %SODADIR%\lib
 	rd /S /Q %UTILSDIR%\lib
