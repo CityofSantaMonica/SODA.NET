@@ -36,6 +36,11 @@ namespace SODA
         public static readonly string GroupKey = "$group";
 
         /// <summary>
+        /// The querystring key for the SoQL Having clause.
+        /// </summary>
+        public static readonly string HavingKey = "$having";
+
+        /// <summary>
         /// The querystring key for the SoQL Limit clause.
         /// </summary>
         public static readonly string LimitKey = "$limit";
@@ -116,6 +121,11 @@ namespace SODA
         public string[] GroupByColumns { get; private set; }
 
         /// <summary>
+        /// Gets the predicate that this SoqlQuery will use for aggregate filtering.
+        /// </summary>
+        public string HavingClause { get; private set; }
+
+        /// <summary>
         /// Gets the maximum number of results that this SoqlQuery will return.
         /// </summary>
         public int LimitValue { get; private set; }
@@ -173,6 +183,9 @@ namespace SODA
 
             if (GroupByColumns != null && GroupByColumns.Any())
                 sb.AppendFormat("&{0}={1}", GroupKey, String.Join(Delimiter, GroupByColumns));
+
+            if (!String.IsNullOrEmpty(HavingClause))
+                sb.AppendFormat("&{0}={1}", HavingKey, HavingClause);
 
             if (OffsetValue > 0)
                 sb.AppendFormat("&{0}={1}", OffsetKey, OffsetValue);
@@ -265,6 +278,28 @@ namespace SODA
         {
             GroupByColumns = getNonEmptyValues(columns);
             return this;
+        }
+
+        /// <summary>
+        /// Sets this SoqlQuery's having clause using the specified predicate.
+        /// </summary>
+        /// <param name="predicate">A filter to be applied to the results of an aggregation using <see cref="Group(string[])"/>.</param>
+        /// <returns>This SoqlQuery.</returns>
+        public SoqlQuery Having(string predicate)
+        {
+            HavingClause = predicate;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets this SoqlQuery's having clause using the specified format string and substitution arguments.
+        /// </summary>
+        /// <param name="format">A composite format string, suitable for use with String.Format()</param>
+        /// <param name="args">An array of objects to format.</param>
+        /// <returns>This SoqlQuery.</returns>
+        public SoqlQuery Having(string format, params object[] args)
+        {
+            return Having(String.Format(format, args));
         }
 
         /// <summary>

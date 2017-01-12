@@ -311,6 +311,66 @@ namespace SODA.Tests
             StringAssert.Contains(String.Format(format, String.Join(SoqlQuery.Delimiter, last)), soql);
         }
 
+        [Test]
+        [Category("SoqlQuery")]
+        public void Empty_Having_Ignores_Having_Clause()
+        {
+            string startOfHavingClause = String.Format("{0}=", SoqlQuery.HavingKey);
+
+            string emptyHaving = new SoqlQuery().Having("").ToString();
+            string nullHaving = new SoqlQuery().Having(null).ToString();
+
+            StringAssert.DoesNotContain(startOfHavingClause, emptyHaving);
+            StringAssert.DoesNotContain(startOfHavingClause, nullHaving);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Having_Clause_Gets_Valid_Predicate()
+        {
+            string predicate = "something > nothing";
+
+            string expected = String.Format("{0}={1}", SoqlQuery.HavingKey, predicate);
+
+            string soql = new SoqlQuery().Having(predicate).ToString();
+
+            StringAssert.Contains(expected, soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Having_Clause_Gets_Formatted_Input()
+        {
+            string format = "something > {0}";
+
+            string expected = String.Format("{0}={1}", SoqlQuery.HavingKey, String.Format(format, "nothing"));
+
+            string soql = new SoqlQuery().Having(format, "nothing").ToString();
+
+            StringAssert.Contains(expected, soql);
+        }
+
+        [Test]
+        [Category("SoqlQuery")]
+        public void Last_Having_Overwrites_All_Previous()
+        {
+            string first = "first > 0";
+            string second = "second > first";
+            string last = "last > anything";
+            string format = String.Format("{0}={{0}}", SoqlQuery.HavingKey);
+
+            string expected = String.Format(format, last);
+
+            string soql = new SoqlQuery().Having(first)
+                                         .Having(second)
+                                         .Having(last)
+                                         .ToString();
+
+            StringAssert.DoesNotContain(String.Format(format, first), soql);
+            StringAssert.DoesNotContain(String.Format(format, second), soql);
+            StringAssert.Contains(String.Format(format, last), soql);
+        }
+
         [TestCase(-100)]
         [TestCase(-1)]
         [TestCase(0)]
