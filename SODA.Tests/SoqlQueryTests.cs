@@ -24,6 +24,13 @@ namespace SODA.Tests
             StringAssert.DoesNotContain(SoqlQuery.OrderKey, new SoqlQuery().ToString());
         }
 
+        [Test]
+        [Category("SoqlQuery")]
+        public void Default_Ctor_Has_No_Limit()
+        {
+            StringAssert.DoesNotContain(SoqlQuery.LimitKey, new SoqlQuery().ToString());
+        }
+
         [TestCase(null)]
         [TestCase("")]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]

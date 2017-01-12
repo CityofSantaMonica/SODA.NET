@@ -93,6 +93,7 @@ namespace SODA
         /// <remarks>
         /// The maximum that can be requested with limit is 50,000 (http://dev.socrata.com/docs/paging.html)
         /// </remarks>
+        [Obsolete("The maximum limit has been removed for Socrata 2.1 endopoints. This field will be removed in a future release.")]
         public static readonly int MaximumLimit = 50000;
 
         /// <summary>
