@@ -85,9 +85,9 @@ string payloadTSV =
 SODA.Utilities has a few dependencies:
 
   - SODA.NET
-  - [Microsoft Access Database Engine 2010 Redistributable](http://www.microsoft.com/en-us/download/details.aspx?id=13255)
-(for reading Excel documents through OLEDB)
-  - [Microsoft Exchange WebServices 2.1](https://www.nuget.org/packages/EWS-Api-2.1/1.0.0) 
+  - [Excel Data Reader](https://www.nuget.org/packages/ExcelDataReader/2.1.2.3)
+(for reading data from Excel documents)
+  - [Microsoft Exchange WebServices 2.2](https://www.nuget.org/packages/Microsoft.Exchange.WebServices/2.2.0) 
 (for talking to an Exchange server)
 
 ## Getting Started
