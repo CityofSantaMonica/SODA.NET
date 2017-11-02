@@ -42,7 +42,43 @@ namespace SODA.Utilities
         }
 
         /// <summary>
-        /// Initialize a new EwsClient using the specified username and password to connect to the specified version of EWS. An attempt is made to autodiscovered the EWS endpoint.
+        /// Initialize a new EwsClient using the specified username and password to connect to the latest version of EWS. An attempt is made to autodiscover the EWS endpoint.
+        /// </summary>
+        /// <param name="username">A user with login rights on the specified <paramref name="domain"/>.</param>
+        /// <param name="password">The password for the specified <paramref name="username"/>.</param>
+        /// <param name="domain">The Exchange domain.</param>
+        /// <remarks>
+        /// In order for autodiscovery of an EWS endpoint to work, there may be additional Exchange configuration required.
+        /// See http://msdn.microsoft.com/en-us/library/office/jj900169(v=exchg.150).aspx.
+        /// </remarks>
+        public EwsClient(string username, string password, string domain)
+        {
+            exchangeService = new ExchangeService()
+            {
+                Credentials = new WebCredentials(username, password, domain),
+            };
+
+            exchangeService.AutodiscoverUrl(String.Format("{0}@{1}", username, domain));
+        }
+
+        /// <summary>
+        /// Initialize a new EwsClient using the specified username and password to connect to the latest version of EWS at the specified service endpoint.
+        /// </summary>
+        /// <param name="username">A user with login rights on the specified <paramref name="domain"/>.</param>
+        /// <param name="password">The password for the specified <paramref name="username"/>.</param>
+        /// <param name="domain">The Exchange domain.</param>
+        /// <param name="serviceUrl">The address Exchange uses to communicate with Exchange Web Services.</param>
+        public EwsClient(string username, string password, string domain, Uri serviceUrl)
+        {
+            exchangeService = new ExchangeService()
+            {
+                Credentials = new WebCredentials(username, password, domain),
+                Url = serviceUrl
+            };
+        }
+
+        /// <summary>
+        /// Initialize a new EwsClient using the specified username and password to connect to the specified version of EWS. An attempt is made to autodiscover the EWS endpoint.
         /// </summary>
         /// <param name="username">A user with login rights on the specified <paramref name="domain"/>.</param>
         /// <param name="password">The password for the specified <paramref name="username"/>.</param>
@@ -60,6 +96,23 @@ namespace SODA.Utilities
             };
 
             exchangeService.AutodiscoverUrl(String.Format("{0}@{1}", username, domain));
+        }
+
+        /// <summary>
+        /// Initialize a new EwsClient using the specified username and password to connect to the specified version of EWS at the specified service endpoint.
+        /// </summary>
+        /// <param name="username">A user with login rights on the specified <paramref name="domain"/>.</param>
+        /// <param name="password">The password for the specified <paramref name="username"/>.</param>
+        /// <param name="domain">The Exchange domain.</param>
+        /// <param name="serviceUrl">The address Exchange uses to communicate with Exchange Web Services.</param>
+        /// <param name="exchangeVersion">The version of Exchange.</param>
+        public EwsClient(string username, string password, string domain, Uri serviceUrl, ExchangeVersion exchangeVersion)
+        {
+            exchangeService = new ExchangeService(exchangeVersion)
+            {
+                Credentials = new WebCredentials(username, password, domain),
+                Url = serviceUrl
+            };
         }
 
         /// <summary>
