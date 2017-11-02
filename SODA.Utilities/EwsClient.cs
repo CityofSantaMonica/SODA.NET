@@ -9,7 +9,7 @@ namespace SODA.Utilities
     /// <summary>
     /// Base implementation of the IEwsClient interface
     /// </summary>
-    public abstract class EwsClient : IEwsClient
+    public class EwsClient : IEwsClient
     {
         /// <summary>
         /// The underlying <see cref="Microsoft.Exchange.WebServices.Data.ExchangeService"/> that this client uses to talk to EWS.
