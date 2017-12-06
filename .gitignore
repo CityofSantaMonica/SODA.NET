@@ -13,6 +13,7 @@ Desktop.ini
 # User-specific files
 *.suo
 *.user
+.vs/
 
 # Build results
 bin/[Dd]ebug/
