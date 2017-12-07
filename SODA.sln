@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODA", "SODA\SODA.csproj", "{837EBDD7-EB58-44F8-834B-F2903A05A16E}"
 EndProject
@@ -52,6 +52,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3FFB3665-9D4D-49FD-89BA-CF5B3C193C41}
+		SolutionGuid = {17A9746D-4584-4AD5-B2FA-2A9EDFC6ED09}
 	EndGlobalSection
 EndGlobal

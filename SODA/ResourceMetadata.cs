@@ -313,7 +313,7 @@ namespace SODA
         /// This appears to only be available when the resource is a Socrata Filtered View.
         /// In other words, Datasets, Maps, etc. do not have this metadata property.
         /// </remarks>
-        [DataMember(Name = "viewFilters")]
+        [Obsolete("Socrata has discontinued support for this undocumented metadata field. It will no longer be requested or sent with SODA calls, and may be removed in a future release.")]
         public Dictionary<string, dynamic> ViewFilters { get; set; }
 
         /// <summary>
