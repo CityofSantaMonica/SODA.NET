@@ -1,3 +1,13 @@
+### New in 0.8.0 (Released 2017/12/06)
+
+Bug fixes
+
+  - Remove discontinued field from `ResourceMetadata` that was causing serialization issues [#69](https://github.com/CityofSantaMonica/SODA.NET/issues/69)
+
+New features
+
+  - `EwsClient` can be instantiated directly, add new implementation `Office365EwsClient` for connecting to Office 365 based accounts [#71](https://github.com/CityofSantaMonica/SODA.NET/pull/71)
+
 ### New in 0.7.0 (Released 2017/01/12)
 
 *It is highly recommended to update to this version, as it features improved security following Socrata's deprecation of TLS 1.0*
