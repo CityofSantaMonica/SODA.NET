@@ -48,11 +48,11 @@
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Exchange.WebServices">
-      <HintPath>..\packages\EWS-Api-2.1.1.0.0\lib\net35\Microsoft.Exchange.WebServices.dll</HintPath>
+    <Reference Include="Microsoft.Exchange.WebServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Exchange.WebServices.Auth">
-      <HintPath>..\packages\EWS-Api-2.1.1.0.0\lib\net35\Microsoft.Exchange.WebServices.Auth.dll</HintPath>
+    <Reference Include="Microsoft.Exchange.WebServices.Auth, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.Auth.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="IEwsClient.cs" />
+    <Compile Include="Office365EwsClient.cs" />
     <Compile Include="SeparatedValuesDelimiter.cs" />
     <Compile Include="SeparatedValuesSerializer.cs" />
     <Compile Include="SimpleFileLogger.cs" />
