@@ -58,7 +58,7 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, "GET", null, null, null);
 
-            Assert.AreEqual(exampleUri, request.webRequest.RequestUri);
+            Assert.AreEqual(exampleUri, request.WebRequest.RequestUri);
         }
 
         [TestCase("GET")]
@@ -70,7 +70,7 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, input, null, null, null);
 
-            StringAssert.AreEqualIgnoringCase(input, request.webRequest.Method);
+            StringAssert.AreEqualIgnoringCase(input, request.WebRequest.Method);
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, "GET", null, null, null);
 
-            Assert.AreEqual(new Version("1.1"), request.webRequest.ProtocolVersion);
+            Assert.AreEqual(new Version("1.1"), request.WebRequest.ProtocolVersion);
         }
 
         [TestCase("appToken1234")]
@@ -88,7 +88,7 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, "GET", input, null, null);
 
-            Assert.AreEqual(input, request.webRequest.Headers["X-App-Token"]);
+            Assert.AreEqual(input, request.WebRequest.Headers["X-App-Token"]);
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, "GET", null, null, null);
 
-            Assert.IsNull(request.webRequest.Headers["Authorization"]);
+            Assert.IsNull(request.WebRequest.Headers["Authorization"]);
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace SODA.Tests
 
             var request = new SodaRequest(exampleUri, "GET", null, username, password);
 
-            Assert.AreEqual(expected, request.webRequest.Headers["Authorization"]);
+            Assert.AreEqual(expected, request.WebRequest.Headers["Authorization"]);
         }
 
         [TestCase("GET")]
@@ -122,7 +122,7 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, input, null, null, null, SodaDataFormat.JSON);
 
-            Assert.AreEqual("application/json", request.webRequest.Accept);
+            Assert.AreEqual("application/json", request.WebRequest.Accept);
         }
 
         [TestCase("POST")]
@@ -133,7 +133,7 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, input, null, null, null, SodaDataFormat.JSON);
 
-            Assert.AreEqual("application/json", request.webRequest.ContentType);
+            Assert.AreEqual("application/json", request.WebRequest.ContentType);
         }
 
         [Test]
@@ -142,7 +142,7 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.CSV);
 
-            Assert.AreEqual("text/csv", request.webRequest.Accept);
+            Assert.AreEqual("text/csv", request.WebRequest.Accept);
         }
 
         [TestCase("POST")]
@@ -152,7 +152,7 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, input, null, null, null, SodaDataFormat.CSV);
 
-            Assert.AreEqual("text/csv", request.webRequest.ContentType);
+            Assert.AreEqual("text/csv", request.WebRequest.ContentType);
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.XML);
 
-            Assert.AreEqual("application/rdf+xml", request.webRequest.Accept);
+            Assert.AreEqual("application/rdf+xml", request.WebRequest.Accept);
         }
 
         [Test]
@@ -172,7 +172,7 @@ namespace SODA.Tests
 
             //The default is -1, which indicates the property has not been set and that there is no request data to send.
             //http://msdn.microsoft.com/en-us/library/system.net.httpwebrequest.contentlength(v=vs.110).aspx
-            Assert.AreEqual(-1, request.webRequest.ContentLength);
+            Assert.AreEqual(-1, request.WebRequest.ContentLength);
         }
 
         [Test]
@@ -184,7 +184,7 @@ namespace SODA.Tests
 
             var request = new SodaRequest(exampleUri, "POST", null, null, null, SodaDataFormat.JSON, payload);
 
-            Assert.AreEqual(payloadBytes.Length, request.webRequest.ContentLength);
+            Assert.AreEqual(payloadBytes.Length, request.WebRequest.ContentLength);
         }
 
         [Test]
@@ -195,7 +195,7 @@ namespace SODA.Tests
 
             var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.JSON, null, null);
 
-            Assert.AreEqual(newHttpRequest.Timeout, request.webRequest.Timeout);
+            Assert.AreEqual(newHttpRequest.Timeout, request.WebRequest.Timeout);
         }
 
         [Test]
@@ -206,28 +206,38 @@ namespace SODA.Tests
 
             var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.JSON, null, timeout);
 
-            Assert.AreEqual(timeout, request.webRequest.Timeout);
+            Assert.AreEqual(timeout, request.WebRequest.Timeout);
         }
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaRequest")]
-        public void ParseResponse_ReThrows_JSON_Parse_Exception_As_InvalidOperationException()
+        public void Read_ReThrows_JSON_Parse_Exception_As_InvalidOperationException()
         {
             //expect a response of JSON data
-            var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.JSON);
+            var context = new SodaRequestContext()
+            {
+                Uri = exampleUri,
+                Method = "GET",
+                DataFormat = SodaDataFormat.JSON
+            };
             //we get html5 back from example.com
             //it can't be parsed to a json string
-            request.ParseResponse<string>().ToLower();
+            SodaRequest.Read<string>(context);
         }
 
         [Test]
         [Category("SodaRequest")]
-        public void ParseResponse_Can_GET_Example()
+        public void Read_Can_GET_Example()
         {
-            var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.XML);
+            var context = new SodaRequestContext()
+            {
+                Uri = exampleUri,
+                Method = "GET",
+                DataFormat = SodaDataFormat.XML
+            };
             
-            string result = request.ParseResponse<string>().ToLower();
+            string result = SodaRequest.Read<string>(context);
             
             StringAssert.Contains("<!doctype", result);
             StringAssert.Contains("<html>", result);
@@ -242,14 +252,19 @@ namespace SODA.Tests
         [TestCase("PUT")]
         [TestCase("DELETE")]
         [Category("SodaRequest")]
-        public void ParseResponse_Non_GET_Sends_Request_To_Example_Using_Method(string input)
+        public void Write_Non_GET_Sends_Request_To_Example_Using_Method(string input)
         {
-            var request = new SodaRequest(exampleUri, input, null, null, null);
+            var context = new SodaRequestContext<string>()
+            {
+                Uri = exampleUri,
+                Method = input
+            };
+
             string result;
 
             try
             {
-                result = request.ParseResponse<string>();
+                result = SodaRequest.Write<string, string>(context);
             }
             catch (WebException webException)
             {

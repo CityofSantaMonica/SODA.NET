@@ -100,7 +100,7 @@ namespace SODA
 
             var uri = SodaUri.ForMetadata(Host, resourceId);
 
-            var metadata = read<ResourceMetadata>(uri);
+            var metadata = Read<ResourceMetadata>(uri);
             metadata.Client = this;
 
             return metadata;
@@ -120,7 +120,7 @@ namespace SODA
             var catalogUri = SodaUri.ForMetadataList(Host, page);
 
             //an entry of raw data contains some, but not all, of the fields required to populate a ResourceMetadata
-            IEnumerable<dynamic> rawDataList = read<IEnumerable<dynamic>>(catalogUri).ToArray();
+            IEnumerable<dynamic> rawDataList = Read<IEnumerable<dynamic>>(catalogUri).ToArray();
             //so loop over the collection, using the identifier to make another call for the "real" metadata
             foreach (var rawData in rawDataList)
             {
@@ -169,7 +169,7 @@ namespace SODA
             if (soqlQuery.LimitValue > 0 || soqlQuery.OffsetValue > 0)
             {
                 var queryUri = SodaUri.ForQuery(Host, resourceId, soqlQuery);
-                return read<IEnumerable<TRow>>(queryUri);
+                return Read<IEnumerable<TRow>>(queryUri);
             }
             //otherwise, go nuts and get EVERYTHING
             else
@@ -178,13 +178,13 @@ namespace SODA
                 int offset = 0;
 
                 soqlQuery = soqlQuery.Limit(SoqlQuery.MaximumLimit).Offset(offset);
-                IEnumerable<TRow> offsetResults = read<IEnumerable<TRow>>(SodaUri.ForQuery(Host, resourceId, soqlQuery));
+                IEnumerable<TRow> offsetResults = Read<IEnumerable<TRow>>(SodaUri.ForQuery(Host, resourceId, soqlQuery));
 
                 while (offsetResults.Any())
                 {
                     allResults.AddRange(offsetResults);
                     soqlQuery = soqlQuery.Offset(++offset * SoqlQuery.MaximumLimit);
-                    offsetResults = read<IEnumerable<TRow>>(SodaUri.ForQuery(Host, resourceId, soqlQuery));
+                    offsetResults = Read<IEnumerable<TRow>>(SodaUri.ForQuery(Host, resourceId, soqlQuery));
                 }
 
                 return allResults;
@@ -213,19 +213,17 @@ namespace SODA
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
-
-            var request = new SodaRequest(uri, "POST", AppToken, Username, password, dataFormat, payload);
             SodaResult result = null;
 
             try
             {
                 if (dataFormat == SodaDataFormat.JSON)
                 {
-                    result = request.ParseResponse<SodaResult>();
+                    result = Write<string, SodaResult>(uri, "POST", payload, dataFormat);
                 }
                 else if (dataFormat == SodaDataFormat.CSV)
                 {
-                    string resultJson = request.ParseResponse<string>();
+                    string resultJson = Write<string, string>(uri, "POST", payload, dataFormat);
                     result = Newtonsoft.Json.JsonConvert.DeserializeObject<SodaResult>(resultJson);
                 }
             }
@@ -369,19 +367,17 @@ namespace SODA
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
-
-            var request = new SodaRequest(uri, "PUT", AppToken, Username, password, dataFormat, payload);
             SodaResult result = null;
 
             try
             {
                 if (dataFormat == SodaDataFormat.JSON)
                 {
-                    result = request.ParseResponse<SodaResult>();
+                    result = Write<string, SodaResult>(uri, "PUT", payload, dataFormat);
                 }
                 else if (dataFormat == SodaDataFormat.CSV)
                 {
-                    string resultJson = request.ParseResponse<string>();
+                    string resultJson = Write<string, string>(uri, "PUT", payload, dataFormat);
                     result = Newtonsoft.Json.JsonConvert.DeserializeObject<SodaResult>(resultJson);
                 }
             }
@@ -441,9 +437,7 @@ namespace SODA
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId, rowId);
 
-            var request = new SodaRequest(uri, "DELETE", AppToken, Username, password);
-
-            return request.ParseResponse<SodaResult>();
+            return Write<object, SodaResult>(uri, "DELETE", null);
         }
 
         /// <summary>
@@ -453,12 +447,22 @@ namespace SODA
         /// <param name="uri">A uniform resource identifier that is the target of this GET request.</param>
         /// <param name="dataFormat">One of the data-interchange formats that Socrata supports. The default is JSON.</param>
         /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
-        internal TResult read<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
+        internal TResult Read<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
             where TResult : class
         {
-            var request = new SodaRequest(uri, "GET", AppToken, Username, password, dataFormat, null, RequestTimeout);
+            var context = new SodaRequestContext()
+            {
+                Uri = uri,
+                DataFormat = dataFormat,
+                Timeout = RequestTimeout,
 
-            return request.ParseResponse<TResult>();
+                AppToken = AppToken,
+                Username = Username,
+                Password = password
+            };
+
+            var result = SodaRequest.Read<TResult>(context);
+            return result;
         }
 
         /// <summary>
@@ -470,13 +474,26 @@ namespace SODA
         /// <param name="method">One of POST, PUT, or DELETE</param>
         /// <param name="payload">An object graph to serialize and send with the request.</param>
         /// <returns>The HTTP response, deserialized into an object of type <typeparamref name="TResult"/>.</returns>
-        internal TResult write<TPayload, TResult>(Uri uri, string method, TPayload payload)
+        internal TResult Write<TPayload, TResult>(Uri uri, string method, TPayload payload, SodaDataFormat dataFormat = SodaDataFormat.JSON)
             where TPayload : class
             where TResult : class
         {
-            var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString(), RequestTimeout);
+            var context = new SodaRequestContext<TPayload>()
+            {
+                Uri = uri,
+                Method = method,
+                Timeout = RequestTimeout,
 
-            return request.ParseResponse<TResult>();
+                DataFormat = dataFormat,
+                Payload = payload,
+
+                AppToken = AppToken,
+                Username = Username,
+                Password = password
+            };
+
+            var result = SodaRequest.Write<TPayload, TResult>(context);
+            return result;
         }
     }
 }

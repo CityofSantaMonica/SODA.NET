@@ -163,7 +163,7 @@ namespace SODA
                 throw new ArgumentException("rowId", "A row identifier is required.");
 
             var resourceUri = SodaUri.ForResourceAPI(Host, Identifier, rowId);
-            return Client.read<TRow>(resourceUri);
+            return Client.Read<TRow>(resourceUri);
         }
 
         /// <summary>

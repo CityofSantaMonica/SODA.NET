@@ -1,5 +1,8 @@
-﻿using System;
+﻿using SODA.Utilities;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml;
@@ -8,19 +11,70 @@ using System.Xml.Serialization;
 namespace SODA
 {
     /// <summary>
-    /// Implementation detail representing a request/response to/from a SODA endpoint.
+    /// Low level web request/response infrastructure.
     /// </summary>
-    internal class SodaRequest
+    /// <remarks>
+    /// This class is mostly used as an internal implementation detail within SODA.
+    /// </remarks>
+    public class SodaRequest
     {
         /// <summary>
-        /// The underlying HttpWebRequest handled by this SodaRequest
+        /// Sends a read request to a Socrata host and parses the response.
         /// </summary>
-        internal HttpWebRequest webRequest { get; private set; }
+        /// <typeparam name="TResult">The type of the response</typeparam>
+        /// <param name="context">The context object containing details of the request.</param>
+        /// <returns>The result of the request as an object of type <typeparamref name="TResult"/></returns>
+        public static TResult Read<TResult>(SodaRequestContext context)
+            where TResult : class
+        {
+            var request = new SodaRequest(
+                context.Uri,
+                "GET",
+                context.AppToken,
+                context.Username,
+                context.Password,
+                context.DataFormat,
+                null,
+                context.Timeout
+            );
+
+            if (context.AdditionalHeaders.Any())
+            {
+                request.AddHeaders(context.AdditionalHeaders);
+            }
+
+            return request.ParseResponse<TResult>();
+        }
 
         /// <summary>
-        /// The Socrata supported data-interchange formats that this SodaRequest uses
+        /// Sends a write request to a Socrata host and parses the response.
         /// </summary>
-        internal SodaDataFormat dataFormat { get; private set; }
+        /// <typeparam name="TPayload">The type of the payload data.</typeparam>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <param name="context">The context object containing details of the request.</param>
+        /// <returns>The result of the request as an object of type <typeparamref name="TResult"/></returns>
+        public static TResult Write<TPayload, TResult>(SodaRequestContext<TPayload> context)
+            where TPayload : class
+            where TResult : class
+        {
+            var request = new SodaRequest(
+                context.Uri,
+                context.Method,
+                context.AppToken,
+                context.Username,
+                context.Password,
+                SodaDataFormat.JSON,
+                context.Payload.ToJsonString(),
+                context.Timeout
+            );
+
+            if (context.AdditionalHeaders.Any())
+            {
+                request.AddHeaders(context.AdditionalHeaders);
+            }
+
+            return request.ParseResponse<TResult>();
+        }
 
         /// <summary>
         /// Initialize a new SodaRequest.
@@ -36,9 +90,9 @@ namespace SODA
         internal SodaRequest(Uri uri, string method, string appToken, string username, string password, SodaDataFormat dataFormat = SodaDataFormat.JSON, string payload = null, int? timeout = null)
             : this()
         {
-            this.dataFormat = dataFormat;
+            this.DataFormat = dataFormat;
 
-            var request = WebRequest.Create(uri) as HttpWebRequest;
+            var request = System.Net.WebRequest.Create(uri) as HttpWebRequest;
             request.Method = method.ToUpper();
             request.ProtocolVersion = new System.Version("1.1");
             request.PreAuthenticate = true;
@@ -94,7 +148,40 @@ namespace SODA
                 }
             }
 
-            this.webRequest = request;
+            this.WebRequest = request;
+        }
+
+        /// <summary>
+        /// The underlying HttpWebRequest handled by this SodaRequest
+        /// </summary>
+        internal HttpWebRequest WebRequest { get; set; }
+
+        /// <summary>
+        /// The Socrata supported data-interchange formats that this SodaRequest uses
+        /// </summary>
+        private SodaDataFormat DataFormat { get; set; }
+
+        /// <summary>
+        /// Disable unsupported security protocols for all requests.
+        /// See https://support.socrata.com/hc/en-us/articles/235267087 for more information.
+        /// </summary>
+        private SodaRequest()
+        {
+            System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Ssl3;
+            System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+            if (System.Net.ServicePointManager.SecurityProtocol == 0)
+                System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls11;
+        }
+
+        /// <summary>
+        /// Add the given key-value pairs as headers to this <see cref="WebRequest"/>
+        /// </summary>
+        private void AddHeaders(IDictionary<string, string> headers)
+        {
+            foreach(var header in headers)
+            {
+                WebRequest.Headers.Add(header.Key, header.Value);
+            }
         }
 
         /// <summary>
@@ -102,18 +189,18 @@ namespace SODA
         /// </summary>
         /// <typeparam name="TResult">The target type during response deserialization.</typeparam>
         /// <exception cref="System.InvalidOperationException">Thrown if response deserialization into the requested type fails.</exception>
-        internal TResult ParseResponse<TResult>() where TResult : class
+        private TResult ParseResponse<TResult>() where TResult : class
         {
             TResult result = default(TResult);
             Exception inner = null;
             bool exception = false;
 
-            using (var responseStream = webRequest.GetResponse().GetResponseStream())
+            using (var responseStream = WebRequest.GetResponse().GetResponseStream())
             {
                 string response = new StreamReader(responseStream).ReadToEnd();
 
                 //attempt to deserialize based on the requested format
-                switch (dataFormat)
+                switch (DataFormat)
                 {
                     case SodaDataFormat.JSON:
                         try
@@ -159,22 +246,10 @@ namespace SODA
             if (exception)
             {
                 //we want to float this error up to clients
-                throw new InvalidOperationException(String.Format("Couldn't deserialize the ({0}) response into an instance of type {1}.", dataFormat, typeof(TResult)), inner);
+                throw new InvalidOperationException(String.Format("Couldn't deserialize the ({0}) response into an instance of type {1}.", DataFormat, typeof(TResult)), inner);
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Disable unsupported security protocols for all requests.
-        /// See https://support.socrata.com/hc/en-us/articles/235267087 for more information.
-        /// </summary>
-        private SodaRequest()
-        {
-            System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Ssl3;
-            System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
-            if (System.Net.ServicePointManager.SecurityProtocol == 0)
-                System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls11;
         }
     }
 }
