@@ -7,7 +7,7 @@ namespace SODA.Discovery
     /// Information about a single result of a Discovery search.
     /// </summary>
     [DataContract]
-    public class Result
+    public class SearchResult : IDiscoveryResult
     {
         /// <summary>
         /// Represents a dataset, visualization or other asset.

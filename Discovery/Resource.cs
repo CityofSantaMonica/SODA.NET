@@ -24,7 +24,7 @@ namespace SODA.Discovery
         public string Attribution { get; internal set; }
 
         [DataMember(Name = "type")]
-        public string Type { get; internal set; }
+        public AssetTypes Type { get; internal set; }
 
         [DataMember(Name = "updatedAt")]
         public DateTime UpdatedAt { get; internal set; }
@@ -69,7 +69,7 @@ namespace SODA.Discovery
         public IEnumerable<string> ParentIds { get; internal set; }
 
         [DataMember(Name = "provenance")]
-        public string Provenance { get; set; }
+        public Provenance Provenance { get; set; }
 
         [DataMember(Name = "download_count")]
         public long DownloadCount { get; set; }

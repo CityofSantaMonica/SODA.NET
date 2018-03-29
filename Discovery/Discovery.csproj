@@ -45,17 +45,31 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="ApprovalStatus.cs" />
+    <Compile Include="AssetTypes.cs" />
+    <Compile Include="AutocompleteResult.cs" />
+    <Compile Include="BucketCountResult.cs" />
     <Compile Include="Classification.cs" />
     <Compile Include="Column.cs" />
+    <Compile Include="CountResult.cs" />
+    <Compile Include="CategoryCountResult.cs" />
+    <Compile Include="FacetCountResult.cs" />
+    <Compile Include="TagCountResult.cs" />
+    <Compile Include="DomainCountResult.cs" />
     <Compile Include="DomainMetadata.cs" />
+    <Compile Include="IDiscoveryResult.cs" />
+    <Compile Include="MatchOffset.cs" />
     <Compile Include="Metadata.cs" />
     <Compile Include="PageViews.cs" />
     <Compile Include="DiscoveryResponse.cs" />
+    <Compile Include="Provenance.cs" />
     <Compile Include="Resource.cs" />
-    <Compile Include="Result.cs" />
+    <Compile Include="SearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Timings.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="ValueCountResult.cs" />
+    <Compile Include="Visibility.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SODA\SODA.csproj">
