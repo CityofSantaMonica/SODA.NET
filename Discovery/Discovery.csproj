@@ -52,8 +52,12 @@
     <Compile Include="Classification.cs" />
     <Compile Include="Column.cs" />
     <Compile Include="CountResult.cs" />
+    <Compile Include="DiscoveryHosts.cs" />
+    <Compile Include="DiscoveryQuery.cs" />
     <Compile Include="CategoryCountResult.cs" />
+    <Compile Include="DiscoveryVersions.cs" />
     <Compile Include="FacetCountResult.cs" />
+    <Compile Include="SortAttributes.cs" />
     <Compile Include="TagCountResult.cs" />
     <Compile Include="DomainCountResult.cs" />
     <Compile Include="DomainMetadata.cs" />
