@@ -5,10 +5,10 @@ using NUnit.Framework;
 namespace SODA.Tests
 {
     [TestFixture]
+    [Category("SoqlQuery")]
     public class SoqlQueryTests
     {
         [Test]
-        [Category("SoqlQuery")]
         public void Default_Ctor_Selects_Nothing_And_SelectColumns_IsNotNull()
         {
             var soql = new SoqlQuery();
@@ -18,14 +18,12 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Default_Ctor_Orders_Nothing()
         {
             StringAssert.DoesNotContain(SoqlQuery.OrderKey, new SoqlQuery().ToString());
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Default_Ctor_Has_No_Limit()
         {
             StringAssert.DoesNotContain(SoqlQuery.LimitKey, new SoqlQuery().ToString());
@@ -34,14 +32,12 @@ namespace SODA.Tests
         [TestCase(null)]
         [TestCase("")]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        [Category("SoqlQuery")]
         public void Query_Ctor_Requires_Query(string query)
         {
             var soql = new SoqlQuery(query);
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Query_Ctor_Sets_RawQuery()
         {
             var query = "SELECT something WHERE this > that ORDER BY another";
@@ -54,7 +50,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Query_Ctor_Takes_Precidence()
         {
             var query = "SELECT something WHERE this > that ORDER BY another";
@@ -73,7 +68,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Last_Select_Overwrites_All_Previous()
         {
             string[] first = { "first", "second", "last" };
@@ -92,7 +86,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Empty_Aliases_Are_Ignored()
         {
             string[] columns = new[] { "column1", "column2" };
@@ -112,7 +105,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Select_Clause_Gets_Valid_Aliases_When_All_Columns_Are_Aliased()
         {
             string[] columns = new[] { "column1", "column2", "column3" };
@@ -127,7 +119,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Select_Clause_Gets_Valid_Aliases_When_Some_Columns_Are_Aliased()
         {
             string[] columns = new[] { "column1", "column2", "column3" };
@@ -142,7 +133,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Select_Clause_Selects_Unaliased_Columns_When_Some_Columns_Are_Aliased()
         {
             string[] columns = new[] { "column1", "column2", "column3", "column4", "column5" };
@@ -154,7 +144,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Select_Clause_Gets_Valid_Aliases_And_Ignores_Extra_Aliases()
         {
             string[] columns = new[] { "column1", "column2" };
@@ -176,7 +165,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Select_Clause_Gets_Aliases_As_Lowercase()
         {
             string[] columns = new[] { "column1", "column2", "column3" };
@@ -191,7 +179,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Select_Clause_With_Aliases_Generates_Valid_SoQL()
         {
             string[] columns = new[] { "column1", "column2" };
@@ -209,7 +196,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Empty_Where_Ignores_Where_Clause()
         {
             string startOfWhereClause = String.Format("{0}=", SoqlQuery.WhereKey);
@@ -222,7 +208,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Where_Clause_Gets_Valid_Predicate()
         {
             string predicate = "something > nothing";
@@ -235,7 +220,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Where_Clause_Gets_Formatted_Input()
         {
             string format = "something > {0}";
@@ -248,7 +232,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Last_Where_Overwrites_All_Previous()
         {
             string first = "first > 0";
@@ -269,7 +252,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Order_Clause_Gets_Default_Order_Direction()
         {
             string orderby = "column";
@@ -282,7 +264,6 @@ namespace SODA.Tests
 
         [TestCase(SoqlOrderDirection.DESC, "column1", "")]
         [TestCase(SoqlOrderDirection.ASC, "column1", "", "column2")]
-        [Category("SoqlQuery")]
         public void Order_Clause_Gets_Order_Direction_And_Valid_Columns(SoqlOrderDirection direction, params string[] columns)
         {
             string expected = String.Format("{0}={1} {2}", SoqlQuery.OrderKey, String.Join(SoqlQuery.Delimiter, columns.Where(c => !String.IsNullOrEmpty(c))), direction);
@@ -293,7 +274,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Last_Order_Overwrites_All_Previous()
         {
             string[] first = { "first", "second", "last" };
@@ -312,7 +292,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Empty_Group_Ignores_Group_Clause()
         {
             string startOfGroupClause = String.Format("{0}=", SoqlQuery.GroupKey);
@@ -328,7 +307,6 @@ namespace SODA.Tests
 
         [TestCase("column1", "")]
         [TestCase("column1", "column2", "")]
-        [Category("SoqlQuery")]
         public void Group_Clause_Only_Gets_Valid_Columns(params string[] columns)
         {
             string expected = String.Format("{0}={1}", SoqlQuery.GroupKey, String.Join(SoqlQuery.Delimiter, columns.Where(c => !String.IsNullOrEmpty(c))));
@@ -339,7 +317,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Last_Group_Overwrites_All_Previous()
         {
             string[] first = { "first", "second", "last" };
@@ -358,7 +335,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Empty_Having_Ignores_Having_Clause()
         {
             string startOfHavingClause = String.Format("{0}=", SoqlQuery.HavingKey);
@@ -371,7 +347,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Having_Clause_Gets_Valid_Predicate()
         {
             string predicate = "something > nothing";
@@ -384,7 +359,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Having_Clause_Gets_Formatted_Input()
         {
             string format = "something > {0}";
@@ -397,7 +371,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Last_Having_Overwrites_All_Previous()
         {
             string first = "first > 0";
@@ -421,7 +394,6 @@ namespace SODA.Tests
         [TestCase(-1)]
         [TestCase(0)]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        [Category("SoqlQuery")]
         public void Limit_Less_Than_One_Throws_ArgumentOutOfRangeException(int limit)
         {
             var soql = new SoqlQuery().Limit(limit);
@@ -429,7 +401,6 @@ namespace SODA.Tests
 
         [TestCase(50001)]
         [TestCase(59999)]
-        [Category("SoqlQuery")]
         public void Limit_Clause_Has_A_Ceiling_At_MaximumLimit(int limit)
         {
             string expected = String.Format("{0}={1}", SoqlQuery.LimitKey, Math.Min(limit, SoqlQuery.MaximumLimit));
@@ -440,7 +411,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Last_Limit_Overwrites_All_Previous()
         {
             int first = 1;
@@ -461,14 +431,12 @@ namespace SODA.Tests
         [TestCase(-999)]
         [TestCase(-1)]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        [Category("SoqlQuery")]
         public void Offset_Less_Than_Zero_Throws_ArgumentOutOfRangeException(int offset)
         {
             var soql = new SoqlQuery().Offset(offset);
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Last_Offset_Overwrites_All_Previous()
         {
             int first = 1;
@@ -487,7 +455,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Empty_FullTextSearch_Ignores_Search_Clause()
         {
             string startOfSearchClause = String.Format("{0}=", SoqlQuery.SearchKey);
@@ -502,7 +469,6 @@ namespace SODA.Tests
         [TestCase("search text")]
         [TestCase("query")]
         [TestCase("find something")]
-        [Category("SoqlQuery")]
         public void Search_Clause_Gets_FullTextSearch(string searchText)
         {
             string expected = String.Format("{0}={1}", SoqlQuery.SearchKey, searchText);
@@ -513,7 +479,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Search_Clause_Gets_FormattedInput()
         {
             string format = "search term is {0}";
@@ -526,7 +491,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void Last_FullTextSearch_Overwrites_All_Previous()
         {
             string first = "first text";
@@ -545,7 +509,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        [Category("SoqlQuery")]
         public void All_Query_Methods_Return_The_Original_Instance()
         {
             var original = new SoqlQuery();

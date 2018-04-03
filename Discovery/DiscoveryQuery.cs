@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 
 namespace SODA.Discovery
 {
@@ -410,6 +409,16 @@ namespace SODA.Discovery
         public DiscoveryQuery ByTag(params string[] tags)
         {
             Tags = GetNonEmptyValues(tags);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the asset types filter for this DiscoveryQuery.
+        /// </summary>
+        public DiscoveryQuery ByType(params AssetTypes[] types)
+        {
+            Types = types;
 
             return this;
         }
