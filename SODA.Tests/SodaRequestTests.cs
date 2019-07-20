@@ -210,7 +210,7 @@ namespace SODA.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
+        //[ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaRequest")]
         public void ParseResponse_ReThrows_JSON_Parse_Exception_As_InvalidOperationException()
         {
@@ -218,7 +218,7 @@ namespace SODA.Tests
             var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.JSON);
             //we get html5 back from example.com
             //it can't be parsed to a json string
-            request.ParseResponse<string>().ToLower();
+            Assert.That(() => request.ParseResponse<string>().ToLower(), Throws.TypeOf<InvalidOperationException>());
         }
 
         [Test]
@@ -226,9 +226,9 @@ namespace SODA.Tests
         public void ParseResponse_Can_GET_Example()
         {
             var request = new SodaRequest(exampleUri, "GET", null, null, null, SodaDataFormat.XML);
-            
+
             string result = request.ParseResponse<string>().ToLower();
-            
+
             StringAssert.Contains("<!doctype", result);
             StringAssert.Contains("<html>", result);
             StringAssert.Contains("<head>", result);

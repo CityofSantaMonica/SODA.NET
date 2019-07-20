@@ -88,11 +88,11 @@ namespace SODA.Tests
 
         [TestCase("not json")]
         [TestCase(@"{""not"":""a"",""valid"":""phone""}")]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("PhoneColumn")]
         public void New_Throws_ArgumentOutOfRangeException_For_Invalid_PhoneColumn_Json(string input)
         {
-            new PhoneColumn(input);
+            Assert.That(() => new PhoneColumn(input), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
     }
 }
