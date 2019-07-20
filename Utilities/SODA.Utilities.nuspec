@@ -16,8 +16,9 @@
     <tags>EWS Excel SODA</tags>
     <dependencies>
       <dependency id="CSM.SodaDotNet" version="$version$" />
-      <dependency id="ExcelDataReader" version="2.1.2.3" />
       <dependency id="Microsoft.Exchange.WebServices" version="2.2.0" />
+      <dependency id="ExcelDataReader" version="3.6.0" targetFramework="net45" />
+      <dependency id="ExcelDataReader.DataSet" version="3.6.0" targetFramework="net45" />
     </dependencies>
   </metadata>
 </package>

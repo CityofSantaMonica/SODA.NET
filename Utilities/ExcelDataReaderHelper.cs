@@ -1,4 +1,4 @@
-﻿using Excel;
+﻿using ExcelDataReader;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -39,9 +39,13 @@ namespace SODA.Utilities
 
             using (IExcelDataReader reader = MakeExcelReader(excelFileName))
             {
-                reader.IsFirstRowAsColumnNames = isFirstRowColumnNames;
-
-                foreach (DataTable table in reader.AsDataSet().Tables)
+                foreach (DataTable table in reader.AsDataSet(new ExcelDataSetConfiguration
+                {
+                    ConfigureDataTable = (tableReader) => new ExcelDataTableConfiguration
+                    {
+                        UseHeaderRow = isFirstRowColumnNames,
+                    }
+                }).Tables)
                 {
                     allDataRows.AddRange(table.Rows.OfType<DataRow>());
                 }
