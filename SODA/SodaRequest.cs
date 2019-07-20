@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -13,9 +15,14 @@ namespace SODA
     internal class SodaRequest
     {
         /// <summary>
+        /// The underlying HttpClient handled by this SodaRequest
+        /// </summary>
+        internal HttpClient Client { get; private set; }
+
+        /// <summary>
         /// The underlying HttpWebRequest handled by this SodaRequest
         /// </summary>
-        internal HttpWebRequest webRequest { get; private set; }
+        internal HttpRequestMessage RequestMessage { get; private set; }
 
         /// <summary>
         /// The Socrata supported data-interchange formats that this SodaRequest uses
@@ -38,63 +45,52 @@ namespace SODA
         {
             this.dataFormat = dataFormat;
 
-            var request = WebRequest.Create(uri) as HttpWebRequest;
-            request.Method = method.ToUpper();
-            request.ProtocolVersion = new System.Version("1.1");
-            request.PreAuthenticate = true;
-            request.Timeout = timeout.HasValue ? timeout.Value : request.Timeout;
+            this.Client = new HttpClient();
+            this.Client.Timeout = timeout.HasValue ? new TimeSpan(0, 0, 0, 0, timeout.Value) : Client.Timeout;
+            this.RequestMessage = new HttpRequestMessage { RequestUri = uri, Method = new HttpMethod(method) };
 
             if (!String.IsNullOrEmpty(appToken))
             {
                 //http://dev.socrata.com/docs/app-tokens.html
-                request.Headers.Add("X-App-Token", appToken);
+                this.Client.DefaultRequestHeaders.Add("X-App-Token", appToken);
             }
-
             if (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password))
             {
                 //Authentication using HTTP Basic Authentication
                 //http://dev.socrata.com/docs/authentication.html
                 string authKVP = String.Format("{0}:{1}", username, password);
                 byte[] authBytes = Encoding.UTF8.GetBytes(authKVP);
-                request.Headers.Add("Authorization", String.Format("Basic {0}", Convert.ToBase64String(authBytes)));
+                this.Client.DefaultRequestHeaders.Add("Authorization", String.Format("Basic {0}", Convert.ToBase64String(authBytes)));
             }
-
             //http://dev.socrata.com/docs/formats/index.html
             switch (dataFormat)
             {
                 case SodaDataFormat.JSON:
-                    request.Accept = "application/json";
-                    if (!request.Method.Equals("GET"))
-                        request.ContentType = "application/json";
+                    Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     break;
                 case SodaDataFormat.CSV:
-                    switch (request.Method)
-                    {
-                        case "GET":
-                            request.Accept = "text/csv";
-                            break;
-                        case "POST":
-                        case "PUT":
-                            request.ContentType = "text/csv";
-                            break;
-                    }
+                    this.Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/csv"));
                     break;
                 case SodaDataFormat.XML:
-                    request.Accept = "application/rdf+xml";
+                    this.Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/rdf+xml"));
                     break;
             }
 
             if (!String.IsNullOrEmpty(payload))
             {
-                byte[] bodyBytes = Encoding.UTF8.GetBytes(payload);
-
-                using (var stream = request.GetRequestStream())
+                switch (dataFormat)
                 {
-                    stream.Write(bodyBytes, 0, bodyBytes.Length);
+                    case SodaDataFormat.JSON:
+                        this.RequestMessage.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+                        break;
+                    case SodaDataFormat.CSV:
+                        this.RequestMessage.Content = new StringContent(payload, Encoding.UTF8, "text/csv");
+                        break;
+                    case SodaDataFormat.XML:
+                        this.RequestMessage.Content = new StringContent(payload, Encoding.UTF8, "application/rdf+xml");
+                        break;
                 }
             }
-
-            this.webRequest = request;
         }
 
         /// <summary>
@@ -108,9 +104,9 @@ namespace SODA
             Exception inner = null;
             bool exception = false;
 
-            using (var responseStream = webRequest.GetResponse().GetResponseStream())
+            var response = Client.SendAsync(RequestMessage).Result;
+            if (response.IsSuccessStatusCode)
             {
-                string response = new StreamReader(responseStream).ReadToEnd();
 
                 //attempt to deserialize based on the requested format
                 switch (dataFormat)
@@ -118,7 +114,7 @@ namespace SODA
                     case SodaDataFormat.JSON:
                         try
                         {
-                            result = Newtonsoft.Json.JsonConvert.DeserializeObject<TResult>(response);
+                            result = Newtonsoft.Json.JsonConvert.DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result);
                         }
                         catch (Newtonsoft.Json.JsonException jex)
                         {
@@ -128,21 +124,21 @@ namespace SODA
                         break;
                     case SodaDataFormat.CSV:
                         //TODO: should we consider this an error (i.e. InvalidOperationException) if this cast returns null?
-                        result = response as TResult;
+                        result = response.Content.ReadAsStringAsync().Result as TResult;
                         break;
                     case SodaDataFormat.XML:
                         //see if the caller just wanted the XML string
                         var ttype = typeof(TResult);
                         if (ttype == typeof(string))
                         {
-                            result = response as TResult;
+                            result = response.Content.ReadAsStringAsync().Result as TResult;
                         }
                         else
                         {
                             //try to deserialize the XML response
                             try
                             {
-                                var reader = XmlReader.Create(new StringReader(response));
+                                var reader = XmlReader.Create(new StringReader(response.Content.ReadAsStringAsync().Result));
                                 var serializer = new XmlSerializer(ttype);
                                 result = serializer.Deserialize(reader) as TResult;
                             }
@@ -154,6 +150,10 @@ namespace SODA
                         }
                         break;
                 }
+            }
+            else
+            {
+                throw new WebException(response.ReasonPhrase);
             }
 
             if (exception)
