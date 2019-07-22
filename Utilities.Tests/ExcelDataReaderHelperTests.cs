@@ -13,6 +13,9 @@ namespace SODA.Utilities.Tests
         public void TestInitialize()
         {
             Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
+#if NETCOREAPP
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+#endif
         }
 
         [Test]

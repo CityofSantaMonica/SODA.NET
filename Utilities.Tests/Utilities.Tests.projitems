@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>651fb983-b00b-445a-960b-850d21d17db0</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Utilities.Tests</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DataFileExporterTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataRowExtensionsTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExcelDataReaderHelperTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileLoggingTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\DataRowMocks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\EntityMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\FileMocks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\StringMocks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectExtensionTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SeparatedValuesSerializerTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringExtensionTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Mocks\mock.xls">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Mocks\mock.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
