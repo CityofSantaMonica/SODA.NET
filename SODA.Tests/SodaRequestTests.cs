@@ -80,11 +80,11 @@ namespace SODA.Tests
 
         [Test]
         [Category("SodaRequest")]
-        public void New_Returns_Request_Using_HTTP_1_1()
+        public void New_Returns_Request_Using_HTTP_1_1_Or_Greater()
         {
             var request = new SodaRequest(exampleUri, "GET", null, null, null);
 
-            Assert.AreEqual(new Version("1.1"), request.RequestMessage.Version);
+            Assert.GreaterOrEqual(request.RequestMessage.Version, new Version("1.1"));
         }
 
         [TestCase("appToken1234")]
