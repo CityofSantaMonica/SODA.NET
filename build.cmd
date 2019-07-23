@@ -8,32 +8,27 @@ if not "%1" == "" (set TARGET="%1")
 set BUILDMODE="Release"
 if not "%2" == "" (set BUILDMODE="%2")
 
-set MSBUILDDIR="%WINDIR%\Microsoft.NET\Framework\v4.0.30319"
 set SODADIR=".\SODA"
-set UTILSDIR=".\SODA.Utilities"
+set UTILSDIR=".\Utilities"
+set SODA="%SODADIR%\SODA.csproj"
+set UTILS="%UTILSDIR%\Utilities.csproj"
 
-echo Restoring NuGet package dependencies
+echo Restoring NuGet dependencies
 
-call nuget restore
+call dotnet restore --verbosity m
 
 echo Rebuilding solution with Configuration: %BUILDMODE%
 
-call %MSBUILDDIR%\msbuild.exe SODA.sln /m "/p:Configuration=%BUILDMODE%" "/p:Platform=Any CPU" /t:Clean,Build	
+call dotnet build SODA.sln "/p:Configuration=%BUILDMODE%" "/p:Platform=Any CPU" /t:Clean,Build
 
 echo Finished solution rebuild
 
 if %TARGET% == "CreatePackages" (
-	echo Creating NuGet packages with Configuration: %BUILDMODE%
+	echo Creating NuGet packages
 
-	call xcopy %SODADIR%\bin\%BUILDMODE%\*.* %SODADIR%\lib\ /y
-	call xcopy %UTILSDIR%\bin\%BUILDMODE%\*.* %UTILSDIR%\lib\ /y
-
-	call nuget pack %SODADIR%\SODA.csproj -Properties "Configuration=%BUILDMODE%;Platform=AnyCPU"
-	call nuget pack %UTILSDIR%\SODA.Utilities.csproj -IncludeReferencedProjects -Properties "Configuration=%BUILDMODE%;Platform=AnyCPU"
+	call dotnet pack %SODA% --no-build --output ..\
+	call dotnet pack %UTILS% --no-build --output ..\
 	
-	rd /S /Q %SODADIR%\lib
-	rd /S /Q %UTILSDIR%\lib
-
 	echo Finished NuGet package creation
 )
 

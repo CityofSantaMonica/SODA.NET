@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>NetCore22.Utilities.Tests</AssemblyName>
+    <AssemblyName>NetCore22.SODA.Utilities.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

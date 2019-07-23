@@ -2,16 +2,12 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
-    <PackageId>CSM.SodaDotNet.Utilities</PackageId>
-    <Version>0.9.0</Version>
-    <Authors>City of Santa Monica, CA</Authors>
+    <AssemblyName>SODA.Utilities</AssemblyName>
+    <RootNamespace>SODA.Utilities</RootNamespace>
     <Description>Library of helper classes and extension methods for working with Socrata Open Data portals.</Description>
-    <Copyright>Copyright 2019 City of Santa Monica, CA</Copyright>
-    <Product>SODA.Utilities</Product>
-    <PackageTags>EWS Excel SODA</PackageTags>
-    <RepositoryUrl>https://github.com/CityofSantaMonica/SODA.NET</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>CSM.SodaDotNet.Utilities</PackageId>
+    <PackageTags>EWS Excel SODA</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

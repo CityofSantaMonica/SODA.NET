@@ -11,10 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build.cmd = build.cmd
 		CONTRIBUTING.md = CONTRIBUTING.md
 		DEPLOYMENT.md = DEPLOYMENT.md
+		Directory.build.props = Directory.build.props
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 		ReleaseNotes.md = ReleaseNotes.md
-		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SODA", "SODA\SODA.csproj", "{8C71D7E2-8EF0-4D7E-9EEB-06B1458D235E}"
@@ -27,9 +27,9 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SODA.Tests", "SODA.Tests\SO
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Utilities.Tests", "Utilities.Tests\Utilities.Tests.shproj", "{651FB983-B00B-445A-960B-850D21D17DB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net45.SODA.Tests", "Net45.SODA.Tests\Net45.SODA.Tests.csproj", "{309FA03E-E032-4547-A83C-389EC450FD1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net45.SODA.Tests", "Net45.SODA.Tests\Net45.SODA.Tests.csproj", "{309FA03E-E032-4547-A83C-389EC450FD1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net45.Utilities.Tests", "Net45.Utilities.Tests\Net45.Utilities.Tests.csproj", "{763FFFCB-49DD-4A86-B5A1-B51EA15CE764}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net45.Utilities.Tests", "Net45.Utilities.Tests\Net45.Utilities.Tests.csproj", "{763FFFCB-49DD-4A86-B5A1-B51EA15CE764}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCore22.SODA.Tests", "NetCore22.SODA.Tests\NetCore22.SODA.Tests.csproj", "{CFAEADE7-EBEA-40F8-9630-C699AA5F8274}"
 EndProject

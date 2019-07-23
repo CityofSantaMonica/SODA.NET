@@ -2,20 +2,12 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <AssemblyName>SODA</AssemblyName>
+    <RootNamespace>SODA</RootNamespace>
     <Description>Socrata Open Data API client library targeting .NET 4.5 and above.</Description>
-    <PackageId>CSM.SodaDotNet</PackageId>
-    <Version>0.9.0</Version>
-    <Authors>City of Santa Monica, CA</Authors>
-    <Company>City of Santa Monica, CA</Company>
-    <Copyright>Copyright 2019 City of Santa Monica, CA</Copyright>
-    <PackageTags>API OpenData Socrata SODA</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/CityofSantaMonica/SODA.NET</RepositoryUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageLicenseFile></PackageLicenseFile>
-    <PackageReleaseNotes>Package dependancies updated to latest releases
-
-Converted project to target multiple frameworks - Net Standard 2.0 and Net Framework 4.5</PackageReleaseNotes>
+    <PackageId>CSM.SodaDotNet</PackageId>
+    <PackageTags>API OpenData Socrata SODA</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
