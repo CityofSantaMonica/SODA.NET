@@ -38,7 +38,6 @@ namespace SODA.Utilities.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        //[ExpectedException(typeof(ArgumentNullException))]
         [Category("SimpleFileLogger")]
         public void New_With_Empty_LogFilePath_Throws_ArgumentNullException(string input)
         {
@@ -47,7 +46,6 @@ namespace SODA.Utilities.Tests
 
         [TestCase(-1)]
         [TestCase(0)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SimpleFileLogger")]
         public void New_With_NonPositive_MaxLogBytes_Throws_ArgumentOutOfRangeException(int input)
         {

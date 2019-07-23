@@ -33,7 +33,6 @@ namespace SODA.Tests
 
         [TestCase(null)]
         [TestCase("")]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SoqlQuery")]
         public void Query_Ctor_Requires_Query(string query)
         {
@@ -420,7 +419,6 @@ namespace SODA.Tests
         [TestCase(-100)]
         [TestCase(-1)]
         [TestCase(0)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SoqlQuery")]
         public void Limit_Less_Than_One_Throws_ArgumentOutOfRangeException(int limit)
         {
@@ -460,7 +458,6 @@ namespace SODA.Tests
 
         [TestCase(-999)]
         [TestCase(-1)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SoqlQuery")]
         public void Offset_Less_Than_Zero_Throws_ArgumentOutOfRangeException(int offset)
         {

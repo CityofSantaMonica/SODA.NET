@@ -25,7 +25,6 @@ namespace SODA.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        //[ExpectedException(typeof(ArgumentException))]
         [Category("SodaClient")]
         public void New_With_Empty_Host_Throws_ArgumentException(string input)
         {
@@ -69,7 +68,6 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void GetMetadata_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
@@ -79,7 +77,6 @@ namespace SODA.Tests
         [TestCase(-100)]
         [TestCase(-1)]
         [TestCase(0)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void GetMetadataPage_With_NonPositive_Page_Throws_ArgumentOutOfRangeException(int input)
         {
@@ -90,7 +87,6 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void GetResource_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
@@ -100,7 +96,6 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void Query_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
@@ -128,7 +123,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void Upsert_With_String_And_SodaDataFormat_XML_Throws_ArgumentOutOfRangeException()
         {
@@ -136,7 +130,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        //[ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaClient")]
         public void Upsert_With_String_And_SodaDataFormat_Using_Anonymous_Client_Throws_InvalidOperationException()
         {
@@ -146,7 +139,6 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void Upsert_With_Entities_And_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
@@ -156,7 +148,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        //[ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaClient")]
         public void Upsert_With_Entities_Using_Anonymous_Client_Throws_InvalidOperationException()
         {
@@ -168,7 +159,6 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void BatchUpsert_With_Entities_And_BatchSize_And_BreakFunction_And_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
@@ -180,7 +170,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        //[ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaClient")]
         public void BatchUpsert_With_Entities_And_BatchSize_And_BreakFunction_Using_Anonymous_Client_Throws_InvalidOperationException()
         {
@@ -194,7 +183,6 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void BatchUpsert_With_Entities_And_BatchSize_And_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
@@ -204,7 +192,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        //[ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaClient")]
         public void BatchUpsert_With_Entities_And_BatchSize_Using_Anonymous_Client_Throws_InvalidOperationException()
         {
@@ -214,7 +201,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void Replace_With_String_And_DataFormat_XML_And_ResourceId_Throws_ArgumentOutOfRangeException()
         {
@@ -224,7 +210,6 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void Replace_With_String_And_DataFormat_And_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
@@ -232,7 +217,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        //[ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaClient")]
         public void Replace_With_String_And_DataFormat_Using_Anonymous_Client_Throws_InvalidOperationException()
         {
@@ -242,7 +226,6 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void Replace_With_Entities_And_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
@@ -252,7 +235,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        //[ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaClient")]
         public void Replace_With_Entities_Using_Anonymous_Client_Throws_InvalidOperationException()
         {
@@ -263,7 +245,6 @@ namespace SODA.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        //[ExpectedException(typeof(ArgumentException))]
         [Category("SodaClient")]
         public void DeleteRow_With_Empty_RowId_Throws_ArgumentException(string input)
         {
@@ -273,7 +254,6 @@ namespace SODA.Tests
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaClient")]
         public void DeleteRow_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
@@ -281,7 +261,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        //[ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaClient")]
         public void DeleteRow_Using_Anonymous_Client_Throws_InvalidOperationException()
         {

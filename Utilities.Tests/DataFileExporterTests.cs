@@ -56,7 +56,6 @@ namespace SODA.Utilities.Tests
 
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NullInput)]
-        //[ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportCSV_With_Empty_File_Paths_Throws_Exception(string input)
         {
@@ -64,7 +63,6 @@ namespace SODA.Utilities.Tests
         }
 
         [TestCase("something.notcsv")]
-        //[ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportCSV_With_Incorrect_File_Extension_Throws_Exception(string input)
         {
@@ -143,7 +141,6 @@ namespace SODA.Utilities.Tests
 
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NullInput)]
-        //[ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportTSV_With_Empty_File_Paths_Throws_Exception(string input)
         {
@@ -151,7 +148,6 @@ namespace SODA.Utilities.Tests
         }
 
         [TestCase("something.nottsv")]
-        //[ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportTSV_With_Incorrect_File_Extension_Throws_Exception(string input)
         {
@@ -180,7 +176,6 @@ namespace SODA.Utilities.Tests
 
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NullInput)]
-        //[ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportJSON_With_Empty_File_Paths_Throws_Exception(string input)
         {
@@ -188,7 +183,6 @@ namespace SODA.Utilities.Tests
         }
 
         [TestCase("something.notjson")]
-        //[ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportJSON_With_Incorrect_File_Extension_Throws_Exception(string input)
         {

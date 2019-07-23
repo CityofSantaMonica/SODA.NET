@@ -132,8 +132,8 @@ namespace SODA.Tests
 
         [TestCase("POST")]
         [TestCase("PUT")]
-        [Category("SodaRequest")]
         [TestCase("DELETE")]
+        [Category("SodaRequest")]
         public void New_Non_GET_With_JSON_DataFormat_Sets_ContentType_Header(string input)
         {
             var request = new SodaRequest(exampleUri, input, null, null, null, SodaDataFormat.JSON, "{}");
@@ -175,8 +175,6 @@ namespace SODA.Tests
         {
             var request = new SodaRequest(exampleUri, "POST", null, null, null);
 
-            //The default is -1, which indicates the property has not been set and that there is no request data to send.
-            //http://msdn.microsoft.com/en-us/library/system.net.httpwebrequest.contentlength(v=vs.110).aspx
             Assert.IsNull(request.RequestMessage.Content);
         }
 
@@ -216,7 +214,6 @@ namespace SODA.Tests
         }
 
         [Test]
-        //[ExpectedException(typeof(InvalidOperationException))]
         [Category("SodaRequest")]
         public void ParseResponse_ReThrows_JSON_Parse_Exception_As_InvalidOperationException()
         {

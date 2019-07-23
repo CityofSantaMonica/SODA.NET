@@ -49,7 +49,6 @@ namespace SODA.Utilities.Tests
 
         [TestCase(SeparatedValuesDelimiter.Comma - 1)]
         [TestCase(SeparatedValuesDelimiter.Tab + 1)]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SeparatedValuesSerializer")]
         public void SerializeToString_Throws_ArgumentOutOfRangeException_For_Invalid_Delimiter(SeparatedValuesDelimiter delimiter)
         {
