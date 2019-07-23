@@ -20,9 +20,14 @@ namespace SODA
         internal HttpClient Client { get; private set; }
 
         /// <summary>
-        /// The underlying HttpWebRequest handled by this SodaRequest
+        /// The underlying HttpRequestMessage handled by this SodaRequest
         /// </summary>
         internal HttpRequestMessage RequestMessage { get; private set; }
+
+        /// <summary>
+        /// The underlying HttpResponseMessage handled by this SodaRequest
+        /// </summary>
+        internal HttpResponseMessage ResponseMessage { get; private set; }
 
         /// <summary>
         /// The Socrata supported data-interchange formats that this SodaRequest uses
@@ -104,56 +109,49 @@ namespace SODA
             Exception inner = null;
             bool exception = false;
 
-            var response = Client.SendAsync(RequestMessage).Result;
-            if (response.IsSuccessStatusCode)
-            {
+            this.ResponseMessage = Client.SendAsync(RequestMessage).Result;
 
-                //attempt to deserialize based on the requested format
-                switch (dataFormat)
-                {
-                    case SodaDataFormat.JSON:
+            //attempt to deserialize based on the requested format
+            switch (dataFormat)
+            {
+                case SodaDataFormat.JSON:
+                    try
+                    {
+                        result = Newtonsoft.Json.JsonConvert.DeserializeObject<TResult>(this.ResponseMessage.Content.ReadAsStringAsync().Result);
+                    }
+                    catch (Newtonsoft.Json.JsonException jex)
+                    {
+                        inner = jex;
+                        exception = true;
+                    }
+                    break;
+                case SodaDataFormat.CSV:
+                    //TODO: should we consider this an error (i.e. InvalidOperationException) if this cast returns null?
+                    result = this.ResponseMessage.Content.ReadAsStringAsync().Result as TResult;
+                    break;
+                case SodaDataFormat.XML:
+                    //see if the caller just wanted the XML string
+                    var ttype = typeof(TResult);
+                    if (ttype == typeof(string))
+                    {
+                        result = this.ResponseMessage.Content.ReadAsStringAsync().Result as TResult;
+                    }
+                    else
+                    {
+                        //try to deserialize the XML response
                         try
                         {
-                            result = Newtonsoft.Json.JsonConvert.DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result);
+                            var reader = XmlReader.Create(new StringReader(this.ResponseMessage.Content.ReadAsStringAsync().Result));
+                            var serializer = new XmlSerializer(ttype);
+                            result = serializer.Deserialize(reader) as TResult;
                         }
-                        catch (Newtonsoft.Json.JsonException jex)
+                        catch (Exception ex)
                         {
-                            inner = jex;
+                            inner = ex;
                             exception = true;
                         }
-                        break;
-                    case SodaDataFormat.CSV:
-                        //TODO: should we consider this an error (i.e. InvalidOperationException) if this cast returns null?
-                        result = response.Content.ReadAsStringAsync().Result as TResult;
-                        break;
-                    case SodaDataFormat.XML:
-                        //see if the caller just wanted the XML string
-                        var ttype = typeof(TResult);
-                        if (ttype == typeof(string))
-                        {
-                            result = response.Content.ReadAsStringAsync().Result as TResult;
-                        }
-                        else
-                        {
-                            //try to deserialize the XML response
-                            try
-                            {
-                                var reader = XmlReader.Create(new StringReader(response.Content.ReadAsStringAsync().Result));
-                                var serializer = new XmlSerializer(ttype);
-                                result = serializer.Deserialize(reader) as TResult;
-                            }
-                            catch (Exception ex)
-                            {
-                                inner = ex;
-                                exception = true;
-                            }
-                        }
-                        break;
-                }
-            }
-            else
-            {
-                throw new WebException(response.ReasonPhrase);
+                    }
+                    break;
             }
 
             if (exception)

@@ -78,14 +78,14 @@ namespace SODA.Tests
             StringAssert.AreEqualIgnoringCase(input, request.RequestMessage.Method.Method);
         }
 
-        //[Test]
-        //[Category("SodaRequest")]
-        //public void New_Returns_Request_Using_HTTP_1_1()
-        //{
-        //    var request = new SodaRequest(exampleUri, "GET", null, null, null);
+        [Test]
+        [Category("SodaRequest")]
+        public void New_Returns_Request_Using_HTTP_1_1()
+        {
+            var request = new SodaRequest(exampleUri, "GET", null, null, null);
 
-        //    Assert.AreEqual(new Version("1.1"), request.webRequest.ProtocolVersion);
-        //}
+            Assert.AreEqual(new Version("1.1"), request.RequestMessage.Version);
+        }
 
         [TestCase("appToken1234")]
         [Category("SodaRequest")]
@@ -244,27 +244,27 @@ namespace SODA.Tests
             StringAssert.Contains("</html>", result);
         }
 
-        //[TestCase("POST")]
-        //[TestCase("PUT")]
-        //[TestCase("DELETE")]
-        //[Category("SodaRequest")]
-        //public void ParseResponse_Non_GET_Sends_Request_To_Example_Using_Method(string method)
-        //{
-        //    var request = new SodaRequest(exampleUri, method, null, null, null);
-        //    string result;
+        [TestCase("POST")]
+        [TestCase("PUT")]
+        [TestCase("DELETE")]
+        [Category("SodaRequest")]
+        public void ParseResponse_Non_GET_Sends_Request_To_Example_Using_Method(string method)
+        {
+            var request = new SodaRequest(exampleUri, method, null, null, null);
+            string result;
 
-        //    try
-        //    {
-        //        result = request.ParseResponse<string>();
-        //    }
-        //    catch (WebException webException)
-        //    {
-        //        var webResponse = webException.Response as HttpWebResponse;
-
-        //        Assert.AreEqual(exampleUri, webResponse.ResponseUri);
-        //        StringAssert.AreEqualIgnoringCase(method, webResponse.Method);
-        //    }
-        //}
-
+            try
+            {
+                result = request.ParseResponse<string>();
+            }
+            catch(InvalidOperationException)
+            {
+            }
+            finally
+            {
+                Assert.AreEqual(exampleUri, request.ResponseMessage.RequestMessage.RequestUri);
+                StringAssert.AreEqualIgnoringCase(method, request.ResponseMessage.RequestMessage.Method.Method);
+            }
+        }
     }
 }
