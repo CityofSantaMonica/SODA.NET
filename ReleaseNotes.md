@@ -1,3 +1,9 @@
+### New in 0.9.0 (Released 2019/07/24)
+
+New features
+
+  - Support for .NET Core 2.2
+
 ### New in 0.8.0 (Released 2017/12/06)
 
 Bug fixes
