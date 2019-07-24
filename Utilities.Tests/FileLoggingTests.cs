@@ -9,6 +9,12 @@ namespace SODA.Utilities.Tests
     [TestFixture]
     public class FileLoggingTests
     {
+        [SetUp]
+        public void TestInitialize()
+        {
+            Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
+        }
+
         [TearDown]
         public void TestCleanUp()
         {
@@ -32,20 +38,18 @@ namespace SODA.Utilities.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentNullException))]
         [Category("SimpleFileLogger")]
         public void New_With_Empty_LogFilePath_Throws_ArgumentNullException(string input)
         {
-            new SimpleFileLogger(input);
+            Assert.That(() => new SimpleFileLogger(input), Throws.TypeOf<ArgumentNullException>());
         }
 
         [TestCase(-1)]
         [TestCase(0)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SimpleFileLogger")]
         public void New_With_NonPositive_MaxLogBytes_Throws_ArgumentOutOfRangeException(int input)
         {
-            new SimpleFileLogger(input);
+            Assert.That(() => new SimpleFileLogger(input), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -66,7 +70,7 @@ namespace SODA.Utilities.Tests
         {
             //make sure the target file exists
             File.WriteAllText(FileMocks.FileThatDoesNotExist(), String.Empty);
-            
+
             //open the target file in exclusive mode
             using (var exclusive = File.Open(FileMocks.FileThatDoesNotExist(), FileMode.Open, FileAccess.Read, FileShare.None))
             {
@@ -93,7 +97,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 File.ReadAllText(FileMocks.FileThatDoesNotExist()),
-                Is.StringContaining("Log Start").IgnoreCase
+                Does.Contain("Log Start").IgnoreCase
             );
         }
 
@@ -115,7 +119,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 File.ReadAllText(FileMocks.FileThatDoesNotExist()),
-                Is.StringContaining("Log Rollover").IgnoreCase
+                Does.Contain("Log Rollover").IgnoreCase
             );
 
             Assert.That(
@@ -152,7 +156,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 File.ReadAllText(FileMocks.FileThatDoesNotExist()),
-                Is.StringContaining(message)
+                Does.Contain(message)
             );
         }
 
@@ -171,7 +175,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 File.ReadAllText(FileMocks.FileThatDoesNotExist()),
-                Is.StringContaining(param1).And.StringContaining(param2)
+                Does.Contain(param1).And.Contains(param2)
             );
         }
 
@@ -197,7 +201,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 File.ReadAllText(FileMocks.FileThatDoesNotExist()),
-                Is.StringContaining(ex.Message).And.StringContaining(ex.StackTrace)
+                Does.Contain(ex.Message).And.Contains(ex.StackTrace)
             );
         }
 
@@ -233,7 +237,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 File.ReadAllText(FileMocks.FileThatDoesNotExist()),
-                Is.StringContaining(inner.Message).And.StringContaining(inner.StackTrace)
+                Does.Contain(inner.Message).And.Contains(inner.StackTrace)
             );
         }
     }

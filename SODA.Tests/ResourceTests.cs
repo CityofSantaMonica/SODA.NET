@@ -70,11 +70,10 @@ namespace SODA.Tests
 
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NullInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("Resource")]
         public void GetRow_With_Invalid_RowId_Throws_ArugmentException(string input)
         {
-            new Resource<object>(mockMetadata).GetRow(input);
+            Assert.That(() => new Resource<object>(mockMetadata).GetRow(input), Throws.TypeOf<ArgumentException>());
         }
     }
 }

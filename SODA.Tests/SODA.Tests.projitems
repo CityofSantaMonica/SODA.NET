@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>1112171d-6a3f-49f6-818a-fb44195ac837</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SODA.Tests</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DateTimeConverterTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FourByFourTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HumanAddressTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JsonSerializationExtensionTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LocationColumnTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\StringMocks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PhoneColumnTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceMetadataTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SodaClientTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SodaRequestTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SodaUriTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SoqlQueryTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebExceptionExtensionTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebsiteUrlColumnTests.cs" />
+  </ItemGroup>
+</Project>

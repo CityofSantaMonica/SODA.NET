@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("SODA.Utilities")]
-[assembly: AssemblyDescription("Library of helper classes and extension methods for working with Socrata Open Data portals.")]
+[assembly: InternalsVisibleTo("Net45.SODA.Utilities.Tests")]
+[assembly: InternalsVisibleTo("NetCore22.SODA.Utilities.Tests")]

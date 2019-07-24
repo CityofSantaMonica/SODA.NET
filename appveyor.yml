@@ -1,6 +1,17 @@
-version: 0.8.{build}
+version: 0.9.0-{build}
+
+image: Visual Studio 2017
+
 pull_requests:
   do_not_increment_build_number: true
+
 skip_tags: true
+
+before_build:
+  - dotnet restore --verbosity m
+
 build_script:
-- cmd: .\build.cmd
+  - dotnet build SODA.sln
+
+test_script:
+  - dotnet test

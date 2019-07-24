@@ -9,6 +9,15 @@ namespace SODA.Utilities.Tests
     [TestFixture]
     public class ExcelDataReaderHelperTests
     {
+        [SetUp]
+        public void TestInitialize()
+        {
+            Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
+#if NETCOREAPP
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+#endif
+        }
+
         [Test]
         [Category("ExcelDataReaderHelper")]
         public void GetRowsFromDataSheets_With_Empty_Filename_Throws_ArgumentNullException()

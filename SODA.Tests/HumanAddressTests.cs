@@ -28,11 +28,10 @@ namespace SODA.Tests
 
         [TestCase("not json")]
         [TestCase(@"{""not"":""a"",""human"":""address""}")]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("HumanAddress")]
         public void New_Throws_ArgumentOutOfRangeException_For_Invalid_HumanAddress_Json(string input)
         {
-            new HumanAddress(input);
+            Assert.That(() => new HumanAddress(input), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]

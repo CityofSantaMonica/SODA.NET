@@ -17,6 +17,7 @@ namespace SODA.Utilities.Tests
         [SetUp]
         public void TestInitialize()
         {
+            Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
             simpleEntities = new[] { new SimpleEntityMock(foo, bar) };
 
             if (File.Exists(FileMocks.FileThatDoesNotExist(".csv")))
@@ -55,19 +56,17 @@ namespace SODA.Utilities.Tests
 
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NullInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportCSV_With_Empty_File_Paths_Throws_Exception(string input)
         {
-            DataFileExporter.ExportCSV(simpleEntities, input);
+            Assert.That(() => DataFileExporter.ExportCSV(simpleEntities, input), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase("something.notcsv")]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportCSV_With_Incorrect_File_Extension_Throws_Exception(string input)
         {
-            DataFileExporter.ExportCSV(simpleEntities, input);
+            Assert.That(() => DataFileExporter.ExportCSV(simpleEntities, input), Throws.TypeOf<ArgumentException>());
         }
 
         [Test]
@@ -101,7 +100,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 File.ReadAllText(DataFileExporter.DefaultCSVPath).Trim(),
-                Is.StringStarting("foo,bar").And.StringEnding(String.Format(@"""{0}"",""{1}""", foo, bar))
+                Does.StartWith("foo,bar").And.EndsWith(String.Format(@"""{0}"",""{1}""", foo, bar))
             );
         }
 
@@ -111,7 +110,7 @@ namespace SODA.Utilities.Tests
         {
             var complexEntities = new[] {
                 new ComplexEntityMock(
-                    "complexEntity", 
+                    "complexEntity",
                     new[] {
                         new SimpleEntityMock(foo, bar),
                         new SimpleEntityMock(foo, bar),
@@ -125,7 +124,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 File.ReadAllText(DataFileExporter.DefaultCSVPath).Trim(),
-                Is.StringStarting("name,entities").And.StringEnding(String.Format(@"""complexEntity"",""{0}""", serializedSimpleEntities))
+                Does.StartWith("name,entities").And.EndsWith(String.Format(@"""complexEntity"",""{0}""", serializedSimpleEntities))
             );
         }
 
@@ -142,19 +141,17 @@ namespace SODA.Utilities.Tests
 
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NullInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportTSV_With_Empty_File_Paths_Throws_Exception(string input)
         {
-            DataFileExporter.ExportTSV(simpleEntities, input);
+            Assert.That(() => DataFileExporter.ExportTSV(simpleEntities, input), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase("something.nottsv")]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportTSV_With_Incorrect_File_Extension_Throws_Exception(string input)
         {
-            DataFileExporter.ExportTSV(simpleEntities, input);
+            Assert.That(() => DataFileExporter.ExportTSV(simpleEntities, input), Throws.TypeOf<ArgumentException>());
         }
 
         [Test]
@@ -165,7 +162,7 @@ namespace SODA.Utilities.Tests
             DataFileExporter.ExportTSV(simpleEntities, FileMocks.FileThatDoesNotExist(".tsv"));
             Assert.True(File.Exists(FileMocks.FileThatDoesNotExist(".tsv")));
         }
-        
+
         [Test]
         [Category("DataFileExporter")]
         public void ExportJSON_Parameterless_Uses_DefaultFilePath()
@@ -179,19 +176,17 @@ namespace SODA.Utilities.Tests
 
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NullInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportJSON_With_Empty_File_Paths_Throws_Exception(string input)
         {
-            DataFileExporter.ExportJSON(simpleEntities, input);
+            Assert.That(() => DataFileExporter.ExportJSON(simpleEntities, input), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase("something.notjson")]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("DataFileExporter")]
         public void ExportJSON_With_Incorrect_File_Extension_Throws_Exception(string input)
         {
-            DataFileExporter.ExportJSON(simpleEntities, input);
+            Assert.That(() => DataFileExporter.ExportJSON(simpleEntities, input), Throws.TypeOf<ArgumentException>());
         }
 
         [Test]
@@ -235,7 +230,7 @@ namespace SODA.Utilities.Tests
         {
             var complexEntities = new[] {
                 new ComplexEntityMock(
-                    "complexEntity", 
+                    "complexEntity",
                     new[] {
                         new SimpleEntityMock(foo, bar),
                         new SimpleEntityMock(foo, bar),

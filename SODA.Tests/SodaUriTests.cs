@@ -14,7 +14,7 @@ namespace SODA.Tests
         {
             Uri uri = SodaUri.ForMetadata(StringMocks.Host, StringMocks.ResourceId);
             StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
-            
+
             uri = null;
             uri = SodaUri.ForMetadataList(StringMocks.Host, 1);
             StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
@@ -34,7 +34,7 @@ namespace SODA.Tests
             uri = null;
             uri = SodaUri.ForQuery(StringMocks.Host, StringMocks.ResourceId, new SoqlQuery());
             StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
-            
+
             uri = null;
             uri = SodaUri.ForCategoryPage(StringMocks.Host, StringMocks.NonEmptyInput);
             StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
@@ -50,7 +50,7 @@ namespace SODA.Tests
             uri = null;
             uri = SodaUri.ForMetadata("http://" + StringMocks.Host, StringMocks.ResourceId);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
-            
+
             uri = null;
             uri = SodaUri.ForMetadataList(StringMocks.Host, 1);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
@@ -90,7 +90,7 @@ namespace SODA.Tests
             uri = null;
             uri = SodaUri.ForQuery("http://" + StringMocks.Host, StringMocks.ResourceId, new SoqlQuery());
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
-            
+
             uri = null;
             uri = SodaUri.ForCategoryPage(StringMocks.Host, StringMocks.NonEmptyInput);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
@@ -102,21 +102,19 @@ namespace SODA.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
         public void ForMetadata_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            SodaUri.ForMetadata(input, StringMocks.NonEmptyInput);
+            Assert.That(() => SodaUri.ForMetadata(input, StringMocks.NonEmptyInput), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
         public void ForMetadata_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
-            SodaUri.ForMetadata(StringMocks.Host, input);
+            Assert.That(() => SodaUri.ForMetadata(StringMocks.Host, input), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -130,21 +128,19 @@ namespace SODA.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
         public void ForMetadataList_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            SodaUri.ForMetadataList(input, 1);
+            Assert.That(() => SodaUri.ForMetadataList(input, 1), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase(-100)]
         [TestCase(-1)]
         [TestCase(0)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
         public void ForMetadataList_With_Page_Less_Than_1_Throws_ArugmentOutOfRangeException(int page)
         {
-            SodaUri.ForMetadataList(StringMocks.Host, page);
+            Assert.That(() => SodaUri.ForMetadataList(StringMocks.Host, page), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [TestCase(1)]
@@ -154,28 +150,26 @@ namespace SODA.Tests
         public void ForMetadataList_With_Valid_Arguments_Creates_MetadataList_Uri(int page)
         {
             var uri = SodaUri.ForMetadataList(StringMocks.Host, page);
-            
+
             StringAssert.AreEqualIgnoringCase("/views", uri.LocalPath);
             StringAssert.AreEqualIgnoringCase(String.Format("?page={0}", page), uri.Query);
         }
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
         public void ForResourceAPI_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            SodaUri.ForResourceAPI(input, StringMocks.ResourceId);
+            Assert.That(() => SodaUri.ForResourceAPI(input, StringMocks.ResourceId), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
         public void ForResourceAPI_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
-            SodaUri.ForResourceAPI(StringMocks.Host, input);
+            Assert.That(() => SodaUri.ForResourceAPI(StringMocks.Host, input), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -186,7 +180,7 @@ namespace SODA.Tests
             StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}", StringMocks.ResourceId), uri.LocalPath);
 
             uri = null;
-            string rowId =  "rowId";
+            string rowId = "rowId";
 
             uri = SodaUri.ForResourceAPI(StringMocks.Host, StringMocks.ResourceId, rowId);
             StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}/{1}", StringMocks.ResourceId, rowId), uri.LocalPath);
@@ -194,21 +188,19 @@ namespace SODA.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
         public void ForResourcePage_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            SodaUri.ForResourcePage(input, StringMocks.ResourceId);
+            Assert.That(() => SodaUri.ForResourcePage(input, StringMocks.ResourceId), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
         public void ForResourcePage_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
-            SodaUri.ForResourcePage(StringMocks.Host, input);
+            Assert.That(() => SodaUri.ForResourcePage(StringMocks.Host, input), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -222,21 +214,19 @@ namespace SODA.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
         public void ForResourceAboutPage_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            SodaUri.ForResourceAboutPage(input, StringMocks.ResourceId);
+            Assert.That(() => SodaUri.ForResourceAboutPage(input, StringMocks.ResourceId), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
         public void ForResourceAboutPage_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
-            SodaUri.ForResourceAboutPage(StringMocks.Host, input);
+            Assert.That(() => SodaUri.ForResourceAboutPage(StringMocks.Host, input), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -250,21 +240,19 @@ namespace SODA.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
         public void ForResourceAPIPage_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            SodaUri.ForResourceAPIPage(input, StringMocks.ResourceId);
+            Assert.That(() => SodaUri.ForResourceAPIPage(input, StringMocks.ResourceId), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
         public void ForResourceAPIPage_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
-            SodaUri.ForResourceAPIPage(StringMocks.Host, input);
+            Assert.That(() => SodaUri.ForResourceAPIPage(StringMocks.Host, input), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [TestCase("http://")]
@@ -290,29 +278,26 @@ namespace SODA.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
         public void ForQuery_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            SodaUri.ForQuery(input, StringMocks.ResourceId, new SoqlQuery());
+            Assert.That(() => SodaUri.ForQuery(input, StringMocks.ResourceId, new SoqlQuery()), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
         [TestCase(StringMocks.NonEmptyInput)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SodaUri")]
         public void ForQuery_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
         {
-            SodaUri.ForQuery(StringMocks.Host, input, new SoqlQuery());
+            Assert.That(() => SodaUri.ForQuery(StringMocks.Host, input, new SoqlQuery()), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
         [Category("SodaUri")]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ForQuery_With_Null_SoqlQuery_Throws_ArgumentNullException()
         {
-            SodaUri.ForQuery(StringMocks.Host, StringMocks.ResourceId, null);
+            Assert.That(() => SodaUri.ForQuery(StringMocks.Host, StringMocks.ResourceId, null), Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
@@ -329,20 +314,18 @@ namespace SODA.Tests
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
         public void ForCategoryPage_With_Empty_Host_Throws_ArgumentException(string input)
         {
-            SodaUri.ForCategoryPage(input, StringMocks.NonEmptyInput);
+            Assert.That(() => SodaUri.ForCategoryPage(input, StringMocks.NonEmptyInput), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase(StringMocks.NullInput)]
         [TestCase(StringMocks.EmptyInput)]
-        [ExpectedException(typeof(ArgumentException))]
         [Category("SodaUri")]
         public void ForCategoryPage_With_Empty_Category_Throws_ArgumentException(string input)
         {
-            SodaUri.ForCategoryPage(StringMocks.Host, input);
+            Assert.That(() => SodaUri.ForCategoryPage(StringMocks.Host, input), Throws.TypeOf<ArgumentException>());
         }
 
         [Test]
@@ -350,9 +333,9 @@ namespace SODA.Tests
         public void ForCategoryPage_With_Valid_Arguments_Creates_CategoryPage_Uri()
         {
             string category = "Category";
-            
+
             var uri = SodaUri.ForCategoryPage(StringMocks.Host, category);
-            
+
             StringAssert.AreEqualIgnoringCase(String.Format("/categories/{0}", category), uri.LocalPath);
         }
 

@@ -26,8 +26,14 @@ namespace SODA.Utilities
         {
             get
             {
-                if(inbox == null)
+                if (inbox == null)
+                {
+#if NET45
                     inbox = Folder.Bind(exchangeService, WellKnownFolderName.Inbox);
+#elif NETSTANDARD
+                    inbox = Folder.Bind(exchangeService, WellKnownFolderName.Inbox).Result;
+#endif
+                }
 
                 return inbox;
             }
@@ -147,13 +153,22 @@ namespace SODA.Utilities
             );
 
             //perform the search and return the results as EmailMessage objects
+#if NET45
             var results = Inbox.FindItems(filter, view).Cast<EmailMessage>();
+#elif NETSTANDARD
+            var results = Inbox.FindItems(filter, view).Result.Cast<EmailMessage>();
+#endif
             bool foundAttachment = false;
 
             foreach (var result in results)
             {
                 //another call to EWS to actually load in this email's attachment collection
+#if NET45
                 var email = EmailMessage.Bind(exchangeService, result.Id, new PropertySet(EmailMessageSchema.Attachments));
+#elif NETSTANDARD
+                var email = EmailMessage.Bind(exchangeService, result.Id, new PropertySet(EmailMessageSchema.Attachments)).Result;
+#endif
+
 
                 foreach (var attachment in email.Attachments)
                 {
@@ -171,7 +186,7 @@ namespace SODA.Utilities
                             //mark the email as read
                             email.IsRead = true;
                             email.Update(ConflictResolutionMode.AlwaysOverwrite);
-                            
+
                             //get outta here!
                             foundAttachment = true;
                             break;

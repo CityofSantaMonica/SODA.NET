@@ -33,11 +33,10 @@ namespace SODA.Tests
 
         [TestCase(null)]
         [TestCase("")]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SoqlQuery")]
         public void Query_Ctor_Requires_Query(string query)
         {
-            var soql = new SoqlQuery(query);
+            Assert.That(() => new SoqlQuery(query), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -78,7 +77,7 @@ namespace SODA.Tests
         {
             string[] first = { "first", "second", "last" };
             string[] second = { "first", "second" };
-            string[] last =  { "last" };
+            string[] last = { "last" };
             string format = String.Format("{0}={{0}}", SoqlQuery.SelectKey);
 
             string soql = new SoqlQuery().Select(first)
@@ -420,11 +419,10 @@ namespace SODA.Tests
         [TestCase(-100)]
         [TestCase(-1)]
         [TestCase(0)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SoqlQuery")]
         public void Limit_Less_Than_One_Throws_ArgumentOutOfRangeException(int limit)
         {
-            var soql = new SoqlQuery().Limit(limit);
+            Assert.That(() => new SoqlQuery().Limit(limit), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [TestCase(50001)]
@@ -447,7 +445,7 @@ namespace SODA.Tests
             int second = 2;
             int last = 3;
             string format = String.Format("{0}={{0}}", SoqlQuery.LimitKey);
-            
+
             string soql = new SoqlQuery().Limit(first)
                                          .Limit(second)
                                          .Limit(last)
@@ -460,11 +458,10 @@ namespace SODA.Tests
 
         [TestCase(-999)]
         [TestCase(-1)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SoqlQuery")]
         public void Offset_Less_Than_Zero_Throws_ArgumentOutOfRangeException(int offset)
         {
-            var soql = new SoqlQuery().Offset(offset);
+            Assert.That(() => new SoqlQuery().Offset(offset), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -533,7 +530,7 @@ namespace SODA.Tests
             string second = "second text";
             string last = "last text";
             string format = String.Format("{0}={{0}}", SoqlQuery.SearchKey);
-            
+
             string soql = new SoqlQuery().FullTextSearch(first)
                                          .FullTextSearch(second)
                                          .FullTextSearch(last)

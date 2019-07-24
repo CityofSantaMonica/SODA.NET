@@ -18,13 +18,13 @@ namespace SODA.Utilities.Tests
         [SetUp]
         public void TestInitialize()
         {
-            simpleEntities = new[] { 
+            simpleEntities = new[] {
                 new SimpleEntityMock(foo, bar)
             };
 
             complexEntities = new[] {
                 new ComplexEntityMock(
-                    "complexEntity", 
+                    "complexEntity",
                     new[] {
                         new SimpleEntityMock(foo, bar),
                         new SimpleEntityMock(foo, bar),
@@ -49,11 +49,10 @@ namespace SODA.Utilities.Tests
 
         [TestCase(SeparatedValuesDelimiter.Comma - 1)]
         [TestCase(SeparatedValuesDelimiter.Tab + 1)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [Category("SeparatedValuesSerializer")]
         public void SerializeToString_Throws_ArgumentOutOfRangeException_For_Invalid_Delimiter(SeparatedValuesDelimiter delimiter)
         {
-            string result = SeparatedValuesSerializer.SerializeToString(simpleEntities, delimiter);
+            Assert.That(() => SeparatedValuesSerializer.SerializeToString(simpleEntities, delimiter), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [TestCase(SeparatedValuesDelimiter.Comma)]
@@ -66,7 +65,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 SeparatedValuesSerializer.SerializeToString(entities, delimiter),
-                Is.StringStarting(String.Join(delimiterString, "id", "name", "number"))
+                Does.StartWith(String.Join(delimiterString, "id", "name", "number"))
             );
         }
 
@@ -80,7 +79,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 SeparatedValuesSerializer.SerializeToString(entities, delimiter, false),
-                Is.Not.StringContaining(String.Join(delimiterString, "id", "name", "number"))
+                Does.Not.Contain(String.Join(delimiterString, "id", "name", "number"))
             );
         }
 
@@ -90,7 +89,7 @@ namespace SODA.Utilities.Tests
         public void SerializeToString_Writes_Empty_Collection_To_String(SeparatedValuesDelimiter delimiter)
         {
             var emptyEntities = Enumerable.Empty<SimpleEntityMock>();
-            
+
             Assert.That(
                 SeparatedValuesSerializer.SerializeToString(emptyEntities, delimiter),
                 Is.EqualTo(String.Format("foo{0}bar", SeparatedValuesSerializer.DelimiterString(delimiter)))
@@ -106,7 +105,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 SeparatedValuesSerializer.SerializeToString(simpleEntities, delimiter),
-                Is.StringEnding(String.Format(@"""{0}""{1}""{2}""", foo, delimiterString, bar))
+                Does.EndWith(String.Format(@"""{0}""{1}""{2}""", foo, delimiterString, bar))
             );
         }
 
@@ -120,7 +119,7 @@ namespace SODA.Utilities.Tests
 
             Assert.That(
                 SeparatedValuesSerializer.SerializeToString(complexEntities, delimiter),
-                Is.StringEnding(String.Format(@"""complexEntity""{0}""{1}""", delimiterString, serializedSimpleEntities))
+                Does.EndWith(String.Format(@"""complexEntity""{0}""{1}""", delimiterString, serializedSimpleEntities))
             );
         }
 
@@ -135,15 +134,15 @@ namespace SODA.Utilities.Tests
             string csvData = SeparatedValuesSerializer.SerializeToString(dataContractEntities, delimiter);
 
             Assert.That(
-                csvData, 
-                Is.StringEnding(String.Format("\"{0}\"{1}\"{2}\"", foo, delimiterString, bar))
+                csvData,
+                Does.EndWith(String.Format("\"{0}\"{1}\"{2}\"", foo, delimiterString, bar))
             );
 
             Assert.That(
-                csvData, 
-                Is.Not.StringContaining("bup")
+                csvData,
+                Does.Not.Contain("bup")
                   .And
-                  .Not.StringContaining(bup)
+                  .Not.Contains(bup)
             );
         }
 
@@ -155,15 +154,15 @@ namespace SODA.Utilities.Tests
             string latitude = "lat";
             string longitude = "lng";
 
-            var entities = new[] { 
-                new { 
+            var entities = new[] {
+                new {
                     location =  new LocationColumn() { Latitude = latitude, Longitude = longitude }
-                } 
+                }
             };
 
             Assert.That(
                 SeparatedValuesSerializer.SerializeToString(entities, delimiter),
-                Is.StringEnding(String.Format("\"({0},{1})\"", latitude, longitude))
+                Does.EndWith(String.Format("\"({0},{1})\"", latitude, longitude))
             );
         }
 
@@ -175,19 +174,19 @@ namespace SODA.Utilities.Tests
             string latitude = "lat";
             string longitude = "lng";
 
-            var entities = new[] { 
-                new { 
+            var entities = new[] {
+                new {
                     location =  new LocationColumn() { Latitude = null, Longitude = longitude }
                 },
-                new { 
+                new {
                     location =  new LocationColumn() { Latitude = latitude, Longitude = null }
                 }
             };
 
             Assert.That(
                 SeparatedValuesSerializer.SerializeToString(entities, delimiter),
-                Is.Not.StringContaining(latitude)
-                .And.Not.StringContaining(longitude)
+                Does.Not.Contain(latitude)
+                .And.Not.Contain(longitude)
             );
         }
     }
