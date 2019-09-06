@@ -59,6 +59,10 @@ IEnumerable<MyClass> payload = GetPayloadData();
 client.Upsert(payload, "1234-wxyz");
 ```
 
+Note: This library supports writing directly to datasets with the Socrata Open Data API. For write operations that use 
+data transformations in the Socrata Data Management Experience (the user interface for creating datasets), use the Socrata 
+Data Management API. For more details on when to use SODA vs the Socrata Data Management API, see the [Data Management API documentation](https://socratapublishing.docs.apiary.io/#)
+
 ## Build
 
 Compilation can be done using
