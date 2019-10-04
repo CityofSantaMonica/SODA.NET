@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using SODA.Utilities;
 [assembly: InternalsVisibleTo("Net45.Tests")]
 [assembly: InternalsVisibleTo("NetCore22.Tests")]
+[assembly: InternalsVisibleTo("NetCore30.Tests")]
 namespace SODA
 {
     /// <summary>
