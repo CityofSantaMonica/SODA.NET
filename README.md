@@ -1,6 +1,6 @@
 # SODA.NET [![Build status](https://ci.appveyor.com/api/projects/status/yub6lyl79573lufv/branch/master?svg=true)](https://ci.appveyor.com/project/thekaveman/soda-net/branch/master)
 
-A [Socrata Open Data API](http://dev.socrata.com) (SODA) client library targeting 
+A [Socrata Open Data API](http://dev.socrata.com) (SODA) client library targeting
 .NET 4.5 and above.
 
 ## Getting Started
@@ -47,7 +47,7 @@ var results = dataset.Query<MyOtherClass>(soql);
 
 ```c#
 //make sure to provide auth credentials!
-var client = 
+var client =
     new SodaClient("data.smgov.net", "AppToken", "user@domain.com", "password");
 
 //Upsert some data serialized as CSV
@@ -59,9 +59,52 @@ IEnumerable<MyClass> payload = GetPayloadData();
 client.Upsert(payload, "1234-wxyz");
 ```
 
-Note: This library supports writing directly to datasets with the Socrata Open Data API. For write operations that use 
-data transformations in the Socrata Data Management Experience (the user interface for creating datasets), use the Socrata 
-Data Management API. For more details on when to use SODA vs the Socrata Data Management API, see the [Data Management API documentation](https://socratapublishing.docs.apiary.io/#)
+**SodaDSMAPIClient** is used for performing Dataset Management API requests
+
+For more details on when to use SODA vs the Socrata Data Management API, see the [Data Management API documentation](https://socratapublishing.docs.apiary.io/#)
+
+```c#
+using System;
+using SODA;
+
+namespace MyApp
+{
+  class MyETLClass
+  {
+    static void Main(string[] args)
+    {
+      // Initialize the client
+      PipelineClient pipelineClient = new SodaDSMAPIClient("https://my.data.socrata.com", "username", "password");
+
+      // Read in File (or other source)
+      string filepath = "C:\\Users\\mysource\\outputs\\output.csv";
+      string csv = System.IO.File.ReadAllText(filepath);
+
+      // Create a REVISION
+      Revision revision = pipelineClient.CreateRevision("replace", "1234-abcd");
+
+      // Upload the file as a new source
+      Source source = pipelineClient.CreateSource(csv, revision, DataFormat.CSV, filename="MyNewFile")
+
+      // Await data upload
+      source.AwaitCompletion()
+
+      // Get the schema of the new (latest) source
+      SchemaTransforms input = pipelineClient.CreateInputSchema(source);
+
+      // Do transforms
+      // AppliedTransforms output = input.ChangeColumnDisplayName("oldname","newname").ChangeColumnDescription("newname","New description").Run();
+      //
+
+      // Apply the revision to replace/update the dataset
+      PipelineJob job = pipelineClient.Apply(input, revision);
+
+      // Await the completion of the revision and output the processing log
+      job.AwaitCompletion();
+    }
+  }
+}
+```
 
 ## Build
 
@@ -84,15 +127,15 @@ To create the Nuget package artifacts, pass an extra parameter:
 
 ## Contributing
 
-Check out the 
-[Contributor Guidelines](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/CONTRIBUTING.md) 
+Check out the
+[Contributor Guidelines](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/CONTRIBUTING.md)
 for more details.
 
 ## Copyright and License
 
 Copyright 2017 City of Santa Monica, CA
 
-Licensed under the 
+Licensed under the
 [MIT License](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/LICENSE.txt)
 
 ## Thank you

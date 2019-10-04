@@ -203,7 +203,7 @@ namespace SODA.Utilities
 
             return new Uri(queryUrl);
         }
-                
+
         /// <summary>
         /// Create a Uri to the landing page of a specified category on the specified Socrata host.
         /// </summary>
@@ -220,6 +220,66 @@ namespace SODA.Utilities
 
             string url = String.Format("{0}/{1}", metadataUrl(socrataHost).Replace("views", "categories"), Uri.EscapeDataString(category));
 
+            return new Uri(url);
+        }
+        /// <summary>
+        /// Create a revision Uri the specified resource on the specified Socrata host.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A revision Uri for the specified resource on the specified Socrata host.</returns>
+        public static Uri ForRevision(string socrataHost, string resourceId)
+        {
+            string url = String.Format("{0}/api/publishing/v1/revision/{1}", socrataHost, resourceId);
+            return new Uri(url);
+        }
+
+        /// <summary>
+        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <param name="sourceEndpoint">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
+        public static Uri ForSource(string socrataHost, string sourceEndpoint)
+        {
+            string url = String.Format("{0}{1}", socrataHost, sourceEndpoint.Replace("\"", ""));
+            return new Uri(url);
+
+        }
+
+        /// <summary>
+        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <param name="uploadEndpoint">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
+        public static Uri ForUpload(string socrataHost, string uploadEndpoint)
+        {
+            string url = String.Format("{0}{1}", socrataHost, uploadEndpoint.Replace("\"", ""));
+            return new Uri(url);
+        }
+
+        /// <summary>
+        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <param name="applyEndpoint">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
+        public static Uri ForApply(string socrataHost, string applyEndpoint)
+        {
+            string url = String.Format("{0}{1}", socrataHost, applyEndpoint.Replace("\"", ""));
+            return new Uri(url);
+        }
+
+        /// <summary>
+        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <param name="applyEndpoint">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
+        public static Uri ForJob(Uri revisionEndpoint, long revisionNumber)
+        {
+            string url = String.Format("{0}/{1}/", revisionEndpoint.ToString(), revisionNumber);
             return new Uri(url);
         }
     }
