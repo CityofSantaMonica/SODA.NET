@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using SODA.Utilities;
 
-[assembly: InternalsVisibleTo("NetCore30.SODA.Tests")]
 namespace SODA
 {
     /// <summary>

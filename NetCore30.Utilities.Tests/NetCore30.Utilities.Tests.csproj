@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <AssemblyName>NetCore30.SODA.Utilities.Tests</AssemblyName>
+
+    <RootNamespace>NetCore30.SODA.Utilities.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

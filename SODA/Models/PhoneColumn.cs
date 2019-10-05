@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-[assembly: InternalsVisibleTo("NetCore30.SODA.Tests")]
 namespace SODA.Models
 {
     /// <summary>

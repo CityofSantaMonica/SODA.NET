@@ -8,7 +8,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-[assembly: InternalsVisibleTo("NetCore30.SODA.Tests")]
 namespace SODA
 {
     /// <summary>
