@@ -38,6 +38,22 @@ namespace SODA.Tests
             uri = null;
             uri = SodaUri.ForCategoryPage(StringMocks.Host, StringMocks.NonEmptyInput);
             StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForRevision(StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForSource(StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForApply(StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForJob(StringMocks.Host, 1);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
         }
 
         [Test]

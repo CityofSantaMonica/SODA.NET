@@ -222,6 +222,7 @@ namespace SODA.Utilities
 
             return new Uri(url);
         }
+
         /// <summary>
         /// Create a revision Uri the specified resource on the specified Socrata host.
         /// </summary>
@@ -230,21 +231,14 @@ namespace SODA.Utilities
         /// <returns>A revision Uri for the specified resource on the specified Socrata host.</returns>
         public static Uri ForRevision(string socrataHost, string resourceId)
         {
-            string url = String.Format("{0}/api/publishing/v1/revision/{1}", socrataHost, resourceId);
-            return new Uri(url);
-        }
+            if (String.IsNullOrEmpty(socrataHost))
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
-        /// <summary>
-        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
-        /// </summary>
-        /// <param name="socrataHost">The Socrata host to target.</param>
-        /// <param name="sourceEndpoint">The identifier (4x4) for a resource on the Socrata host to target.</param>
-        /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
-        public static Uri ForSource(string socrataHost, string sourceEndpoint)
-        {
-            string url = String.Format("{0}{1}", socrataHost, sourceEndpoint.Replace("\"", ""));
-            return new Uri(url);
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
+            string url = String.Format("{0}/api/publishing/v1/revision/{1}", enforceHttps(socrataHost), resourceId);
+            return new Uri(url);
         }
 
         /// <summary>
@@ -255,8 +249,33 @@ namespace SODA.Utilities
         /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
         public static Uri ForUpload(string socrataHost, string uploadEndpoint)
         {
-            string url = String.Format("{0}{1}", socrataHost, uploadEndpoint.Replace("\"", ""));
+            if (String.IsNullOrEmpty(socrataHost))
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
+
+            if (String.IsNullOrEmpty(uploadEndpoint))
+                throw new ArgumentOutOfRangeException("uploadEndpoint", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
+            string url = String.Format("{0}{1}", enforceHttps(socrataHost), uploadEndpoint.Replace("\"", ""));
             return new Uri(url);
+
+        }
+        /// <summary>
+        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <param name="sourceEndpoint">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
+        public static Uri ForSource(string socrataHost, string sourceEndpoint)
+        {
+            if (String.IsNullOrEmpty(socrataHost))
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
+
+            if (String.IsNullOrEmpty(sourceEndpoint))
+                throw new ArgumentOutOfRangeException("sourceEndpoint", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
+            string url = String.Format("{0}{1}", enforceHttps(socrataHost), sourceEndpoint.Replace("\"", ""));
+            return new Uri(url);
+
         }
 
         /// <summary>
@@ -267,7 +286,13 @@ namespace SODA.Utilities
         /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
         public static Uri ForApply(string socrataHost, string applyEndpoint)
         {
-            string url = String.Format("{0}{1}", socrataHost, applyEndpoint.Replace("\"", ""));
+            if (String.IsNullOrEmpty(socrataHost))
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
+
+            if (String.IsNullOrEmpty(applyEndpoint))
+                throw new ArgumentOutOfRangeException("sourceEndpoint", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
+            string url = String.Format("{0}{1}", enforceHttps(socrataHost), applyEndpoint.Replace("\"", ""));
             return new Uri(url);
         }
 
@@ -275,11 +300,14 @@ namespace SODA.Utilities
         /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
-        /// <param name="applyEndpoint">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <param name="revisionNumber">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
-        public static Uri ForJob(Uri revisionEndpoint, long revisionNumber)
+        public static Uri ForJob(string socrataHost, long revisionNumber)
         {
-            string url = String.Format("{0}/{1}/", revisionEndpoint.ToString(), revisionNumber);
+            if (String.IsNullOrEmpty(socrataHost))
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
+
+            string url = String.Format("{0}/{1}/", enforceHttps(socrataHost), revisionNumber);
             return new Uri(url);
         }
     }

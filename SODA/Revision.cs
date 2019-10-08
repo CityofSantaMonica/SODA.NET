@@ -1,7 +1,6 @@
 using System;
 using SODA.Utilities;
 using System.Security.Permissions;
-using NLog;
 
 namespace SODA
 
@@ -11,7 +10,6 @@ namespace SODA
     /// </summary>
     public class Revision
     {
-        Logger logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// The result of a revision being created.
         /// </summary>
@@ -23,13 +21,18 @@ namespace SODA
         public Revision(Result result)
         {
             this.result = result;
-            logger.Info(String.Format("Revision number {0} created", result.Resource["revision_seq"]));
+            Console.WriteLine(String.Format("Revision number {0} created", result.Resource["revision_seq"]));
 
         }
 
         public long GetRevisionNumber()
         {
             return this.result.Resource["revision_seq"];
+        }
+
+        public string getRevisionLink()
+        {
+          return this.result.Links["self"];
         }
 
         /// <summary>

@@ -13,14 +13,14 @@ namespace SODA
         private string password;
         public Uri revisionEndpoint { get; set; }
 
-        public PipelineJob(Uri revEndpoint, string user, string pass, long revNum)
+        public PipelineJob(string revEndpoint, string user, string pass, long revNum)
         {
             Username = user;
             password = pass;
 
-            revisionEndpoint = SocrataUri.ForJob(revEndpoint, revNum);
+            revisionEndpoint = SodaUri.ForJob(revEndpoint, revNum);
             Console.WriteLine(revisionEndpoint);
-            var jobRequest = new SodaRequest(revisionEndpoint, "GET", Username, password, DataFormat.JSON);
+            var jobRequest = new SodaRequest(revisionEndpoint, "GET", null, Username, password, SodaDataFormat.JSON);
             Result r = null;
             try
             {
@@ -39,7 +39,7 @@ namespace SODA
             Result r = null;
             while(status != "successful" && status != "failure")
             {
-                var jobRequest = new SodaRequest(revisionEndpoint, "GET", Username, password, DataFormat.JSON);
+                var jobRequest = new SodaRequest(revisionEndpoint, "GET", null, Username, password, SodaDataFormat.JSON);
                 try
                 {
                     r = jobRequest.ParseResponse<Result>();
