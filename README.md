@@ -80,7 +80,6 @@ namespace SocrataTest
             // Read in File (or other source)
             string filepath = "C:\\Users\\{user}\\Desktop\\test.csv";
             string csv = System.IO.File.ReadAllText(filepath);
-            Debug.WriteLine(csv);
 
             // Create a Dataset - either public or private (default: private)
             Revision dataset = pipelineClient.CreateDataset("MyNewDataset", "public");
@@ -106,22 +105,38 @@ namespace SocrataTest
 
             // Await the completion of the revision and output the processing log
             job.AwaitCompletion(status => Console.WriteLine(status));
-            
+           
+        }
+    }
+}
+```
+```cs
+using System;
+using SODA;
+using System.Diagnostics;
+
+namespace SocrataTest
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Initialize the client
+            SodaClient pipelineClient = new SodaClient("https://{domain}", "{username}", "{password}");
+
+            // Read in File (or other source)
+            string filepath = "C:\\Users\\{user}\\Desktop\\test.csv";
+            string csv = System.IO.File.ReadAllText(filepath);
+			
             // CREATING A REVISION
             // Create a Revision (either update, replace, or delete)
-            Revision revision = pipelineClient.CreateRevision("update", datasetId);
+            Revision revision = pipelineClient.CreateRevision("update", "1234-abcd");
 
             // Upload the file as a new source
             Source newSource = pipelineClient.CreateSource(csv, revision, SodaDataFormat.CSV, "MyNewFile");
             //Console.WriteLine(source.GetSchemaId());
             // Get the schema of the new (latest) source
             SchemaTransforms newInput = pipelineClient.CreateInputSchema(newSource);
-
-
-            // Do transforms
-            // TODO:
-            // SchemaTransforms output = input.ChangeColumnDisplayName("oldname","newname").ChangeColumnDescription("newname","New description").Run();
-            //
 
             // Run the output transforms
             AppliedTransform newOutput = newInput.Run();
