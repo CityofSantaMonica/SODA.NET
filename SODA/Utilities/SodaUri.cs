@@ -242,6 +242,20 @@ namespace SODA.Utilities
         }
 
         /// <summary>
+        /// Create a revision Uri the specified resource on the specified Socrata host.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <returns>A revision Uri for the specified resource on the specified Socrata host.</returns>
+        public static Uri ForRevision(string socrataHost)
+        {
+            if (String.IsNullOrEmpty(socrataHost))
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
+
+            string url = String.Format("{0}/api/publishing/v1/revision", enforceHttps(socrataHost));
+            return new Uri(url);
+        }
+
+        /// <summary>
         /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
@@ -302,12 +316,26 @@ namespace SODA.Utilities
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="revisionNumber">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <returns>A query Uri for the specified resource on the specified Socrata host.</returns>
-        public static Uri ForJob(string socrataHost, long revisionNumber)
+        public static Uri ForJob(string socrataHost, string revisionEndpoint)
         {
             if (String.IsNullOrEmpty(socrataHost))
                 throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
-            string url = String.Format("{0}/{1}/", enforceHttps(socrataHost), revisionNumber);
+            string url = String.Format("{0}{1}", enforceHttps(socrataHost), revisionEndpoint.Replace("\"", ""));
+            return new Uri(url);
+        }
+
+        /// <summary>
+        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// </summary>
+        /// <param name="socrataHost">The Socrata host to target.</param>
+        /// <param name="errorEndpoint">The error endpoint</param>
+        /// <returns>A error Uri for the specified resource on the specified Socrata host.</returns>
+        public static Uri ForErrorRows(string socrataHost, string errorEndpoint)
+        {
+            if (String.IsNullOrEmpty(socrataHost) || String.IsNullOrEmpty(errorEndpoint))
+                throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
+            string url = String.Format("{0}{1}", enforceHttps(socrataHost), errorEndpoint);
             return new Uri(url);
         }
     }

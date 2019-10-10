@@ -10,14 +10,14 @@ namespace SODA
         /// <summary>
         /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.
         /// </summary>
-        Dictionary<string, dynamic> source;
+        Source source;
 
         /// <summary>
         /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.
         /// </summary>
         public SchemaTransforms(Source source)
         {
-            this.source = source.Resource;
+            this.source = source;
         }
         /// <summary>
         /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.
@@ -57,7 +57,7 @@ namespace SODA
         /// <summary>
         /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.
         /// </summary>
-        public Dictionary<string, dynamic> GetSource()
+        public Source GetSource()
         {
             return this.source;
         }
@@ -66,9 +66,12 @@ namespace SODA
         /// </summary>
         public string GetOutputSchemaId()
         {
-            return this.source["schemas"][0]["output_schemas"][0]["id"];
+            return this.source.GetSchemaId();
         }
 
+        /// <summary>
+        /// Apply the transforms; Currently a NO-OP.
+        /// </summary>
         public AppliedTransform Run()
         {
             return new AppliedTransform(this.source);

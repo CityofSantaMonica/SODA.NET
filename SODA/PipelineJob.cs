@@ -9,31 +9,37 @@ namespace SODA
     /// </summary>
     public class PipelineJob
     {
+        /// <summary>
+        /// Socrata username.
+        /// </summary>
         public string Username;
+        /// <summary>
+        /// Socrata password.
+        /// </summary>
         private string password;
+        /// <summary>
+        /// The revision endpoint.
+        /// </summary>
         public Uri revisionEndpoint { get; set; }
 
-        public PipelineJob(string revEndpoint, string user, string pass, long revNum)
+        /// <summary>
+        /// Apply the source, transforms, and update to the specified dataset.
+        /// </summary>
+        /// <param name="jobUri">the JobURI.</param>
+        /// <param name="user">Username.</param>
+        /// <param name="pass">Password.</param>
+        public PipelineJob(Uri jobUri, string user, string pass)
         {
             Username = user;
             password = pass;
-
-            revisionEndpoint = SodaUri.ForJob(revEndpoint, revNum);
-            Console.WriteLine(revisionEndpoint);
-            var jobRequest = new SodaRequest(revisionEndpoint, "GET", null, Username, password, SodaDataFormat.JSON);
-            Result r = null;
-            try
-            {
-                r = jobRequest.ParseResponse<Result>();
-                Console.WriteLine(r.Resource["task_sets"][0]["status"]);
-            }
-            catch (WebException webException)
-            {
-                string message = webException.UnwrapExceptionMessage();
-                r = new Result() { Message = webException.Message, IsError = true, ErrorCode = message };
-            }
+            revisionEndpoint = jobUri;
         }
-        public void AwaitCompletion()
+
+        /// <summary>
+        /// Await the completion of the update, optionally output the status.
+        /// </summary>
+        /// <param name="lambda">A lambda function for outputting status if desired.</param>
+        public void AwaitCompletion(Action<string> lambda)
         {
             string status = "";
             Result r = null;
@@ -50,7 +56,7 @@ namespace SODA
                     r = new Result() { Message = webException.Message, IsError = true, ErrorCode = message };
                 }
                 status = r.Resource["task_sets"][0]["status"];
-                Console.WriteLine(status);
+                lambda(status);
                 System.Threading.Thread.Sleep(1000);
             }
         }

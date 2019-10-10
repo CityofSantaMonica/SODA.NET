@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using SODA.Utilities;
@@ -480,9 +481,49 @@ namespace SODA
         }
 
         /// <summary>
+        /// Create a new dataset with a given name and permission level.
+        /// </summary>
+        /// <param name="name">The dataset name</param>
+        /// <param name="permission">The permission level of the dataset, can be one of either "public" or "private".</param>
+        /// <returns>A <see cref="Revision"/> newly created Revision.</returns>
+        public Revision CreateDataset(string name, string permission = "private")
+        {
+            var revisionUri = SodaUri.ForRevision(Host);
+
+            // Construct Revision Request body
+            Newtonsoft.Json.Linq.JObject payload = new Newtonsoft.Json.Linq.JObject();
+            Newtonsoft.Json.Linq.JObject metadata = new Newtonsoft.Json.Linq.JObject();
+            Newtonsoft.Json.Linq.JObject action = new Newtonsoft.Json.Linq.JObject();
+            metadata["name"] = name;
+            action["type"] = "replace";
+            action["permission"] = permission;
+            payload["action"] = action;
+            payload["metadata"] = metadata;
+
+            var request = new SodaRequest(revisionUri, "POST", null, Username, password, SodaDataFormat.JSON, payload.ToString());
+
+            Result result = null;
+            try
+            {
+                result = request.ParseResponse<Result>();
+            }
+            catch (WebException webException)
+            {
+                string message = webException.UnwrapExceptionMessage();
+                result = new Result() { Message = webException.Message, IsError = true, ErrorCode = message, Data = payload };
+            }
+            catch (Exception ex)
+            {
+                result = new Result() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
+            }
+            return new Revision(result);
+        }
+
+
+        /// <summary>
         /// Replace any existing rows with the payload data, using the specified resource identifier.
         /// </summary>
-        /// <param name="method">One of upsert, replace, or delete</param>
+        /// <param name="method">One of update, replace, or delete</param>
         /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
         /// <param name="permission">The permission level of the dataset, can be one of either "public" or "private".</param>
         /// <returns>A <see cref="Revision"/> newly created Revision.</returns>
@@ -521,7 +562,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// Replace any existing rows with the payload data, using the specified resource identifier.
+        /// Creates the source for the specified revision.
         /// </summary>
         /// <param name="data">A string of serialized data.</param>
         /// <param name="revision">The revision created as part of a create revision step.</param>
@@ -534,41 +575,43 @@ namespace SODA
             if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
-            var uri = SodaUri.ForSource(Host, revision.GetSourceEndpoint());
-
-            var revisionNumber = revision.GetRevisionNumber();
+            var sourceUri = SodaUri.ForSource(Host, revision.GetSourceEndpoint());
+            Console.WriteLine(sourceUri.ToString());
+            revision.GetRevisionNumber();
 
             // Construct Revision Request body
             Newtonsoft.Json.Linq.JObject payload = new Newtonsoft.Json.Linq.JObject();
             Newtonsoft.Json.Linq.JObject source_type = new Newtonsoft.Json.Linq.JObject();
+            Newtonsoft.Json.Linq.JObject parse_option = new Newtonsoft.Json.Linq.JObject();
             source_type["type"] = "upload";
             source_type["filename"] = filename;
+            parse_option["parse_source"] = true;
             payload["source_type"] = source_type;
+            payload["parse_options"] = parse_option;
 
-            var createSourceRequest = new SodaRequest(uri, "POST", null, Username, password, SodaDataFormat.JSON, payload.ToString());
-            Source source = null;
-            try
-            {
-                source = createSourceRequest.ParseResponse<Source>();
-                string uploadDataPath = source.Links["bytes"];
-                uri = SodaUri.ForUpload(Host, uploadDataPath);
-
-                var fileUploadRequest = new SodaRequest(uri, "POST", null, Username, password, dataFormat, data);
-                source = fileUploadRequest.ParseResponse<Source>();
-
-            }
-            catch (WebException webException)
-            {
-                string message = webException.UnwrapExceptionMessage();
-                source = new Source() { Message = webException.Message, IsError = true, ErrorCode = message, Data = payload };
-            }
-            catch (Exception ex)
-            {
-                source = new Source() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
-            }
-            return source;
+            var createSourceRequest = new SodaRequest(sourceUri, "POST", null, Username, password, SodaDataFormat.JSON, payload.ToString());
+            Result sourceOutput = createSourceRequest.ParseResponse<Result>();
+            string uploadDataPath = sourceOutput.Links["bytes"];
+            var uploadUri = SodaUri.ForUpload(Host, uploadDataPath);
+            Console.WriteLine(uploadUri.ToString());
+            var fileUploadRequest = new SodaRequest(uploadUri, "POST", null, Username, password, dataFormat, data);
+            fileUploadRequest.SetDataType(SodaDataFormat.JSON);
+            Result result = fileUploadRequest.ParseResponse<Result>();
+            return new Source(result);
         }
 
+        /// <summary>
+        /// Get the specified source data.
+        /// </summary>
+        /// <param name="source">The result of the Source creation</param>
+        /// <returns>A <see cref="Source"/>The updated Source object</returns>
+        public Source GetSource(Source source)
+        {
+            var sourceUri = SodaUri.ForSource(Host, source.Self());
+            var sourceUpdateResponse = new SodaRequest(sourceUri, "GET", null, Username, password, SodaDataFormat.JSON, "");
+            Result result = sourceUpdateResponse.ParseResponse<Result>();
+            return new Source(result);
+        }
 
         /// <summary>
         /// Create the InputSchema from the source.
@@ -581,18 +624,33 @@ namespace SODA
         }
 
         /// <summary>
-        /// Replace any existing rows with the payload data, using the specified resource identifier.
+        /// Export the error rows (if present).
+        /// </summary>
+        /// <param name="filepath">The output file (csv)</param>
+        /// <param name="output">The specified transformed output</param>
+        public void ExportErrorRows(string filepath, AppliedTransform output)
+        {
+            var endpoint = output.GetErrorRowEndpoint().Replace("{input_schema_id}", output.GetInputSchemaId()).Replace("{output_schema_id}", output.GetOutputSchemaId());
+            var errorRowsUri = SodaUri.ForErrorRows(Host, endpoint);
+            Console.WriteLine(errorRowsUri.ToString());
+            var downloadRowsRequest = new SodaRequest(errorRowsUri, "GET", null, Username, password, SodaDataFormat.CSV, "");
+            var result = downloadRowsRequest.ParseResponse<String>();
+            System.IO.File.WriteAllText(filepath, result);
+        }
+
+        /// <summary>
+        /// Apply the source, transforms, and update to the specified dataset.
         /// </summary>
         /// <param name="outputSchema">A string of serialized data.</param>
         /// <param name="revision">A string of serialized data.</param>
-        /// <returns>A <see cref="PipelineJob"/> indicating success or failure.</returns>
+        /// <returns>A <see cref="PipelineJob"/> for determining success of failure.</returns>
         public PipelineJob Apply(AppliedTransform outputSchema, Revision revision)
         {
             Newtonsoft.Json.Linq.JObject payload = new Newtonsoft.Json.Linq.JObject();
             payload["output_schema_id"] = outputSchema.GetOutputSchemaId();
 
             var uri = SodaUri.ForSource(Host, revision.GetApplyEndpoint());
-            Console.WriteLine(uri);
+            Console.WriteLine(uri.ToString());
             var applyRequest = new SodaRequest(uri, "PUT", null, Username, password, SodaDataFormat.JSON, payload.ToString());
             Result result = null;
             try
@@ -609,7 +667,8 @@ namespace SODA
             {
                 result = new Result() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
             }
-            return new PipelineJob(revision.getRevisionLink(), Username, password, revision.GetRevisionNumber());
+
+            return new PipelineJob(SodaUri.ForJob(Host, revision.getRevisionLink()), Username, password);
         }
     }
 }

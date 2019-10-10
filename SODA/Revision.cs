@@ -25,18 +25,32 @@ namespace SODA
 
         }
 
+        /// <summary>
+        /// Get the current revision number.
+        /// </summary>
         public long GetRevisionNumber()
         {
             return this.result.Resource["revision_seq"];
         }
 
-        public string getRevisionLink()
+        /// <summary>
+        /// Get the dataset ID of the current revision.
+        /// </summary>
+        public string GetFourFour()
         {
-          return this.result.Links["self"];
+            return this.result.Resource["fourfour"];
         }
 
         /// <summary>
-        /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.
+        /// Get the revision endpoint.
+        /// </summary>
+        public string getRevisionLink()
+        {
+          return this.result.Links["show"];
+        }
+
+        /// <summary>
+        /// Get the create source link endpoint.
         /// </summary>
         public string GetSourceEndpoint()
         {
@@ -44,7 +58,7 @@ namespace SODA
         }
 
         /// <summary>
-        /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.
+        /// Get the apply link endpoint
         /// </summary>
         public string GetApplyEndpoint()
         {

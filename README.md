@@ -66,44 +66,87 @@ For more details on when to use SODA vs the Socrata Data Management API, see the
 ```c#
 using System;
 using SODA;
+using System.Diagnostics;
 
-namespace MyApp
+namespace SocrataTest
 {
-  class MyETLClass
-  {
-    static void Main(string[] args)
+    class Program
     {
-      // Initialize the client
-      PipelineClient pipelineClient = new SodaDSMAPIClient("https://my.data.socrata.com", "username", "password");
+        static void Main(string[] args)
+        {
+            // Initialize the client
+            SodaClient pipelineClient = new SodaClient("https://{domain}", "{username}", "{password}");
 
-      // Read in File (or other source)
-      string filepath = "C:\\Users\\mysource\\outputs\\output.csv";
-      string csv = System.IO.File.ReadAllText(filepath);
+            // Read in File (or other source)
+            string filepath = "C:\\Users\\{user}\\Desktop\\test.csv";
+            string csv = System.IO.File.ReadAllText(filepath);
+            Debug.WriteLine(csv);
 
-      // Create a REVISION
-      Revision revision = pipelineClient.CreateRevision("replace", "1234-abcd");
+            // Create a Dataset - either public or private (default: private)
+            Revision dataset = pipelineClient.CreateDataset("MyNewDataset", "public");
 
-      // Upload the file as a new source
-      Source source = pipelineClient.CreateSource(csv, revision, DataFormat.CSV, filename="MyNewFile")
+            string datasetId = dataset.GetFourFour();
+            Console.WriteLine(datasetId);
 
-      // Await data upload
-      source.AwaitCompletion()
+            Source source = pipelineClient.CreateSource(csv, dataset, SodaDataFormat.CSV, "File");
+            SchemaTransforms input = pipelineClient.CreateInputSchema(source);
+            AppliedTransform output = input.Run();
+            output.AwaitCompletion(pipelineClient, status => { });
 
-      // Get the schema of the new (latest) source
-      SchemaTransforms input = pipelineClient.CreateInputSchema(source);
+            // Check for Errors
+            if (output.GetErrorCount() > 0)
+            {
+                Console.WriteLine(String.Format("ERRORS! {0} row(s) resulted in an error", output.GetErrorCount()));
+                pipelineClient.ExportErrorRows("C:\\Users\\{user}\\Desktop\\errors.csv", output);
+                // Optional Throw new Error...
+            }
 
-      // Do transforms
-      // AppliedTransforms output = input.ChangeColumnDisplayName("oldname","newname").ChangeColumnDescription("newname","New description").Run();
-      //
+            // Apply the revision to the dataset
+            PipelineJob job = pipelineClient.Apply(output, dataset);
 
-      // Apply the revision to replace/update the dataset
-      PipelineJob job = pipelineClient.Apply(input, revision);
+            // Await the completion of the revision and output the processing log
+            job.AwaitCompletion(status => Console.WriteLine(status));
+            
+            // CREATING A REVISION
+            // Create a Revision (either update, replace, or delete)
+            Revision revision = pipelineClient.CreateRevision("update", datasetId);
 
-      // Await the completion of the revision and output the processing log
-      job.AwaitCompletion();
+            // Upload the file as a new source
+            Source newSource = pipelineClient.CreateSource(csv, revision, SodaDataFormat.CSV, "MyNewFile");
+            //Console.WriteLine(source.GetSchemaId());
+            // Get the schema of the new (latest) source
+            SchemaTransforms newInput = pipelineClient.CreateInputSchema(newSource);
+
+
+            // Do transforms
+            // TODO:
+            // SchemaTransforms output = input.ChangeColumnDisplayName("oldname","newname").ChangeColumnDescription("newname","New description").Run();
+            //
+
+            // Run the output transforms
+            AppliedTransform newOutput = newInput.Run();
+
+            // Transforms are applied asynchronously, so we need to wait for them to complete
+            newOutput.AwaitCompletion(pipelineClient, status => { });
+
+            // Check for Errors
+            if(output.GetErrorCount() > 0)
+            {
+                Console.WriteLine(String.Format("ERRORS! {0} row(s) resulted in an error", output.GetErrorCount()));
+                pipelineClient.ExportErrorRows("C:\\Users\\{user}\\Desktop\\errors.csv", output);
+                // Optional Throw new Error...
+            }
+
+            // Apply the revision to replace/update the dataset
+            PipelineJob newJob = pipelineClient.Apply(newOutput, revision);
+
+            // Await the completion of the revision and output the processing log
+            newJob.AwaitCompletion(status => Console.WriteLine(status) );
+           
+        }
     }
-  }
 }
+
 ```
 
 ## Build

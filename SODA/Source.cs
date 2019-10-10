@@ -1,57 +1,88 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using SODA.Utilities;
+using System.Security.Permissions;
 
 namespace SODA
+
 {
     /// <summary>
-    /// Gets the information related to the Source.
+    /// A class for accessing the Source object.
     /// </summary>
-    [DataContract]
     public class Source
     {
         /// <summary>
-        /// Gets the number of errors.
+        /// The result of a source being created.
         /// </summary>
-        [DataMember(Name = "Errors")]
-        public int Errors { get; private set; }
+        Result result;
 
         /// <summary>
-        /// Gets the explanatory text about this result.
+        /// A class for handling Sources.
         /// </summary>
-        [DataMember(Name = "message")]
-        public string Message { get; internal set; }
+        public Source(Result result)
+        {
+            this.result = result;
+        }
 
         /// <summary>
-        /// Gets a flag indicating if one or more errors occured.
+        /// Get lastest Schema ID.
         /// </summary>
-        [DataMember(Name = "error")]
-        public bool IsError { get; internal set; }
+        public string GetSchemaId()
+        {
+            return this.result.Resource["schemas"][0]["output_schemas"][0]["id"];
+        }
 
         /// <summary>
-        /// Gets data about any errors that occured.
+        /// Get Input schema ID.
         /// </summary>
-        [DataMember(Name = "code")]
-        public string ErrorCode { get; internal set; }
+        /// <returns>Input Schema ID</returns>
+        public string GetInputSchemaId()
+        {
+            return this.result.Resource["schemas"][0]["output_schemas"][0]["input_schema_id"];
+        }
 
         /// <summary>
-        /// Gets any additional data associated with this result.
+        /// Retrieve the error count.
         /// </summary>
-        [DataMember(Name = "data")]
-        public dynamic Data { get; internal set; }
+        /// <returns>Error count</returns>
+        public int GetErrorCount()
+        {
+            return this.result.Resource["schemas"][0]["output_schemas"][0]["error_count"];
+        }
 
         /// <summary>
-        /// Get data related to the resource.
+        /// Retrieve the error count.
         /// </summary>
-        [DataMember(Name = "resource")]
-        public Dictionary<string, dynamic> Resource { get; set; }
+        /// <returns>Error count</returns>
+        public Boolean IsComplete(Action<string> lambda)
+        {
+            string completed_at = this.result.Resource["schemas"][0]["output_schemas"][0]["completed_at"];
+            if(String.IsNullOrEmpty(completed_at))
+            {
+                lambda("Working...");
+                return false;
+            } else
+            {
+                lambda(String.Format("Completed at: {0}", completed_at));
+                return true;
+            }
+        }
 
         /// <summary>
-        /// Gets links provided for gathering additional resources.
+        /// Error row endpoint.
         /// </summary>
-        [DataMember(Name = "links")]
-        public Dictionary<string, dynamic> Links { get; set; }
+        /// <returns>Error row endpoint</returns>
+        public string GetErrorRowEndPoint()
+        {
+            return this.result.Links["input_schema_links"]["output_schema_links"]["schema_errors"];
+        }
+
+        /// <summary>
+        /// Get the self link.
+        /// </summary>
+        /// <returns>Current endpoint</returns>
+        public string Self()
+        {
+            return this.result.Links["show"];
+        }
     }
 }
