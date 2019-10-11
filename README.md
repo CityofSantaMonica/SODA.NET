@@ -59,10 +59,11 @@ IEnumerable<MyClass> payload = GetPayloadData();
 client.Upsert(payload, "1234-wxyz");
 ```
 
-**SodaDSMAPIClient** is used for performing Dataset Management API requests
+**SodaClient** cam also be used for performing Dataset Management API requests
 
 For more details on when to use SODA vs the Socrata Data Management API, see the [Data Management API documentation](https://socratapublishing.docs.apiary.io/#)
 
+Creating datasets:
 ```c#
 using System;
 using SODA;
@@ -110,6 +111,8 @@ namespace SocrataTest
     }
 }
 ```
+
+Creating update, replace, or delete revisions:
 ```cs
 using System;
 using SODA;
