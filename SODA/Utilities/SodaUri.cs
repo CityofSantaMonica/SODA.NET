@@ -321,6 +321,9 @@ namespace SODA.Utilities
             if (String.IsNullOrEmpty(socrataHost))
                 throw new ArgumentException("socrataHost", "Must provide a Socrata host to target.");
 
+            if (String.IsNullOrEmpty(revisionEndpoint))
+                throw new ArgumentOutOfRangeException("sourceEndpoint", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
             string url = String.Format("{0}{1}", enforceHttps(socrataHost), revisionEndpoint.Replace("\"", ""));
             return new Uri(url);
         }
