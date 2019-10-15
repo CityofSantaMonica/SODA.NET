@@ -266,5 +266,37 @@ namespace SODA.Tests
         {
             Assert.That(() => mockClient.DeleteRow(StringMocks.NonEmptyInput, StringMocks.ResourceId), Throws.TypeOf<InvalidOperationException>());
         }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [Category("SodaClient")]
+        public void DSMAPI_With_Invalid_ResourceId_Throws_ArgumentOutOfRangeException(string input)
+        {
+            Assert.That(() => mockClient.CreateRevision(StringMocks.NonEmptyInput, input), Throws.TypeOf<ArgumentOutOfRangeException>());
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [Category("SodaClient")]
+        public void DSMAPI_With_NULL_Or_Empty_Values_Throws_ArgumentOutOfRangeException(string input)
+        {
+            Assert.That(() => mockClient.CreateDataset(input), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => mockClient.CreateRevision(input, StringMocks.ResourceId), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => mockClient.CreateSource(input, null, SodaDataFormat.CSV), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => mockClient.ExportErrorRows(input, null), Throws.TypeOf<ArgumentException>());
+ 
+        }
+
+        [Category("SodaClient")]
+        public void DSMAPI_With_NUL_Values_Throws_ArgumentOutOfRangeException()
+        {
+            Assert.That(() => mockClient.CreateSource(StringMocks.NonEmptyInput, null, SodaDataFormat.CSV), Throws.TypeOf<ArgumentException>());
+           
+            Assert.That(() => mockClient.GetSource(null), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => mockClient.CreateInputSchema(null), Throws.TypeOf<ArgumentException>());
+
+            Assert.That(() => mockClient.ExportErrorRows(StringMocks.NonEmptyInput, null), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => mockClient.Apply(null, null), Throws.TypeOf<InvalidOperationException>());
+        }
     }
 }

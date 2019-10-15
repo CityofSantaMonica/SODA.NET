@@ -76,6 +76,7 @@ namespace SODA
                     break;
                 case SodaDataFormat.CSV:
                     this.Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/csv"));
+                    this.Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     break;
                 case SodaDataFormat.XML:
                     this.Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/rdf+xml"));
@@ -98,7 +99,11 @@ namespace SODA
                 }
             }
         }
-
+        
+        internal void SetDataType(SodaDataFormat format)
+        {
+            dataFormat = format;
+        }
         /// <summary>
         /// Send this SodaRequest's webRequest and interpret the response.
         /// </summary>

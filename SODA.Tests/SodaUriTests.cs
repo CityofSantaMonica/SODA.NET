@@ -38,6 +38,30 @@ namespace SODA.Tests
             uri = null;
             uri = SodaUri.ForCategoryPage(StringMocks.Host, StringMocks.NonEmptyInput);
             StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForRevision(StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForSource(StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForUpload(StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForApply(StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForJob(StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
+
+            uri = null;
+            uri = SodaUri.ForErrorRows(StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(StringMocks.Host, uri.Host);
         }
 
         [Test]
@@ -97,6 +121,30 @@ namespace SODA.Tests
 
             uri = null;
             uri = SodaUri.ForCategoryPage("http://" + StringMocks.Host, StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForRevision("http://" + StringMocks.Host, StringMocks.ResourceId);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForSource("http://" + StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForUpload("http://" + StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForApply("http://" + StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForJob("http://" + StringMocks.Host, "/" + StringMocks.NonEmptyInput);
+            StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
+
+            uri = null;
+            uri = SodaUri.ForErrorRows("http://" + StringMocks.Host, "/" + StringMocks.NonEmptyInput);
             StringAssert.AreEqualIgnoringCase(Uri.UriSchemeHttps, uri.Scheme);
         }
 
@@ -326,6 +374,30 @@ namespace SODA.Tests
         public void ForCategoryPage_With_Empty_Category_Throws_ArgumentException(string input)
         {
             Assert.That(() => SodaUri.ForCategoryPage(StringMocks.Host, input), Throws.TypeOf<ArgumentException>());
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [Category("SodaUri")]
+        public void DSMAPI_With_Invalid_Endpoint_Throws_ArgumentOutOfRangeException(string input)
+        {
+            Assert.That(() => SodaUri.ForRevision(StringMocks.Host, input), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => SodaUri.ForUpload(StringMocks.Host, input), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => SodaUri.ForSource(StringMocks.Host, input), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => SodaUri.ForJob(StringMocks.Host, input), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => SodaUri.ForApply(StringMocks.Host, input), Throws.TypeOf<ArgumentOutOfRangeException>());
+        }
+
+        [TestCase(StringMocks.NullInput)]
+        [TestCase(StringMocks.EmptyInput)]
+        [Category("SodaUri")]
+        public void DSMAPI_With_Invalid_Host_Throws_ArgumentOutOfRangeException(string input)
+        {
+            Assert.That(() => SodaUri.ForRevision(input, StringMocks.NonEmptyInput), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => SodaUri.ForUpload(input, StringMocks.NonEmptyInput), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => SodaUri.ForSource(input, StringMocks.NonEmptyInput), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => SodaUri.ForJob(input, StringMocks.NonEmptyInput), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => SodaUri.ForApply(input, StringMocks.NonEmptyInput), Throws.TypeOf<ArgumentException>());
         }
 
         [Test]

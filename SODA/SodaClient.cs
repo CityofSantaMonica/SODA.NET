@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using SODA.Utilities;
@@ -69,7 +70,7 @@ namespace SODA
         /// <param name="username">The user account that this client will use for Authentication during each request.</param>
         /// <param name="password">The password for the specified <paramref name="username"/> that this client will use for Authentication during each request.</param>
         /// <exception cref="System.ArgumentException">Thrown if no <paramref name="host"/> is provided.</exception>
-        public SodaClient(string host, string username, string password) 
+        public SodaClient(string host, string username, string password)
             : this(host, null, username, password)
         {
         }
@@ -116,7 +117,7 @@ namespace SODA
         {
             if (page <= 0)
                 throw new ArgumentOutOfRangeException("page", "Resouce metadata catalogs begin on page 1.");
-            
+
             var catalogUri = SodaUri.ForMetadataList(Host, page);
 
             //an entry of raw data contains some, but not all, of the fields required to populate a ResourceMetadata
@@ -142,7 +143,7 @@ namespace SODA
         {
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
-            
+
             return new Resource<TRow>(resourceId, this);
         }
 
@@ -477,6 +478,235 @@ namespace SODA
             var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString(), RequestTimeout);
 
             return request.ParseResponse<TResult>();
+        }
+
+        /// <summary>
+        /// Create a new dataset with a given name and permission level.
+        /// </summary>
+        /// <param name="name">The dataset name</param>
+        /// <param name="permission">The permission level of the dataset, can be one of either "public" or "private".</param>
+        /// <returns>A <see cref="Revision"/> newly created Revision.</returns>
+        public Revision CreateDataset(string name, string permission = "private")
+        {
+            if (String.IsNullOrEmpty(name))
+                throw new ArgumentException("Dataset name required.", "name");
+
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
+            var revisionUri = SodaUri.ForRevision(Host);
+
+            // Construct Revision Request body
+            Newtonsoft.Json.Linq.JObject payload = new Newtonsoft.Json.Linq.JObject();
+            Newtonsoft.Json.Linq.JObject metadata = new Newtonsoft.Json.Linq.JObject();
+            Newtonsoft.Json.Linq.JObject action = new Newtonsoft.Json.Linq.JObject();
+            metadata["name"] = name;
+            action["type"] = "replace";
+            action["permission"] = permission;
+            payload["action"] = action;
+            payload["metadata"] = metadata;
+
+            var request = new SodaRequest(revisionUri, "POST", null, Username, password, SodaDataFormat.JSON, payload.ToString());
+
+            Result result = null;
+            try
+            {
+                result = request.ParseResponse<Result>();
+            }
+            catch (WebException webException)
+            {
+                string message = webException.UnwrapExceptionMessage();
+                result = new Result() { Message = webException.Message, IsError = true, ErrorCode = message, Data = payload };
+            }
+            catch (Exception ex)
+            {
+                result = new Result() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
+            }
+            return new Revision(result);
+        }
+
+
+        /// <summary>
+        /// Replace any existing rows with the payload data, using the specified resource identifier.
+        /// </summary>
+        /// <param name="method">One of update, replace, or delete</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <param name="permission">The permission level of the dataset, can be one of either "public" or "private".</param>
+        /// <returns>A <see cref="Revision"/> newly created Revision.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        public Revision CreateRevision(string method, string resourceId, string permission = "private")
+        {
+
+            if (String.IsNullOrEmpty(method))
+                throw new ArgumentException("Method must be specified either update, replace, or delete.", "method");
+
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
+            var revisionUri = SodaUri.ForRevision(Host, resourceId); 
+
+            // Construct Revision Request body
+            Newtonsoft.Json.Linq.JObject payload = new Newtonsoft.Json.Linq.JObject();
+            Newtonsoft.Json.Linq.JObject action = new Newtonsoft.Json.Linq.JObject();
+            action["type"] = method;
+            action["permission"] = permission;
+            payload["action"] = action;
+
+            var request = new SodaRequest(revisionUri, "POST", null, Username, password, SodaDataFormat.JSON, payload.ToString());
+
+            Result result = null;
+            try
+            {
+                result = request.ParseResponse<Result>();
+            }
+            catch (WebException webException)
+            {
+                string message = webException.UnwrapExceptionMessage();
+                result = new Result() { Message = webException.Message, IsError = true, ErrorCode = message, Data = payload };
+            }
+            catch (Exception ex)
+            {
+                result = new Result() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
+            }
+            return new Revision(result);
+        }
+
+        /// <summary>
+        /// Creates the source for the specified revision.
+        /// </summary>
+        /// <param name="data">A string of serialized data.</param>
+        /// <param name="revision">The revision created as part of a create revision step.</param>
+        /// <param name="dataFormat">The format of the data.</param>
+        /// <param name="filename">The filename that should be associated with this upload.</param>
+        /// <returns>A <see cref="Source"/> indicating success or failure.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown if this SodaDSMAPIClient was initialized without authentication credentials.</exception>
+        public Source CreateSource(string data, Revision revision, SodaDataFormat dataFormat = SodaDataFormat.CSV, string filename = "NewUpload")
+        {
+            if (String.IsNullOrEmpty(data))
+                throw new ArgumentException("Data must be provided.", "data");
+
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
+            if (revision == null)
+                throw new ArgumentException("Revision required.", "revision");
+
+            var sourceUri = SodaUri.ForSource(Host, revision.GetSourceEndpoint());
+            Console.WriteLine(sourceUri.ToString());
+            revision.GetRevisionNumber();
+
+            // Construct Revision Request body
+            Newtonsoft.Json.Linq.JObject payload = new Newtonsoft.Json.Linq.JObject();
+            Newtonsoft.Json.Linq.JObject source_type = new Newtonsoft.Json.Linq.JObject();
+            Newtonsoft.Json.Linq.JObject parse_option = new Newtonsoft.Json.Linq.JObject();
+            source_type["type"] = "upload";
+            source_type["filename"] = filename;
+            parse_option["parse_source"] = true;
+            payload["source_type"] = source_type;
+            payload["parse_options"] = parse_option;
+
+            var createSourceRequest = new SodaRequest(sourceUri, "POST", null, Username, password, SodaDataFormat.JSON, payload.ToString());
+            Result sourceOutput = createSourceRequest.ParseResponse<Result>();
+            string uploadDataPath = sourceOutput.Links["bytes"];
+            var uploadUri = SodaUri.ForUpload(Host, uploadDataPath);
+            Debug.WriteLine(uploadUri.ToString());
+            var fileUploadRequest = new SodaRequest(uploadUri, "POST", null, Username, password, dataFormat, data);
+            fileUploadRequest.SetDataType(SodaDataFormat.JSON);
+            Result result = fileUploadRequest.ParseResponse<Result>();
+            return new Source(result);
+        }
+
+        /// <summary>
+        /// Get the specified source data.
+        /// </summary>
+        /// <param name="source">The result of the Source creation</param>
+        /// <returns>A <see cref="Source"/>The updated Source object</returns>
+        public Source GetSource(Source source)
+        {
+            if (source == null)
+                throw new ArgumentException("Source required.", "source");
+            var sourceUri = SodaUri.ForSource(Host, source.Self());
+            var sourceUpdateResponse = new SodaRequest(sourceUri, "GET", null, Username, password, SodaDataFormat.JSON, "");
+            Result result = sourceUpdateResponse.ParseResponse<Result>();
+            return new Source(result);
+        }
+
+        /// <summary>
+        /// Create the InputSchema from the source.
+        /// </summary>
+        /// <param name="source">The result of the Source creation</param>
+        /// <returns>A <see cref="SchemaTransforms"/>SchemaTransforms object</returns>
+        public SchemaTransforms CreateInputSchema(Source source)
+        {
+            if (source == null)
+                throw new ArgumentException("Source required.", "source");
+            return new SchemaTransforms(source);
+        }
+
+        /// <summary>
+        /// Export the error rows (if present).
+        /// </summary>
+        /// <param name="filepath">The output file (csv)</param>
+        /// <param name="output">The specified transformed output</param>
+        public void ExportErrorRows(string filepath, AppliedTransform output)
+        {
+            if (String.IsNullOrEmpty(filepath))
+                throw new ArgumentException("Filepath must be specified.", "filepath");
+
+            if (output == null)
+                throw new ArgumentException("Applied Transform required.", "output");
+
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
+            var endpoint = output.GetErrorRowEndpoint().Replace("{input_schema_id}", output.GetInputSchemaId()).Replace("{output_schema_id}", output.GetOutputSchemaId());
+            var errorRowsUri = SodaUri.ForErrorRows(Host, endpoint);
+            Debug.WriteLine(errorRowsUri.ToString());
+            var downloadRowsRequest = new SodaRequest(errorRowsUri, "GET", null, Username, password, SodaDataFormat.CSV, "");
+            var result = downloadRowsRequest.ParseResponse<String>();
+            System.IO.File.WriteAllText(filepath, result);
+        }
+
+        /// <summary>
+        /// Apply the source, transforms, and update to the specified dataset.
+        /// </summary>
+        /// <param name="outputSchema">A string of serialized data.</param>
+        /// <param name="revision">A string of serialized data.</param>
+        /// <returns>A <see cref="PipelineJob"/> for determining success of failure.</returns>
+        public PipelineJob Apply(AppliedTransform outputSchema, Revision revision)
+        {
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
+            if (outputSchema == null || revision == null)
+                throw new InvalidOperationException("Both the output schema and revision are required.");
+
+            Newtonsoft.Json.Linq.JObject payload = new Newtonsoft.Json.Linq.JObject();
+            payload["output_schema_id"] = outputSchema.GetOutputSchemaId();
+
+            var uri = SodaUri.ForSource(Host, revision.GetApplyEndpoint());
+            Debug.WriteLine(uri.ToString());
+            var applyRequest = new SodaRequest(uri, "PUT", null, Username, password, SodaDataFormat.JSON, payload.ToString());
+            Result result = null;
+            try
+            {
+                result = applyRequest.ParseResponse<Result>();
+
+            }
+            catch (WebException webException)
+            {
+                string message = webException.UnwrapExceptionMessage();
+                result = new Result() { Message = webException.Message, IsError = true, ErrorCode = message, Data = payload };
+            }
+            catch (Exception ex)
+            {
+                result = new Result() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
+            }
+
+            return new PipelineJob(SodaUri.ForJob(Host, revision.getRevisionLink()), Username, password);
         }
     }
 }
