@@ -1,6 +1,6 @@
 # Deploying a new release
 
-Deployment is hard. There are too many manual steps. Let's at least enumerate 
+Deployment is hard. There are too many manual steps. Let's at least enumerate
 them so everyone is on the same page.
 
 Assuming all changes for the new release are commited, tests have been run and
