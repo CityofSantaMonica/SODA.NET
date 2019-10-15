@@ -6,6 +6,10 @@
     <Product>SODA</Product>
     <RepositoryUrl>https://github.com/CityofSantaMonica/SODA.NET</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>0.9.0</Version>
+    <PackageIcon>icon.gif</PackageIcon>
+    <Version>0.10.0</Version>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\icon.gif" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 </Project>
