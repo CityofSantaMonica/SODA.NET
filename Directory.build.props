@@ -11,5 +11,5 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\icon.gif" Pack="true" PackagePath="\"/>
-</ItemGroup>
+  </ItemGroup>
 </Project>
