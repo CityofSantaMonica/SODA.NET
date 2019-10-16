@@ -256,7 +256,7 @@ namespace SODA.Utilities
         }
 
         /// <summary>
-        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// Create a URI for uploading the source data.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="uploadEndpoint">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -274,7 +274,7 @@ namespace SODA.Utilities
 
         }
         /// <summary>
-        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// URI for the particular source.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="sourceEndpoint">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -293,7 +293,7 @@ namespace SODA.Utilities
         }
 
         /// <summary>
-        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// URI for Applying the transforms.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="applyEndpoint">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -311,7 +311,7 @@ namespace SODA.Utilities
         }
 
         /// <summary>
-        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// Create a URI for the Job.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="revisionNumber">The identifier (4x4) for a resource on the Socrata host to target.</param>
@@ -329,7 +329,7 @@ namespace SODA.Utilities
         }
 
         /// <summary>
-        /// Create a Uri for querying the specified resource on the specified Socrata host, using the specified SoqlQuery object.
+        /// Create a URI for exporting the error rows.
         /// </summary>
         /// <param name="socrataHost">The Socrata host to target.</param>
         /// <param name="errorEndpoint">The error endpoint</param>

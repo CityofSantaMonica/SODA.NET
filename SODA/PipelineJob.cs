@@ -12,7 +12,7 @@ namespace SODA
         /// <summary>
         /// Socrata username.
         /// </summary>
-        public string Username;
+        public string username;
         /// <summary>
         /// Socrata password.
         /// </summary>
@@ -23,14 +23,14 @@ namespace SODA
         public Uri revisionEndpoint { get; set; }
 
         /// <summary>
-        /// Apply the source, transforms, and update to the specified dataset.
+        /// Create the pipeline job object.
         /// </summary>
         /// <param name="jobUri">the JobURI.</param>
-        /// <param name="user">Username.</param>
+        /// <param name="user">username.</param>
         /// <param name="pass">Password.</param>
         public PipelineJob(Uri jobUri, string user, string pass)
         {
-            Username = user;
+            username = user;
             password = pass;
             revisionEndpoint = jobUri;
         }
@@ -45,7 +45,7 @@ namespace SODA
             Result r = null;
             while(status != "successful" && status != "failure")
             {
-                var jobRequest = new SodaRequest(revisionEndpoint, "GET", null, Username, password, SodaDataFormat.JSON);
+                var jobRequest = new SodaRequest(revisionEndpoint, "GET", null, username, password, SodaDataFormat.JSON);
                 try
                 {
                     r = jobRequest.ParseResponse<Result>();

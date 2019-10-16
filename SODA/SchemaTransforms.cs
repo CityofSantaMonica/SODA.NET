@@ -24,35 +24,35 @@ namespace SODA
         /// </summary>
         public void ChangeColumnFieldname()
         {
-
+          // TODO: WIP
         }
         /// <summary>
         /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.
         /// </summary>
         public void ChangeColumnDescription()
         {
-
+          // TODO: WIP
         }
         /// <summary>
         /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.
         /// </summary>
         public void ChangeColumnDisplayName()
         {
-
+          // TODO: WIP
         }
         /// <summary>
         /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.
         /// </summary>
         public void ChangeColumnTransform()
         {
-
+          // TODO: WIP
         }
         /// <summary>
         /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.
         /// </summary>
         public void AddColumn()
         {
-
+          // TODO: WIP
         }
         /// <summary>
         /// A class for interacting with Socrata Data Portals using the Socrata Open Data API.

@@ -33,7 +33,7 @@ namespace SODA
         /// Authentication is only necessary when accessing datasets that have been marked as private or when making write requests (PUT, POST, and DELETE).
         /// See http://dev.socrata.com/docs/authentication.html for more information.
         /// </remarks>
-        public readonly string Username;
+        public readonly string username;
 
         //not publicly readable, can only be set in a constructor
         private readonly string password;
@@ -59,7 +59,7 @@ namespace SODA
 
             Host = SodaUri.enforceHttps(host);
             AppToken = appToken;
-            Username = username;
+            username = username;
             this.password = password;
         }
 
@@ -210,12 +210,12 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
-            var request = new SodaRequest(uri, "POST", AppToken, Username, password, dataFormat, payload);
+            var request = new SodaRequest(uri, "POST", AppToken, username, password, dataFormat, payload);
             SodaResult result = null;
 
             try
@@ -256,7 +256,7 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
@@ -279,7 +279,7 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             Queue<TRow> queue = new Queue<TRow>(payload);
@@ -337,7 +337,7 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             //we create a no-op function that returns false for all inputs
@@ -366,12 +366,12 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId);
 
-            var request = new SodaRequest(uri, "PUT", AppToken, Username, password, dataFormat, payload);
+            var request = new SodaRequest(uri, "PUT", AppToken, username, password, dataFormat, payload);
             SodaResult result = null;
 
             try
@@ -412,7 +412,7 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
@@ -437,12 +437,12 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             var uri = SodaUri.ForResourceAPI(Host, resourceId, rowId);
 
-            var request = new SodaRequest(uri, "DELETE", AppToken, Username, password);
+            var request = new SodaRequest(uri, "DELETE", AppToken, username, password);
 
             return request.ParseResponse<SodaResult>();
         }
@@ -457,7 +457,7 @@ namespace SODA
         internal TResult read<TResult>(Uri uri, SodaDataFormat dataFormat = SodaDataFormat.JSON)
             where TResult : class
         {
-            var request = new SodaRequest(uri, "GET", AppToken, Username, password, dataFormat, null, RequestTimeout);
+            var request = new SodaRequest(uri, "GET", AppToken, username, password, dataFormat, null, RequestTimeout);
 
             return request.ParseResponse<TResult>();
         }
@@ -475,7 +475,7 @@ namespace SODA
             where TPayload : class
             where TResult : class
         {
-            var request = new SodaRequest(uri, method, AppToken, Username, password, SodaDataFormat.JSON, payload.ToJsonString(), RequestTimeout);
+            var request = new SodaRequest(uri, method, AppToken, username, password, SodaDataFormat.JSON, payload.ToJsonString(), RequestTimeout);
 
             return request.ParseResponse<TResult>();
         }
@@ -491,7 +491,7 @@ namespace SODA
             if (String.IsNullOrEmpty(name))
                 throw new ArgumentException("Dataset name required.", "name");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             var revisionUri = SodaUri.ForRevision(Host);
@@ -506,7 +506,7 @@ namespace SODA
             payload["action"] = action;
             payload["metadata"] = metadata;
 
-            var request = new SodaRequest(revisionUri, "POST", null, Username, password, SodaDataFormat.JSON, payload.ToString());
+            var request = new SodaRequest(revisionUri, "POST", null, username, password, SodaDataFormat.JSON, payload.ToString());
 
             Result result = null;
             try
@@ -525,7 +525,6 @@ namespace SODA
             return new Revision(result);
         }
 
-
         /// <summary>
         /// Replace any existing rows with the payload data, using the specified resource identifier.
         /// </summary>
@@ -543,10 +542,10 @@ namespace SODA
             if (FourByFour.IsNotValid(resourceId))
                 throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
-            var revisionUri = SodaUri.ForRevision(Host, resourceId); 
+            var revisionUri = SodaUri.ForRevision(Host, resourceId);
 
             // Construct Revision Request body
             Newtonsoft.Json.Linq.JObject payload = new Newtonsoft.Json.Linq.JObject();
@@ -555,7 +554,7 @@ namespace SODA
             action["permission"] = permission;
             payload["action"] = action;
 
-            var request = new SodaRequest(revisionUri, "POST", null, Username, password, SodaDataFormat.JSON, payload.ToString());
+            var request = new SodaRequest(revisionUri, "POST", null, username, password, SodaDataFormat.JSON, payload.ToString());
 
             Result result = null;
             try
@@ -588,14 +587,14 @@ namespace SODA
             if (String.IsNullOrEmpty(data))
                 throw new ArgumentException("Data must be provided.", "data");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             if (revision == null)
                 throw new ArgumentException("Revision required.", "revision");
 
             var sourceUri = SodaUri.ForSource(Host, revision.GetSourceEndpoint());
-            Console.WriteLine(sourceUri.ToString());
+            Debug.WriteLine(sourceUri.ToString());
             revision.GetRevisionNumber();
 
             // Construct Revision Request body
@@ -608,12 +607,12 @@ namespace SODA
             payload["source_type"] = source_type;
             payload["parse_options"] = parse_option;
 
-            var createSourceRequest = new SodaRequest(sourceUri, "POST", null, Username, password, SodaDataFormat.JSON, payload.ToString());
+            var createSourceRequest = new SodaRequest(sourceUri, "POST", null, username, password, SodaDataFormat.JSON, payload.ToString());
             Result sourceOutput = createSourceRequest.ParseResponse<Result>();
             string uploadDataPath = sourceOutput.Links["bytes"];
             var uploadUri = SodaUri.ForUpload(Host, uploadDataPath);
             Debug.WriteLine(uploadUri.ToString());
-            var fileUploadRequest = new SodaRequest(uploadUri, "POST", null, Username, password, dataFormat, data);
+            var fileUploadRequest = new SodaRequest(uploadUri, "POST", null, username, password, dataFormat, data);
             fileUploadRequest.SetDataType(SodaDataFormat.JSON);
             Result result = fileUploadRequest.ParseResponse<Result>();
             return new Source(result);
@@ -629,7 +628,7 @@ namespace SODA
             if (source == null)
                 throw new ArgumentException("Source required.", "source");
             var sourceUri = SodaUri.ForSource(Host, source.Self());
-            var sourceUpdateResponse = new SodaRequest(sourceUri, "GET", null, Username, password, SodaDataFormat.JSON, "");
+            var sourceUpdateResponse = new SodaRequest(sourceUri, "GET", null, username, password, SodaDataFormat.JSON, "");
             Result result = sourceUpdateResponse.ParseResponse<Result>();
             return new Source(result);
         }
@@ -659,13 +658,13 @@ namespace SODA
             if (output == null)
                 throw new ArgumentException("Applied Transform required.", "output");
 
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             var endpoint = output.GetErrorRowEndpoint().Replace("{input_schema_id}", output.GetInputSchemaId()).Replace("{output_schema_id}", output.GetOutputSchemaId());
             var errorRowsUri = SodaUri.ForErrorRows(Host, endpoint);
             Debug.WriteLine(errorRowsUri.ToString());
-            var downloadRowsRequest = new SodaRequest(errorRowsUri, "GET", null, Username, password, SodaDataFormat.CSV, "");
+            var downloadRowsRequest = new SodaRequest(errorRowsUri, "GET", null, username, password, SodaDataFormat.CSV, "");
             var result = downloadRowsRequest.ParseResponse<String>();
             System.IO.File.WriteAllText(filepath, result);
         }
@@ -675,10 +674,10 @@ namespace SODA
         /// </summary>
         /// <param name="outputSchema">A string of serialized data.</param>
         /// <param name="revision">A string of serialized data.</param>
-        /// <returns>A <see cref="PipelineJob"/> for determining success of failure.</returns>
+        /// <returns>A <see cref="PipelineJob"/> for determining success or failure.</returns>
         public PipelineJob Apply(AppliedTransform outputSchema, Revision revision)
         {
-            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
             if (outputSchema == null || revision == null)
@@ -689,7 +688,7 @@ namespace SODA
 
             var uri = SodaUri.ForSource(Host, revision.GetApplyEndpoint());
             Debug.WriteLine(uri.ToString());
-            var applyRequest = new SodaRequest(uri, "PUT", null, Username, password, SodaDataFormat.JSON, payload.ToString());
+            var applyRequest = new SodaRequest(uri, "PUT", null, username, password, SodaDataFormat.JSON, payload.ToString());
             Result result = null;
             try
             {
@@ -706,7 +705,7 @@ namespace SODA
                 result = new Result() { Message = ex.Message, IsError = true, ErrorCode = ex.Message, Data = payload };
             }
 
-            return new PipelineJob(SodaUri.ForJob(Host, revision.getRevisionLink()), Username, password);
+            return new PipelineJob(SodaUri.ForJob(Host, revision.getRevisionLink()), username, password);
         }
     }
 }

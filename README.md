@@ -79,7 +79,7 @@ namespace SocrataTest
             SodaClient pipelineClient = new SodaClient("https://{domain}", "{username}", "{password}");
 
             // Read in File (or other source)
-            string filepath = "C:\\Users\\{user}\\Desktop\\test.csv";
+            string filepath = @"C:\Users\{user}\Desktop\test.csv";
             string csv = System.IO.File.ReadAllText(filepath);
 
             // Create a Dataset - either public or private (default: private)
@@ -97,7 +97,7 @@ namespace SocrataTest
             if (output.GetErrorCount() > 0)
             {
                 Console.WriteLine(String.Format("ERRORS! {0} row(s) resulted in an error", output.GetErrorCount()));
-                pipelineClient.ExportErrorRows("C:\\Users\\{user}\\Desktop\\errors.csv", output);
+                pipelineClient.ExportErrorRows(@"C:\Users\{user}\Desktop\errors.csv", output);
                 // Optional Throw new Error...
             }
 
@@ -106,7 +106,7 @@ namespace SocrataTest
 
             // Await the completion of the revision and output the processing log
             job.AwaitCompletion(status => Console.WriteLine(status));
-           
+
         }
     }
 }
@@ -128,9 +128,9 @@ namespace SocrataTest
             SodaClient pipelineClient = new SodaClient("https://{domain}", "{username}", "{password}");
 
             // Read in File (or other source)
-            string filepath = "C:\\Users\\{user}\\Desktop\\test.csv";
+            string filepath = @"C:\Users\{user}\Desktop\test.csv";
             string csv = System.IO.File.ReadAllText(filepath);
-			
+
             // CREATING A REVISION
             // Create a Revision (either update, replace, or delete)
             Revision revision = pipelineClient.CreateRevision("update", "1234-abcd");
@@ -151,7 +151,7 @@ namespace SocrataTest
             if(output.GetErrorCount() > 0)
             {
                 Console.WriteLine(String.Format("ERRORS! {0} row(s) resulted in an error", output.GetErrorCount()));
-                pipelineClient.ExportErrorRows("C:\\Users\\{user}\\Desktop\\errors.csv", output);
+                pipelineClient.ExportErrorRows(@"C:\Users\{user}\Desktop\errors.csv", output);
                 // Optional Throw new Error...
             }
 
@@ -160,7 +160,7 @@ namespace SocrataTest
 
             // Await the completion of the revision and output the processing log
             newJob.AwaitCompletion(status => Console.WriteLine(status) );
-           
+
         }
     }
 }
