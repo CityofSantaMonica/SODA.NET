@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Utilities.Net45.Tests")]
-[assembly: InternalsVisibleTo("Utilities.NetCore22.Tests")]
-
 namespace SODA.Utilities
 {
     /// <summary>

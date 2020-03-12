@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using SODA.Utilities;
-[assembly: InternalsVisibleTo("Net45.Tests")]
-[assembly: InternalsVisibleTo("NetCore22.Tests")]
+
 namespace SODA
 {
     /// <summary>

@@ -1,13 +1,14 @@
 # SODA.NET [![Build status](https://ci.appveyor.com/api/projects/status/yub6lyl79573lufv/branch/master?svg=true)](https://ci.appveyor.com/project/thekaveman/soda-net/branch/master)
 
-A [Socrata Open Data API](http://dev.socrata.com) (SODA) client library targeting
-.NET 4.5 and above.
+A [Socrata Open Data API](https://dev.socrata.com) (SODA) client library targeting .NET 4.5 and above.
 
 ## Getting Started
 
 SODA.NET is available as a [NuGet package](https://www.nuget.org/packages/CSM.SodaDotNet/).
 
-    Install-Package CSM.SodaDotNet
+```console
+dotnet add package CSM.SodaDotNet
+```
 
 ## Usage examples
 
@@ -172,37 +173,39 @@ namespace SocrataTest
 Compilation can be done using
 [Visual Studio Community Edition](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx).
 
-[NUnit](http://nunit.org/) was used to build and run the test projects. Check out the
-[NUnit Test Adapter](https://visualstudiogallery.msdn.microsoft.com/6ab922d0-21c0-4f06-ab5f-4ecd1fe7175d)
-to run tests from within Visual Studio.
+You can also use the .NET CLI:
 
-You can also use the `build.cmd` script, which assumes `msbuild` and `nuget` are available:
+```console
+git clone git@github.com:CityofSantaMonica/SODA.NET.git SODA.NET
+cd SODA.NET
+dotnet build
+```
 
-    git clone git@github.com:CityofSantaMonica/SODA.NET.git SODA.NET
-    cd SODA.NET
-    .\build.cmd
+## Tests
 
-To create the Nuget package artifacts, pass an extra parameter:
+[NUnit](http://nunit.org/) was used to build and run the test projects.
 
-    .\build.cmd CreatePackages
+Run tests from the Visual Studio Test Explorer, or using the .NET CLI:
+
+```console
+dotnet test
+```
 
 ## Contributing
 
-Check out the
-[Contributor Guidelines](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/CONTRIBUTING.md)
+Check out the [Contributor Guidelines](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/CONTRIBUTING.md)
 for more details.
 
 ## Copyright and License
 
-Copyright 2017 City of Santa Monica, CA
+Copyright 2019 City of Santa Monica, CA
 
-Licensed under the
-[MIT License](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/LICENSE.txt)
+Licensed under the [MIT License](https://github.com/CityOfSantaMonica/SODA.NET/blob/master/LICENSE.txt)
 
 ## Thank you
 
 A tremendous amount of inspiration for this project came from the following projects. Thank you!
 
-  - [Octokit.net](https://github.com/octokit/octokit.net)
-  - [soda-java](https://github.com/socrata/soda-java/)
-  - [soda-dotnet](https://github.com/socrata/soda-dotnet) (defunct?)
+- [Octokit.net](https://github.com/octokit/octokit.net)
+- [soda-java](https://github.com/socrata/soda-java/)
+- [soda-dotnet](https://github.com/socrata/soda-dotnet) (defunct?)
