@@ -439,12 +439,51 @@ namespace SODA
             if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
                 throw new InvalidOperationException("Write operations require an authenticated client.");
 
-            var uri = SodaUri.ForResourceAPI(Host, resourceId, rowId);
+            //Get the unique identifier field
+            var metaData = GetMetadata(resourceId);
+            var idFieldName = metaData.RowIdentifierField;
 
-            var request = new SodaRequest(uri, "DELETE", AppToken, Username, password);
+            //construct the json payload
+            string jsonPayload = PayloadBuilder.GetDeletePayload(idFieldName, rowId);
 
-            return request.ParseResponse<SodaResult>();
+            return Upsert(jsonPayload, SodaDataFormat.JSON, resourceId);
         }
+
+
+        /// <summary>
+        /// Delete multiple rows using the provided list of id's and resource identifier.
+        /// </summary>
+        /// <param name="rowIds">A List of identifiers of the rows to be deleted.</param>
+        /// <param name="resourceId">The identifier (4x4) for a resource on the Socrata host to target.</param>
+        /// <returns>A <see cref="SodaResult"/> indicating success or failure.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the specified <paramref name="resourceId"/> does not match the Socrata 4x4 pattern.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if this SodaClient was initialized without authentication credentials.</exception>
+        public SodaResult DeleteRow(List<string> rowIds, string resourceId)
+        {
+
+            if (rowIds.Count == 0)
+                return new SodaResult()
+                {
+                    Message = "No row identifiers provided to delete"
+                };
+
+            if (FourByFour.IsNotValid(resourceId))
+                throw new ArgumentOutOfRangeException("resourceId", "The provided resourceId is not a valid Socrata (4x4) resource identifier.");
+
+            if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(password))
+                throw new InvalidOperationException("Write operations require an authenticated client.");
+
+            //Get the unique identifier field
+            var metaData = GetMetadata(resourceId);
+            var idFieldName = metaData.RowIdentifierField;
+
+            //construct the json payload
+            string jsonPayload = PayloadBuilder.GetDeletePayload(idFieldName, rowIds);
+
+            return Upsert(jsonPayload, SodaDataFormat.JSON, resourceId);
+
+        }
+
 
         /// <summary>
         /// Send an HTTP GET request to the specified URI and intepret the result as TResult.
