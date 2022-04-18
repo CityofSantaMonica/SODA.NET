@@ -34,16 +34,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCore22.SODA.Tests", "Net
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCore22.Utilities.Tests", "NetCore22.Utilities.Tests\NetCore22.Utilities.Tests.csproj", "{02CEA30A-5D25-4F9D-B74E-7CED1EBA84BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCore30.SODA.Tests", "NetCore30.SODA.Tests\NetCore30.SODA.Tests.csproj", "{0A4AA36D-8AF5-41B1-8448-06ED13C97B3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCore30.SODA.Tests", "NetCore30.SODA.Tests\NetCore30.SODA.Tests.csproj", "{0A4AA36D-8AF5-41B1-8448-06ED13C97B3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCore30.Utilities.Tests", "NetCore30.Utilities.Tests\NetCore30.Utilities.Tests.csproj", "{38EAAD87-8263-45A4-AE30-A923EC44589E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCore30.Utilities.Tests", "NetCore30.Utilities.Tests\NetCore30.Utilities.Tests.csproj", "{38EAAD87-8263-45A4-AE30-A923EC44589E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Utilities.Tests\Utilities.Tests.projitems*{02cea30a-5d25-4f9d-b74e-7ced1eba84bf}*SharedItemsImports = 5
+		SODA.Tests\SODA.Tests.projitems*{0a4aa36d-8af5-41b1-8448-06ed13c97b3f}*SharedItemsImports = 5
 		SODA.Tests\SODA.Tests.projitems*{1112171d-6a3f-49f6-818a-fb44195ac837}*SharedItemsImports = 13
-		SODA.Tests\SODA.Tests.projitems*{309fa03e-e032-4547-a83c-389ec450fd1a}*SharedItemsImports = 4
+		SODA.Tests\SODA.Tests.projitems*{309fa03e-e032-4547-a83c-389ec450fd1a}*SharedItemsImports = 5
+		Utilities.Tests\Utilities.Tests.projitems*{38eaad87-8263-45a4-ae30-a923ec44589e}*SharedItemsImports = 5
 		Utilities.Tests\Utilities.Tests.projitems*{651fb983-b00b-445a-960b-850d21d17db0}*SharedItemsImports = 13
-		Utilities.Tests\Utilities.Tests.projitems*{763fffcb-49dd-4a86-b5a1-b51ea15ce764}*SharedItemsImports = 4
+		Utilities.Tests\Utilities.Tests.projitems*{763fffcb-49dd-4a86-b5a1-b51ea15ce764}*SharedItemsImports = 5
+		SODA.Tests\SODA.Tests.projitems*{cfaeade7-ebea-40f8-9630-c699aa5f8274}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -1,3 +1,9 @@
+### New in 0.10.2 (Released 2022/04/18)
+
+New features
+
+- TLS set to 1.2
+
 ### New in 0.10.0 (Released 2019/10/15)
 
 New features

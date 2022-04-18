@@ -8,6 +8,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>CSM.SodaDotNet</PackageId>
     <PackageTags>API OpenData Socrata SODA</PackageTags>
+    <Version>0.10.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

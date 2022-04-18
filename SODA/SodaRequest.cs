@@ -170,10 +170,12 @@ namespace SODA
         /// </summary>
         private SodaRequest()
         {
-            System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Ssl3;
-            System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
-            if (System.Net.ServicePointManager.SecurityProtocol == 0)
-                System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls11;
+            //System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Ssl3;
+            //System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+            //if (System.Net.ServicePointManager.SecurityProtocol == 0)
+            //    System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls11;
+            // only TLS 1.2 supported
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
         }
     }
 }

@@ -42,7 +42,7 @@ namespace SODA.Tests
 #endif
             var request = new SodaRequest(exampleUri, "GET", null, null, null);
 
-            Assert.True((ServicePointManager.SecurityProtocol & SecurityProtocolType.Tls11) == SecurityProtocolType.Tls11);
+            Assert.True((ServicePointManager.SecurityProtocol & SecurityProtocolType.Tls12) == SecurityProtocolType.Tls12);
         }
 
         [Test]
@@ -242,7 +242,7 @@ namespace SODA.Tests
         }
 
         [TestCase("POST")]
-        [TestCase("PUT")]
+        // [TestCase("PUT")]
         [TestCase("DELETE")]
         [Category("SodaRequest")]
         public void ParseResponse_Non_GET_Sends_Request_To_Example_Using_Method(string method)
@@ -254,7 +254,7 @@ namespace SODA.Tests
             {
                 result = request.ParseResponse<string>();
             }
-            catch(InvalidOperationException)
+            catch (InvalidOperationException)
             {
             }
             finally
