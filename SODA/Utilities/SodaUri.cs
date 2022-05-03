@@ -117,7 +117,7 @@ namespace SODA.Utilities
                 url = String.Format("{0}/{1}", url, rowId);
             }
 
-            return new Uri(url);
+            return new Uri(url + ".json");
         }
 
         /// <summary>
