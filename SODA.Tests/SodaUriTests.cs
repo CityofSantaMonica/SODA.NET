@@ -177,13 +177,13 @@ namespace SODA.Tests
         public void ForResourceAPI_With_Valid_Arguments_Creates_ResourceAPI_Uri()
         {
             var uri = SodaUri.ForResourceAPI(StringMocks.Host, StringMocks.ResourceId);
-            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}", StringMocks.ResourceId), uri.LocalPath);
+            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}.json", StringMocks.ResourceId), uri.LocalPath);
 
             uri = null;
             string rowId = "rowId";
 
             uri = SodaUri.ForResourceAPI(StringMocks.Host, StringMocks.ResourceId, rowId);
-            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}/{1}", StringMocks.ResourceId, rowId), uri.LocalPath);
+            StringAssert.AreEqualIgnoringCase(String.Format("/resource/{0}/{1}.json", StringMocks.ResourceId, rowId), uri.LocalPath);
         }
 
         [TestCase(StringMocks.NullInput)]

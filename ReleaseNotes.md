@@ -1,3 +1,9 @@
+### New in 0.10.3 (Released 2022/05/04)
+
+Bug fixes
+
+-  Fix resource URI generation.
+
 ### New in 0.10.2 (Released 2022/04/18)
 
 New features

@@ -8,6 +8,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>CSM.SodaDotNet.Utilities</PackageId>
     <PackageTags>EWS Excel SODA</PackageTags>
+    <Version>0.10.3</Version>
+    <Copyright>Copyright 2022 City of Santa Monica, CA</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

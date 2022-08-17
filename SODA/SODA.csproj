@@ -8,7 +8,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>CSM.SodaDotNet</PackageId>
     <PackageTags>API OpenData Socrata SODA</PackageTags>
-    <Version>0.10.2</Version>
+    <Version>0.10.3</Version>
+    <Copyright>Copyright 2022 City of Santa Monica, CA</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
